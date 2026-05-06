@@ -453,7 +453,7 @@ function FilterChips<T extends string>({
           <Link
             key={opt.key}
             from="/"
-            search={(prev) => ({ ...prev, [paramKey]: opt.key })}
+            search={(prev: Record<string, unknown>) => ({ ...prev, [paramKey]: opt.key })}
             replace
             className={`font-mono text-[10px] tracking-[0.2em] uppercase px-3 py-2 border transition-colors ${
               active
