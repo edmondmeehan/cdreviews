@@ -4,6 +4,7 @@ import { z } from "zod";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker, ReviewCard } from "@/components/site/bits";
+import { Cover } from "@/components/site/Cover";
 import { useCdStore } from "@/lib/cd-store";
 import { DECADE_LABELS, KIND_LABELS } from "@/lib/cd-data";
 
