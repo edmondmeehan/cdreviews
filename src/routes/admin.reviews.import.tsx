@@ -162,10 +162,21 @@ function ImportPage() {
                 </details>
               )}
 
-              <div className="flex items-center gap-3 pt-2">
-                <AdminButton onClick={commit} tone="primary">{committed ? "Imported ✓" : `Import ${result.reviews.length} reviews`}</AdminButton>
-                {committed && <Link to="/admin/reviews" className="font-mono text-[11px] text-acid hover:text-bone">→ View in reviews list</Link>}
-              </div>
+              {committed ? (
+                <div className="border border-acid/50 bg-acid/5 p-4 space-y-2">
+                  <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-acid">✓ Import complete</div>
+                  <div className="font-mono text-[12px] text-bone">{result.reviews.length} reviews submitted to the catalog.</div>
+                  <div className="flex gap-3 pt-1">
+                    <Link to="/admin/reviews" className="font-mono text-[11px] text-acid hover:text-bone">→ View in reviews list</Link>
+                    <button onClick={() => { setResult(null); setFileName(null); setCommitted(false); }} className="font-mono text-[11px] text-bone/60 hover:text-bone">↺ Import another file</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 pt-2">
+                  <AdminButton onClick={commit} tone="primary">Submit {result.reviews.length} reviews</AdminButton>
+                  <span className="font-mono text-[10px] text-bone/50 tracking-[0.2em] uppercase">Review the preview above before submitting</span>
+                </div>
+              )}
             </div>
           )}
         </section>
