@@ -1,8 +1,10 @@
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker, ReviewCard } from "@/components/site/bits";
 import { Cover } from "@/components/site/Cover";
+import { CoverLightbox } from "@/components/site/CoverLightbox";
 import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 
@@ -36,6 +38,7 @@ function ReviewPage() {
   const { slug } = Route.useParams();
   const review = useCdStore((s) => s.reviews.find((r) => r.slug === slug));
   const related = useCdStore((s) => s.reviews.filter((r) => r.slug !== slug && r.genre === review?.genre).slice(0, 4));
+  const [zoom, setZoom] = useState(false);
 
   if (!review) {
     const redirectSlug = LEGACY_REVIEW_SLUGS[slug];
@@ -51,7 +54,14 @@ function ReviewPage() {
       <article className="max-w-[1200px] mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           <aside className="lg:col-span-4 space-y-4">
-            <Cover r={review} />
+            <button
+              type="button"
+              onClick={() => setZoom(true)}
+              aria-label={`Open ${review.title} cover`}
+              className="block w-full cursor-zoom-in hover:opacity-95 transition-opacity"
+            >
+              <Cover r={review} />
+            </button>
             <div className="flex items-baseline gap-3 border-t border-rule pt-3">
               <div className="fr-score text-[72px] text-vermil leading-none">{review.score.toFixed(1)}</div>
               <div className="text-ink text-[20px]">/10</div>
@@ -125,6 +135,7 @@ function ReviewPage() {
       )}
 
       <SiteFooter />
+      {zoom && <CoverLightbox r={review} onClose={() => setZoom(false)} />}
     </div>
   );
 }
