@@ -1,5 +1,6 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useCdStore, cdActions } from "@/lib/cd-store";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -17,10 +18,48 @@ const NAV = [
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const { user, isStaff, loading, signOut } = useAuth();
   const counts = useCdStore((s) => ({
     r: s.reviews.length, f: s.features.length, l: s.lists.length, c: s.contributors.length, s: s.subscribers.length,
   }));
   const isOverview = pathname === "/admin";
+
+  if (loading) {
+    return (
+      <div className="bg-ink text-bone min-h-screen flex items-center justify-center">
+        <div className="font-mono text-[11px] tracking-[0.25em] uppercase text-bone/50">Checking access…</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="bg-ink text-bone min-h-screen flex flex-col items-center justify-center gap-6 px-6 text-center">
+        <h1 className="fr-display text-[48px]">Sign in required.</h1>
+        <p className="fr-blurb text-[16px] text-bone/60 max-w-[50ch]">
+          The editorial desk is staff-only. Sign in to manage reviews, features, and lists.
+        </p>
+        <Link to="/auth" search={{ redirect: pathname }} className="font-mono text-[11px] tracking-[0.25em] uppercase text-vermil hover:underline">
+          → Go to sign in
+        </Link>
+      </div>
+    );
+  }
+
+  if (!isStaff) {
+    return (
+      <div className="bg-ink text-bone min-h-screen flex flex-col items-center justify-center gap-6 px-6 text-center">
+        <h1 className="fr-display text-[48px]">No access.</h1>
+        <p className="fr-blurb text-[16px] text-bone/60 max-w-[50ch]">
+          Your account ({user.email}) doesn't have admin or editor permissions. Ask an admin to grant you access.
+        </p>
+        <div className="flex items-center gap-6 font-mono text-[11px] tracking-[0.25em] uppercase">
+          <button onClick={signOut} className="text-vermil hover:underline">Sign out</button>
+          <Link to="/" className="text-bone/70 hover:text-bone">→ Back to site</Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-ink text-bone min-h-screen">
@@ -28,8 +67,9 @@ function AdminLayout() {
         <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
           <Link to="/" className="fr-display-bold text-[28px] text-bone leading-none">cdreviews. <span className="text-vermil text-[12px] font-mono tracking-[0.3em] align-middle ml-2">ADMIN</span></Link>
           <div className="flex items-center gap-4 font-mono text-[10px] tracking-[0.25em] uppercase">
-            <span className="text-bone/50">Mock backend · localStorage</span>
+            <span className="text-bone/50">{user.email}</span>
             <button onClick={() => { if (confirm("Reset all admin data to seed?")) cdActions.resetAll(); }} className="text-vermil hover:underline">Reset data</button>
+            <button onClick={signOut} className="text-bone/70 hover:text-vermil">Sign out</button>
             <Link to="/" className="text-bone/80 hover:text-vermil">→ View site</Link>
           </div>
         </div>
