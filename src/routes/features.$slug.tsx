@@ -29,7 +29,11 @@ function NotFound() {
 function FeaturePage() {
   const { slug } = Route.useParams();
   const f = useCdStore((s) => s.features.find((x) => x.slug === slug));
-  if (!f) return <NotFound />;
+  if (!f) {
+    const redirectSlug = LEGACY_FEATURE_SLUGS[slug];
+    if (redirectSlug) return <Navigate to="/features/$slug" params={{ slug: redirectSlug }} replace />;
+    return <NotFound />;
+  }
   return (
     <div className="bg-bone text-ink min-h-screen">
       <SiteHeader />
