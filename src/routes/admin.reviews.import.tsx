@@ -12,6 +12,58 @@ const EXPECTED = [
   "Label Address", "Reviewer", "Rating", "Contact", "Review Text", "Archive URL",
 ];
 
+const EXAMPLE_ROWS: Record<string, string>[] = [
+  {
+    Artist: "Lia Thrum",
+    Album: "Glass Engine",
+    "Review Date": "03.14.2026",
+    Period: "2020s",
+    "Hot Pick": "Y",
+    Label: "Foxglove Tapes",
+    "Label Address": "PO Box 14, Brooklyn NY 11211",
+    Reviewer: "M. Ortega",
+    Rating: "8.7",
+    Contact: "info@foxglove.example",
+    "Review Text": "A patient, gleaming debut.\n\nGuitars hum like radiators; the drums arrive late and stay loose.",
+    "Archive URL": "https://archive.example/lia-thrum-glass-engine",
+  },
+  {
+    Artist: "Tamarind State",
+    Album: "Ovum (Reissue)",
+    "Review Date": "02.02.2026",
+    Period: "1990s",
+    "Hot Pick": "",
+    Label: "Slow Sun",
+    "Label Address": "12 Rue Lafayette, Paris",
+    Reviewer: "K. Park",
+    Rating: "7.4",
+    Contact: "press@slowsun.example",
+    "Review Text": "Twenty years on, the songs still wobble in the right places.",
+    "Archive URL": "",
+  },
+];
+
+function downloadTemplate(format: "csv" | "xlsx") {
+  if (format === "csv") {
+    const esc = (v: string) => /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+    const rows = [EXPECTED, ...EXAMPLE_ROWS.map((r) => EXPECTED.map((h) => r[h] ?? ""))];
+    const csv = rows.map((r) => r.map(esc).join(",")).join("\n");
+    triggerDownload(new Blob([csv], { type: "text/csv;charset=utf-8" }), "cdreviews-import-template.csv");
+  } else {
+    const ws = XLSX.utils.json_to_sheet(EXAMPLE_ROWS, { header: EXPECTED });
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Reviews");
+    const buf = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    triggerDownload(new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "cdreviews-import-template.xlsx");
+  }
+}
+function triggerDownload(blob: Blob, name: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function ImportPage() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [result, setResult] = useState<ImportResult | null>(null);
