@@ -213,7 +213,10 @@ export const cdActions = {
   // Reviews
   async upsertReview(review: Review) {
     const row = reviewToRow(review);
-    const { error } = await supabase.from("reviews").upsert(row as never, { onConflict: "slug" });
+    // If we already have a uuid id, conflict on id (slug may have changed).
+    // Otherwise let the DB assign an id and conflict on slug.
+    const onConflict = isUuid(review.id) ? "id" : "slug";
+    const { error } = await supabase.from("reviews").upsert(row as never, { onConflict });
     if (error) console.error("upsertReview", error);
     invalidate();
   },
