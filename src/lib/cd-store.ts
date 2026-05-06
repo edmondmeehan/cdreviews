@@ -86,6 +86,7 @@ function reviewToRow(r: Review): Record<string, unknown> {
     art_url: r.artUrl ?? null,
     spotify_url: r.spotifyUrl ?? null,
     spotify_album_id: r.spotifyAlbumId ?? null,
+    spotify_artist_id: r.spotifyArtistId ?? null,
   };
 }
 
