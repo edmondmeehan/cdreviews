@@ -14,11 +14,12 @@ const NAV = [
   { to: "/admin/lists", label: "Lists" },
   { to: "/admin/contributors", label: "Contributors" },
   { to: "/admin/subscribers", label: "Subscribers" },
+  { to: "/admin/roles", label: "Roles", adminOnly: true },
 ];
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const { user, isStaff, loading, signOut } = useAuth();
+  const { user, isStaff, loading, signOut, roles } = useAuth();
   const counts = useCdStore((s) => ({
     r: s.reviews.length, f: s.features.length, l: s.lists.length, c: s.contributors.length, s: s.subscribers.length,
   }));
@@ -74,7 +75,7 @@ function AdminLayout() {
           </div>
         </div>
         <nav className="max-w-[1400px] mx-auto px-6 pb-3 flex flex-wrap gap-5">
-          {NAV.map((n) => {
+          {NAV.filter((n) => !n.adminOnly || roles.includes("admin")).map((n) => {
             const active = n.exact ? pathname === n.to : pathname.startsWith(n.to);
             return (
               <Link key={n.to} to={n.to} className={`font-mono text-[11px] tracking-[0.2em] uppercase ${active ? "text-vermil" : "text-bone/70 hover:text-bone"}`}>

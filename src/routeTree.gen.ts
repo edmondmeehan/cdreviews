@@ -25,6 +25,7 @@ import { Route as ReviewsSlugRouteImport } from './routes/reviews.$slug'
 import { Route as ListsSlugRouteImport } from './routes/lists.$slug'
 import { Route as FeaturesSlugRouteImport } from './routes/features.$slug'
 import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
+import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminListsRouteImport } from './routes/admin.lists'
 import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
@@ -112,6 +113,11 @@ const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
   path: '/subscribers',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminRolesRoute = AdminRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminListsRoute = AdminListsRouteImport.update({
   id: '/lists',
   path: '/lists',
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
+  '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
+  '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
@@ -205,6 +213,7 @@ export interface FileRoutesById {
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
+  '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
@@ -231,6 +240,7 @@ export interface FileRouteTypes {
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
+    | '/admin/roles'
     | '/admin/subscribers'
     | '/features/$slug'
     | '/lists/$slug'
@@ -255,6 +265,7 @@ export interface FileRouteTypes {
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
+    | '/admin/roles'
     | '/admin/subscribers'
     | '/features/$slug'
     | '/lists/$slug'
@@ -279,6 +290,7 @@ export interface FileRouteTypes {
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
+    | '/admin/roles'
     | '/admin/subscribers'
     | '/features/$slug'
     | '/lists/$slug'
@@ -423,6 +435,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSubscribersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/roles': {
+      id: '/admin/roles'
+      path: '/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AdminRolesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/lists': {
       id: '/admin/lists'
       path: '/lists'
@@ -472,6 +491,7 @@ interface AdminRouteChildren {
   AdminContributorsRoute: typeof AdminContributorsRoute
   AdminFeaturesRoute: typeof AdminFeaturesRoute
   AdminListsRoute: typeof AdminListsRoute
+  AdminRolesRoute: typeof AdminRolesRoute
   AdminSubscribersRoute: typeof AdminSubscribersRoute
   AdminReviewsIdRoute: typeof AdminReviewsIdRoute
   AdminReviewsImportRoute: typeof AdminReviewsImportRoute
@@ -482,6 +502,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminContributorsRoute: AdminContributorsRoute,
   AdminFeaturesRoute: AdminFeaturesRoute,
   AdminListsRoute: AdminListsRoute,
+  AdminRolesRoute: AdminRolesRoute,
   AdminSubscribersRoute: AdminSubscribersRoute,
   AdminReviewsIdRoute: AdminReviewsIdRoute,
   AdminReviewsImportRoute: AdminReviewsImportRoute,
