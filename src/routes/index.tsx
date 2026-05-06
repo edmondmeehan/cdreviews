@@ -149,7 +149,7 @@ function FromTheArchive() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-12">
           <div className="lg:col-span-5 space-y-5">
-            <Link to="/reviews/$slug" params={{ slug: archived.slug }}><div className="art art-archive" /></Link>
+            <Link to="/reviews/$slug" params={{ slug: archived.slug }}><Cover r={archived} /></Link>
             <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.25em] uppercase text-mute">
               <span>From the stacks</span>
               <span>SPRING / 1996</span>
