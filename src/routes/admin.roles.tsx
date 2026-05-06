@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
-import { listRoleAssignments, grantRole, revokeRole } from "@/server/roles.functions";
+import { listRoleAssignments, grantRole, revokeRole } from "@/lib/roles.functions";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/roles")({ component: RolesAdmin });

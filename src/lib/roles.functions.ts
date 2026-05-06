@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { ROLES, type Role, assertAdmin, findUserByEmail } from "./roles.server";
+import { ROLES, type Role, assertAdmin, findUserByEmail } from "@/server/roles.server";
 
 export const listRoleAssignments = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
