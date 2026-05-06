@@ -87,7 +87,7 @@ function EditReview() {
           {r.artUrl ? (
             <img src={r.artUrl} alt="cover" className="w-[180px] h-[180px] object-cover border border-bone/20" />
           ) : (
-            <div className={`art ${r.art} w-[180px] h-[180px]`} />
+            <div className="w-[180px] h-[180px]"><Cover r={r} /></div>
           )}
         </div>
         <div className="space-y-3">
