@@ -79,15 +79,30 @@ const DECADES = [
   { years: "2027 →", count: "∞", label: "The Next Chapter", current: true },
 ];
 
-const LATEST = [
-  { num: "001", title: "Glass Engine", artist: "Lia Thrum", label: "Selo Mint", genre: "Electronic / Ambient", date: "05.04.2026", score: "8.7", tone: "hi" },
-  { num: "002", title: "Plain Songs", artist: "Marcia Velour", label: "Hardly Quiet", genre: "Folk", date: "05.03.2026", score: "7.9" },
-  { num: "003", title: "Reentry", artist: "Kosmo Gardens", label: "Bow Hill", genre: "Experimental", date: "05.02.2026", score: "9.1", tone: "hi" },
-  { num: "004", title: "Wading", artist: "Halflit", label: "Constellation", genre: "Ambient", date: "05.02.2026", score: "7.4" },
-  { num: "005", title: "Antenna", artist: "Field Pulse", label: "Dirty Hit", genre: "Pop", date: "04.30.2026", score: "6.8", tone: "lo" },
-  { num: "006", title: "Ovum (Reissue)", artist: "Tamarind State", label: "Numero", genre: "Post-Punk", date: "04.28.2026", score: "8.9", tone: "hi" },
-  { num: "007", title: "Kin", artist: "The Hours After", label: "Verve", genre: "Jazz", date: "04.27.2026", score: "8.2" },
-  { num: "008", title: "Atlas Tape", artist: "Moss & Wire", label: "Self-Released", genre: "Hip-Hop", date: "04.26.2026", score: "8.0" },
+type Decade = (typeof DECADE_KEYS)[number];
+type Kind = (typeof KIND_KEYS)[number];
+
+const LATEST: Array<{
+  num: string; title: string; artist: string; label: string;
+  genre: string; date: string; score: string; tone?: string;
+  decade: Exclude<Decade, "all">; kind: Exclude<Kind, "all">;
+}> = [
+  { num: "001", title: "Glass Engine", artist: "Lia Thrum", label: "Selo Mint", genre: "Electronic / Ambient", date: "05.04.2026", score: "8.7", tone: "hi", decade: "2020s", kind: "bnm" },
+  { num: "002", title: "Plain Songs", artist: "Marcia Velour", label: "Hardly Quiet", genre: "Folk", date: "05.03.2026", score: "7.9", decade: "2020s", kind: "review" },
+  { num: "003", title: "Reentry", artist: "Kosmo Gardens", label: "Bow Hill", genre: "Experimental", date: "05.02.2026", score: "9.1", tone: "hi", decade: "2020s", kind: "bnm" },
+  { num: "004", title: "Wading", artist: "Halflit", label: "Constellation", genre: "Ambient", date: "05.02.2026", score: "7.4", decade: "2020s", kind: "review" },
+  { num: "005", title: "Antenna", artist: "Field Pulse", label: "Dirty Hit", genre: "Pop", date: "04.30.2026", score: "6.8", tone: "lo", decade: "2020s", kind: "review" },
+  { num: "006", title: "Ovum (Reissue)", artist: "Tamarind State", label: "Numero", genre: "Post-Punk", date: "04.28.2026", score: "8.9", tone: "hi", decade: "2020s", kind: "bnr" },
+  { num: "007", title: "Kin", artist: "The Hours After", label: "Verve", genre: "Jazz", date: "04.27.2026", score: "8.2", decade: "2020s", kind: "review" },
+  { num: "008", title: "Atlas Tape", artist: "Moss & Wire", label: "Self-Released", genre: "Hip-Hop", date: "04.26.2026", score: "8.0", decade: "2020s", kind: "review" },
+  { num: "009", title: "Slow Carriage", artist: "Vellum Pines", label: "Drag City", genre: "Indie Rock", date: "11.12.2018", score: "7.8", decade: "2010s", kind: "review" },
+  { num: "010", title: "Halogen", artist: "Court & Spark", label: "4AD", genre: "Dream Pop", date: "06.04.2015", score: "8.5", tone: "hi", decade: "2010s", kind: "bnm" },
+  { num: "011", title: "Mire (Reissue)", artist: "The Lemonheads", label: "Fire", genre: "Alternative", date: "09.21.2012", score: "8.3", decade: "2010s", kind: "bnr" },
+  { num: "012", title: "Ferrous", artist: "Iron Pigeon", label: "Sub Pop", genre: "Garage Rock", date: "03.30.2007", score: "7.1", decade: "2000s", kind: "review" },
+  { num: "013", title: "Late Bloom", artist: "Jenna Holst", label: "Matador", genre: "Singer-Songwriter", date: "08.14.2003", score: "8.0", decade: "2000s", kind: "review" },
+  { num: "014", title: "Ardent (Reissue)", artist: "Big Star", label: "Rhino", genre: "Power Pop", date: "02.10.2001", score: "9.2", tone: "hi", decade: "2000s", kind: "bnr" },
+  { num: "015", title: "Sleeve & Sleeve", artist: "Vespertine Six", label: "Tigerhand", genre: "Post-Rock / Slowcore", date: "05.06.1996", score: "8.4", decade: "1990s", kind: "bnm" },
+  { num: "016", title: "Quiet County", artist: "Marisol Tien", label: "Mo'Wax", genre: "Trip-Hop", date: "10.02.1998", score: "8.1", decade: "1990s", kind: "review" },
 ];
 
 const FOOTER_COLS = [
