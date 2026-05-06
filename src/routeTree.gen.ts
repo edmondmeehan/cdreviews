@@ -28,6 +28,7 @@ import { Route as AdminListsRouteImport } from './routes/admin.lists'
 import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
 import { Route as AdminReviewsIndexRouteImport } from './routes/admin.reviews.index'
+import { Route as AdminReviewsImportRouteImport } from './routes/admin.reviews.import'
 import { Route as AdminReviewsIdRouteImport } from './routes/admin.reviews.$id'
 
 const RadioRoute = RadioRouteImport.update({
@@ -125,6 +126,11 @@ const AdminReviewsIndexRoute = AdminReviewsIndexRouteImport.update({
   path: '/reviews/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminReviewsImportRoute = AdminReviewsImportRouteImport.update({
+  id: '/reviews/import',
+  path: '/reviews/import',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminReviewsIdRoute = AdminReviewsIdRouteImport.update({
   id: '/reviews/$id',
   path: '/reviews/$id',
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/lists/': typeof ListsIndexRoute
   '/reviews/': typeof ReviewsIndexRoute
   '/admin/reviews/$id': typeof AdminReviewsIdRoute
+  '/admin/reviews/import': typeof AdminReviewsImportRoute
   '/admin/reviews/': typeof AdminReviewsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/lists': typeof ListsIndexRoute
   '/reviews': typeof ReviewsIndexRoute
   '/admin/reviews/$id': typeof AdminReviewsIdRoute
+  '/admin/reviews/import': typeof AdminReviewsImportRoute
   '/admin/reviews': typeof AdminReviewsIndexRoute
 }
 export interface FileRoutesById {
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/lists/': typeof ListsIndexRoute
   '/reviews/': typeof ReviewsIndexRoute
   '/admin/reviews/$id': typeof AdminReviewsIdRoute
+  '/admin/reviews/import': typeof AdminReviewsImportRoute
   '/admin/reviews/': typeof AdminReviewsIndexRoute
 }
 export interface FileRouteTypes {
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/lists/'
     | '/reviews/'
     | '/admin/reviews/$id'
+    | '/admin/reviews/import'
     | '/admin/reviews/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/lists'
     | '/reviews'
     | '/admin/reviews/$id'
+    | '/admin/reviews/import'
     | '/admin/reviews'
   id:
     | '__root__'
@@ -264,6 +275,7 @@ export interface FileRouteTypes {
     | '/lists/'
     | '/reviews/'
     | '/admin/reviews/$id'
+    | '/admin/reviews/import'
     | '/admin/reviews/'
   fileRoutesById: FileRoutesById
 }
@@ -419,6 +431,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReviewsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/reviews/import': {
+      id: '/admin/reviews/import'
+      path: '/reviews/import'
+      fullPath: '/admin/reviews/import'
+      preLoaderRoute: typeof AdminReviewsImportRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/reviews/$id': {
       id: '/admin/reviews/$id'
       path: '/reviews/$id'
@@ -435,6 +454,7 @@ interface AdminRouteChildren {
   AdminListsRoute: typeof AdminListsRoute
   AdminSubscribersRoute: typeof AdminSubscribersRoute
   AdminReviewsIdRoute: typeof AdminReviewsIdRoute
+  AdminReviewsImportRoute: typeof AdminReviewsImportRoute
   AdminReviewsIndexRoute: typeof AdminReviewsIndexRoute
 }
 
@@ -444,6 +464,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminListsRoute: AdminListsRoute,
   AdminSubscribersRoute: AdminSubscribersRoute,
   AdminReviewsIdRoute: AdminReviewsIdRoute,
+  AdminReviewsImportRoute: AdminReviewsImportRoute,
   AdminReviewsIndexRoute: AdminReviewsIndexRoute,
 }
 
@@ -468,3 +489,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
