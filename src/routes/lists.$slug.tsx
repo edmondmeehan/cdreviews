@@ -29,7 +29,11 @@ function NotFound() {
 function ListPage() {
   const { slug } = Route.useParams();
   const l = useCdStore((s) => s.lists.find((x) => x.slug === slug));
-  if (!l) return <NotFound />;
+  if (!l) {
+    const redirectSlug = LEGACY_LIST_SLUGS[slug];
+    if (redirectSlug) return <Navigate to="/lists/$slug" params={{ slug: redirectSlug }} replace />;
+    return <NotFound />;
+  }
   return (
     <div className="bg-bone text-ink min-h-screen">
       <SiteHeader />
