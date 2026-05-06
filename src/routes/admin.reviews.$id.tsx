@@ -64,6 +64,7 @@ function EditReview() {
         artUrl: res.imageUrl ?? p.artUrl,
         spotifyUrl: res.spotifyUrl,
         spotifyAlbumId: res.albumId,
+        spotifyArtistId: res.artistId ?? p.spotifyArtistId,
       }));
       setArtMsg(`✓ Matched: ${res.artistName} — ${res.albumName}`);
     } catch (e) {
