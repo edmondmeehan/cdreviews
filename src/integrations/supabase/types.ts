@@ -14,16 +14,277 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      contributors: {
+        Row: {
+          bio: string | null
+          city: string | null
+          created_at: string
+          id: string
+          name: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      features: {
+        Row: {
+          body: Json
+          byline: string
+          created_at: string
+          dek: string | null
+          hero: string | null
+          id: string
+          kicker: string | null
+          published_at: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: Json
+          byline?: string
+          created_at?: string
+          dek?: string | null
+          hero?: string | null
+          id?: string
+          kicker?: string | null
+          published_at?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: Json
+          byline?: string
+          created_at?: string
+          dek?: string | null
+          hero?: string | null
+          id?: string
+          kicker?: string | null
+          published_at?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      lists: {
+        Row: {
+          created_at: string
+          dek: string | null
+          id: string
+          items: Json
+          published_at: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          dek?: string | null
+          id?: string
+          items?: Json
+          published_at?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          dek?: string | null
+          id?: string
+          items?: Json
+          published_at?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          archive_url: string | null
+          art: string
+          artist: string
+          body: Json
+          byline: string
+          contact: string | null
+          created_at: string
+          date: string
+          decade: string
+          format: string
+          genre: string
+          id: string
+          kind: string
+          label: string
+          label_address: string | null
+          period: string | null
+          read_mins: number
+          score: number
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          archive_url?: string | null
+          art?: string
+          artist: string
+          body?: Json
+          byline?: string
+          contact?: string | null
+          created_at?: string
+          date: string
+          decade: string
+          format?: string
+          genre?: string
+          id?: string
+          kind?: string
+          label?: string
+          label_address?: string | null
+          period?: string | null
+          read_mins?: number
+          score?: number
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          archive_url?: string | null
+          art?: string
+          artist?: string
+          body?: Json
+          byline?: string
+          contact?: string | null
+          created_at?: string
+          date?: string
+          decade?: string
+          format?: string
+          genre?: string
+          id?: string
+          kind?: string
+          label?: string
+          label_address?: string | null
+          period?: string | null
+          read_mins?: number
+          score?: number
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscribers: {
+        Row: {
+          email: string
+          id: string
+          signed_up: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          signed_up?: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          signed_up?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "editor" | "contributor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +411,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "editor", "contributor"],
+    },
   },
 } as const
