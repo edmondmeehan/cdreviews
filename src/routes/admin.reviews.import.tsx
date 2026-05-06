@@ -12,6 +12,58 @@ const EXPECTED = [
   "Label Address", "Reviewer", "Rating", "Contact", "Review Text", "Archive URL",
 ];
 
+const EXAMPLE_ROWS: Record<string, string>[] = [
+  {
+    Artist: "Lia Thrum",
+    Album: "Glass Engine",
+    "Review Date": "03.14.2026",
+    Period: "2020s",
+    "Hot Pick": "Y",
+    Label: "Foxglove Tapes",
+    "Label Address": "PO Box 14, Brooklyn NY 11211",
+    Reviewer: "M. Ortega",
+    Rating: "8.7",
+    Contact: "info@foxglove.example",
+    "Review Text": "A patient, gleaming debut.\n\nGuitars hum like radiators; the drums arrive late and stay loose.",
+    "Archive URL": "https://archive.example/lia-thrum-glass-engine",
+  },
+  {
+    Artist: "Tamarind State",
+    Album: "Ovum (Reissue)",
+    "Review Date": "02.02.2026",
+    Period: "1990s",
+    "Hot Pick": "",
+    Label: "Slow Sun",
+    "Label Address": "12 Rue Lafayette, Paris",
+    Reviewer: "K. Park",
+    Rating: "7.4",
+    Contact: "press@slowsun.example",
+    "Review Text": "Twenty years on, the songs still wobble in the right places.",
+    "Archive URL": "",
+  },
+];
+
+function downloadTemplate(format: "csv" | "xlsx") {
+  if (format === "csv") {
+    const esc = (v: string) => /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
+    const rows = [EXPECTED, ...EXAMPLE_ROWS.map((r) => EXPECTED.map((h) => r[h] ?? ""))];
+    const csv = rows.map((r) => r.map(esc).join(",")).join("\n");
+    triggerDownload(new Blob([csv], { type: "text/csv;charset=utf-8" }), "cdreviews-import-template.csv");
+  } else {
+    const ws = XLSX.utils.json_to_sheet(EXAMPLE_ROWS, { header: EXPECTED });
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Reviews");
+    const buf = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    triggerDownload(new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "cdreviews-import-template.xlsx");
+  }
+}
+function triggerDownload(blob: Blob, name: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function ImportPage() {
   const [fileName, setFileName] = useState<string | null>(null);
   const [result, setResult] = useState<ImportResult | null>(null);
@@ -110,15 +162,34 @@ function ImportPage() {
                 </details>
               )}
 
-              <div className="flex items-center gap-3 pt-2">
-                <AdminButton onClick={commit} tone="primary">{committed ? "Imported ✓" : `Import ${result.reviews.length} reviews`}</AdminButton>
-                {committed && <Link to="/admin/reviews" className="font-mono text-[11px] text-acid hover:text-bone">→ View in reviews list</Link>}
-              </div>
+              {committed ? (
+                <div className="border border-acid/50 bg-acid/5 p-4 space-y-2">
+                  <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-acid">✓ Import complete</div>
+                  <div className="font-mono text-[12px] text-bone">{result.reviews.length} reviews submitted to the catalog.</div>
+                  <div className="flex gap-3 pt-1">
+                    <Link to="/admin/reviews" className="font-mono text-[11px] text-acid hover:text-bone">→ View in reviews list</Link>
+                    <button onClick={() => { setResult(null); setFileName(null); setCommitted(false); }} className="font-mono text-[11px] text-bone/60 hover:text-bone">↺ Import another file</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 pt-2">
+                  <AdminButton onClick={commit} tone="primary">Submit {result.reviews.length} reviews</AdminButton>
+                  <span className="font-mono text-[10px] text-bone/50 tracking-[0.2em] uppercase">Review the preview above before submitting</span>
+                </div>
+              )}
             </div>
           )}
         </section>
 
         <aside className="lg:col-span-5 space-y-4 font-mono text-[11px] text-bone/70">
+          <div className="border border-bone/10 p-4 space-y-3">
+            <div className="text-[10px] tracking-[0.25em] uppercase text-vermil">Download template</div>
+            <div className="text-bone/60 leading-relaxed">Pre-filled with the required headers and two example rows.</div>
+            <div className="flex gap-2 pt-1">
+              <button onClick={() => downloadTemplate("xlsx")} className="font-mono text-[10px] tracking-[0.25em] uppercase px-3 py-2 border bg-vermil text-bone border-vermil hover:bg-bone hover:text-ink">↓ .xlsx</button>
+              <button onClick={() => downloadTemplate("csv")} className="font-mono text-[10px] tracking-[0.25em] uppercase px-3 py-2 border bg-bone/0 text-bone/80 border-bone/20 hover:text-bone">↓ .csv</button>
+            </div>
+          </div>
           <div className="border border-bone/10 p-4 space-y-3">
             <div className="text-[10px] tracking-[0.25em] uppercase text-vermil">Expected columns</div>
             <ul className="space-y-1">
