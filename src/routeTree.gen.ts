@@ -14,6 +14,7 @@ import { Route as MastheadRouteImport } from './routes/masthead'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BestNewRouteImport } from './routes/best-new'
 import { Route as ArchiveRouteImport } from './routes/archive'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ReviewsIndexRouteImport } from './routes/reviews.index'
@@ -22,6 +23,12 @@ import { Route as FeaturesIndexRouteImport } from './routes/features.index'
 import { Route as ReviewsSlugRouteImport } from './routes/reviews.$slug'
 import { Route as ListsSlugRouteImport } from './routes/lists.$slug'
 import { Route as FeaturesSlugRouteImport } from './routes/features.$slug'
+import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
+import { Route as AdminListsRouteImport } from './routes/admin.lists'
+import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
+import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
+import { Route as AdminReviewsIndexRouteImport } from './routes/admin.reviews.index'
+import { Route as AdminReviewsIdRouteImport } from './routes/admin.reviews.$id'
 
 const RadioRoute = RadioRouteImport.update({
   id: '/radio',
@@ -46,6 +53,11 @@ const BestNewRoute = BestNewRouteImport.update({
 const ArchiveRoute = ArchiveRouteImport.update({
   id: '/archive',
   path: '/archive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -88,104 +100,177 @@ const FeaturesSlugRoute = FeaturesSlugRouteImport.update({
   path: '/features/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminListsRoute = AdminListsRouteImport.update({
+  id: '/lists',
+  path: '/lists',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFeaturesRoute = AdminFeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContributorsRoute = AdminContributorsRouteImport.update({
+  id: '/contributors',
+  path: '/contributors',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReviewsIndexRoute = AdminReviewsIndexRouteImport.update({
+  id: '/reviews/',
+  path: '/reviews/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReviewsIdRoute = AdminReviewsIdRouteImport.update({
+  id: '/reviews/$id',
+  path: '/reviews/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/archive': typeof ArchiveRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
+  '/admin/contributors': typeof AdminContributorsRoute
+  '/admin/features': typeof AdminFeaturesRoute
+  '/admin/lists': typeof AdminListsRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
   '/reviews/$slug': typeof ReviewsSlugRoute
   '/features/': typeof FeaturesIndexRoute
   '/lists/': typeof ListsIndexRoute
   '/reviews/': typeof ReviewsIndexRoute
+  '/admin/reviews/$id': typeof AdminReviewsIdRoute
+  '/admin/reviews/': typeof AdminReviewsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/archive': typeof ArchiveRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
+  '/admin/contributors': typeof AdminContributorsRoute
+  '/admin/features': typeof AdminFeaturesRoute
+  '/admin/lists': typeof AdminListsRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
   '/reviews/$slug': typeof ReviewsSlugRoute
   '/features': typeof FeaturesIndexRoute
   '/lists': typeof ListsIndexRoute
   '/reviews': typeof ReviewsIndexRoute
+  '/admin/reviews/$id': typeof AdminReviewsIdRoute
+  '/admin/reviews': typeof AdminReviewsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
   '/archive': typeof ArchiveRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
+  '/admin/contributors': typeof AdminContributorsRoute
+  '/admin/features': typeof AdminFeaturesRoute
+  '/admin/lists': typeof AdminListsRoute
+  '/admin/subscribers': typeof AdminSubscribersRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
   '/reviews/$slug': typeof ReviewsSlugRoute
   '/features/': typeof FeaturesIndexRoute
   '/lists/': typeof ListsIndexRoute
   '/reviews/': typeof ReviewsIndexRoute
+  '/admin/reviews/$id': typeof AdminReviewsIdRoute
+  '/admin/reviews/': typeof AdminReviewsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/archive'
     | '/best-new'
     | '/contact'
     | '/masthead'
     | '/radio'
+    | '/admin/contributors'
+    | '/admin/features'
+    | '/admin/lists'
+    | '/admin/subscribers'
     | '/features/$slug'
     | '/lists/$slug'
     | '/reviews/$slug'
     | '/features/'
     | '/lists/'
     | '/reviews/'
+    | '/admin/reviews/$id'
+    | '/admin/reviews/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/admin'
     | '/archive'
     | '/best-new'
     | '/contact'
     | '/masthead'
     | '/radio'
+    | '/admin/contributors'
+    | '/admin/features'
+    | '/admin/lists'
+    | '/admin/subscribers'
     | '/features/$slug'
     | '/lists/$slug'
     | '/reviews/$slug'
     | '/features'
     | '/lists'
     | '/reviews'
+    | '/admin/reviews/$id'
+    | '/admin/reviews'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/archive'
     | '/best-new'
     | '/contact'
     | '/masthead'
     | '/radio'
+    | '/admin/contributors'
+    | '/admin/features'
+    | '/admin/lists'
+    | '/admin/subscribers'
     | '/features/$slug'
     | '/lists/$slug'
     | '/reviews/$slug'
     | '/features/'
     | '/lists/'
     | '/reviews/'
+    | '/admin/reviews/$id'
+    | '/admin/reviews/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ArchiveRoute: typeof ArchiveRoute
   BestNewRoute: typeof BestNewRoute
   ContactRoute: typeof ContactRoute
@@ -234,6 +319,13 @@ declare module '@tanstack/react-router' {
       path: '/archive'
       fullPath: '/archive'
       preLoaderRoute: typeof ArchiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -292,12 +384,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeaturesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/subscribers': {
+      id: '/admin/subscribers'
+      path: '/subscribers'
+      fullPath: '/admin/subscribers'
+      preLoaderRoute: typeof AdminSubscribersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/lists': {
+      id: '/admin/lists'
+      path: '/lists'
+      fullPath: '/admin/lists'
+      preLoaderRoute: typeof AdminListsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/features': {
+      id: '/admin/features'
+      path: '/features'
+      fullPath: '/admin/features'
+      preLoaderRoute: typeof AdminFeaturesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/contributors': {
+      id: '/admin/contributors'
+      path: '/contributors'
+      fullPath: '/admin/contributors'
+      preLoaderRoute: typeof AdminContributorsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reviews/': {
+      id: '/admin/reviews/'
+      path: '/reviews'
+      fullPath: '/admin/reviews/'
+      preLoaderRoute: typeof AdminReviewsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reviews/$id': {
+      id: '/admin/reviews/$id'
+      path: '/reviews/$id'
+      fullPath: '/admin/reviews/$id'
+      preLoaderRoute: typeof AdminReviewsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminContributorsRoute: typeof AdminContributorsRoute
+  AdminFeaturesRoute: typeof AdminFeaturesRoute
+  AdminListsRoute: typeof AdminListsRoute
+  AdminSubscribersRoute: typeof AdminSubscribersRoute
+  AdminReviewsIdRoute: typeof AdminReviewsIdRoute
+  AdminReviewsIndexRoute: typeof AdminReviewsIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminContributorsRoute: AdminContributorsRoute,
+  AdminFeaturesRoute: AdminFeaturesRoute,
+  AdminListsRoute: AdminListsRoute,
+  AdminSubscribersRoute: AdminSubscribersRoute,
+  AdminReviewsIdRoute: AdminReviewsIdRoute,
+  AdminReviewsIndexRoute: AdminReviewsIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
   ArchiveRoute: ArchiveRoute,
   BestNewRoute: BestNewRoute,
   ContactRoute: ContactRoute,
