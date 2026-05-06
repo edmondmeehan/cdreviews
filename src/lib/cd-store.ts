@@ -88,6 +88,12 @@ export const cdActions = {
     snapshot = { ...snapshot, reviews: snapshot.reviews.filter((r) => r.id !== id) };
     emit();
   },
+  bulkUpsertReviews(rows: Review[]) {
+    const map = new Map(snapshot.reviews.map((r) => [r.id, r] as const));
+    for (const r of rows) map.set(r.id, r);
+    snapshot = { ...snapshot, reviews: Array.from(map.values()) };
+    emit();
+  },
 
   // Features
   upsertFeature(feat: Feature) {

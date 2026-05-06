@@ -23,6 +23,11 @@ export type Review = {
   pull?: string;
   body: string[]; // paragraphs
   status: "draft" | "published";
+  // Bulk-import extras
+  labelAddress?: string;
+  contact?: string;
+  archiveUrl?: string;
+  period?: string;
 };
 
 export type Feature = {

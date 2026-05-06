@@ -8,7 +8,12 @@ function ReviewsAdmin() {
   const reviews = useCdStore((s) => s.reviews);
   return (
     <div>
-      <AdminHeader title="Reviews" action={<AdminLinkButton to="/admin/reviews/$id" params={{ id: "new" }}>+ New review</AdminLinkButton>} />
+      <AdminHeader title="Reviews" action={
+        <div className="flex gap-2">
+          <Link to="/admin/reviews/import" className="font-mono text-[10px] tracking-[0.25em] uppercase px-4 py-2 border bg-bone/0 text-bone/70 border-bone/20 hover:text-bone">↑ Bulk import</Link>
+          <AdminLinkButton to="/admin/reviews/$id" params={{ id: "new" }}>+ New review</AdminLinkButton>
+        </div>
+      } />
       <table className="w-full font-mono text-[11px]">
         <thead>
           <tr className="text-left text-bone/50 tracking-[0.2em] uppercase text-[10px] border-b border-bone/10">
