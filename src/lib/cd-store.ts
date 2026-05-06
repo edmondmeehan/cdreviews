@@ -57,6 +57,7 @@ function rowToReview(row: Record<string, unknown>): Review {
     artUrl: (row.art_url as string | undefined) ?? undefined,
     spotifyUrl: (row.spotify_url as string | undefined) ?? undefined,
     spotifyAlbumId: (row.spotify_album_id as string | undefined) ?? undefined,
+    spotifyArtistId: (row.spotify_artist_id as string | undefined) ?? undefined,
   };
 }
 
