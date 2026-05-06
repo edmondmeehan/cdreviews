@@ -4,6 +4,7 @@ import { z } from "zod";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker, ReviewCard } from "@/components/site/bits";
+import { Cover } from "@/components/site/Cover";
 import { useCdStore } from "@/lib/cd-store";
 import { DECADE_LABELS, KIND_LABELS } from "@/lib/cd-data";
 
@@ -71,7 +72,7 @@ function Hero() {
             <span>№ 011</span>
           </div>
           <Link to="/reviews/$slug" params={{ slug: featured.slug }}>
-            <div className={`art ${featured.art}`} />
+            <Cover r={featured} />
           </Link>
           <div className="grid grid-cols-12 gap-4 items-start">
             <div className="col-span-4">
@@ -148,7 +149,7 @@ function FromTheArchive() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-12">
           <div className="lg:col-span-5 space-y-5">
-            <Link to="/reviews/$slug" params={{ slug: archived.slug }}><div className="art art-archive" /></Link>
+            <Link to="/reviews/$slug" params={{ slug: archived.slug }}><Cover r={archived} /></Link>
             <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.25em] uppercase text-mute">
               <span>From the stacks</span>
               <span>SPRING / 1996</span>
@@ -193,21 +194,20 @@ function FromTheArchive() {
             Also from the stacks
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {minis.map((m, i) => {
-              const miniArt = ["art-mini-1", "art-mini-2", "art-mini-3"][i % 3];
-              return (
-                <Link key={m.id} to="/reviews/$slug" params={{ slug: m.slug }} className="flex items-start gap-4 border-t border-rule pt-4 hover:bg-bone/40">
-                  <div className={`art-mini ${miniArt} flex-shrink-0`} />
-                  <div className="flex-1">
-                    <h5 className="fr-mini-title text-[20px] text-ink">{m.title}</h5>
-                    <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute mt-1">
-                      {m.artist} · {m.label}
-                    </div>
+            {minis.map((m) => (
+              <Link key={m.id} to="/reviews/$slug" params={{ slug: m.slug }} className="flex items-start gap-4 border-t border-rule pt-4 hover:bg-bone/40">
+                <div className="w-[84px] h-[84px] flex-shrink-0">
+                  <Cover r={m} />
+                </div>
+                <div className="flex-1">
+                  <h5 className="fr-mini-title text-[20px] text-ink">{m.title}</h5>
+                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute mt-1">
+                    {m.artist} · {m.label}
                   </div>
-                  <div className="fr-score-card text-[28px] text-ink">{m.score.toFixed(1)}</div>
-                </Link>
-              );
-            })}
+                </div>
+                <div className="fr-score-card text-[28px] text-ink">{m.score.toFixed(1)}</div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

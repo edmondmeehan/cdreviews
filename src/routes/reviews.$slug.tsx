@@ -2,6 +2,7 @@ import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker, ReviewCard } from "@/components/site/bits";
+import { Cover } from "@/components/site/Cover";
 import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 
@@ -50,11 +51,7 @@ function ReviewPage() {
       <article className="max-w-[1200px] mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           <aside className="lg:col-span-4 space-y-4">
-            {review.artUrl ? (
-              <img src={review.artUrl} alt={`${review.title} cover`} className="w-full aspect-square object-cover" loading="lazy" />
-            ) : (
-              <div className={`art ${review.art} aspect-square`} />
-            )}
+            <Cover r={review} />
             <div className="flex items-baseline gap-3 border-t border-rule pt-3">
               <div className="fr-score text-[72px] text-vermil leading-none">{review.score.toFixed(1)}</div>
               <div className="text-ink text-[20px]">/10</div>

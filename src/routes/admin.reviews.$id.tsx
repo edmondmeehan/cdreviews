@@ -5,6 +5,7 @@ import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bi
 import { slug as slugify, type Review, type ReviewKind, type Decade } from "@/lib/cd-data";
 import { supabase } from "@/integrations/supabase/client";
 import { lookupSpotifyAlbum } from "@/lib/spotify.functions";
+import { Cover } from "@/components/site/Cover";
 
 export const Route = createFileRoute("/admin/reviews/$id")({ component: EditReview });
 
@@ -87,7 +88,7 @@ function EditReview() {
           {r.artUrl ? (
             <img src={r.artUrl} alt="cover" className="w-[180px] h-[180px] object-cover border border-bone/20" />
           ) : (
-            <div className={`art ${r.art} w-[180px] h-[180px]`} />
+            <div className="w-[180px] h-[180px]"><Cover r={r} /></div>
           )}
         </div>
         <div className="space-y-3">

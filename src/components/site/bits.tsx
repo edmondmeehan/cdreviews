@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { Review } from "@/lib/cd-data";
+import { Cover } from "./Cover";
 
 export function Kicker({ children, color = "vermil" }: { children: React.ReactNode; color?: "vermil" | "acid" }) {
   const colorClass = color === "acid" ? "text-acid" : "text-vermil";
@@ -42,7 +43,7 @@ export function ReviewCard({ r, hi }: { r: Review; hi?: boolean }) {
       params={{ slug: r.slug }}
       className="group border-t border-rule pt-5 flex flex-col gap-4 hover:bg-bone-2 transition-colors -mx-2 px-2 pb-2"
     >
-      <div className={`art ${r.art}`} />
+      <Cover r={r} />
       <div className="flex items-center justify-between font-mono text-[10px] tracking-[0.2em] uppercase text-mute">
         <span className={highlighted ? "text-vermil" : ""}>{r.genre}</span>
         <span>{r.date}</span>
