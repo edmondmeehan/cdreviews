@@ -13,6 +13,7 @@ import { Route as RadioRouteImport } from './routes/radio'
 import { Route as MastheadRouteImport } from './routes/masthead'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BestNewRouteImport } from './routes/best-new'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
@@ -49,6 +50,11 @@ const ContactRoute = ContactRouteImport.update({
 const BestNewRoute = BestNewRouteImport.update({
   id: '/best-new',
   path: '/best-new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArchiveRoute = ArchiveRouteImport.update({
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/archive': typeof ArchiveRoute
+  '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
   '/masthead': typeof MastheadRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/archive': typeof ArchiveRoute
+  '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
   '/masthead': typeof MastheadRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
   '/archive': typeof ArchiveRoute
+  '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
   '/masthead': typeof MastheadRoute
@@ -214,6 +223,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/archive'
+    | '/auth'
     | '/best-new'
     | '/contact'
     | '/masthead'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/archive'
+    | '/auth'
     | '/best-new'
     | '/contact'
     | '/masthead'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/archive'
+    | '/auth'
     | '/best-new'
     | '/contact'
     | '/masthead'
@@ -284,6 +296,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
   ArchiveRoute: typeof ArchiveRoute
+  AuthRoute: typeof AuthRoute
   BestNewRoute: typeof BestNewRoute
   ContactRoute: typeof ContactRoute
   MastheadRoute: typeof MastheadRoute
@@ -324,6 +337,13 @@ declare module '@tanstack/react-router' {
       path: '/best-new'
       fullPath: '/best-new'
       preLoaderRoute: typeof BestNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/archive': {
@@ -475,6 +495,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
   ArchiveRoute: ArchiveRoute,
+  AuthRoute: AuthRoute,
   BestNewRoute: BestNewRoute,
   ContactRoute: ContactRoute,
   MastheadRoute: MastheadRoute,
