@@ -9,38 +9,240 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RadioRouteImport } from './routes/radio'
+import { Route as MastheadRouteImport } from './routes/masthead'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as BestNewRouteImport } from './routes/best-new'
+import { Route as ArchiveRouteImport } from './routes/archive'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ReviewsIndexRouteImport } from './routes/reviews.index'
+import { Route as ListsIndexRouteImport } from './routes/lists.index'
+import { Route as FeaturesIndexRouteImport } from './routes/features.index'
+import { Route as ReviewsSlugRouteImport } from './routes/reviews.$slug'
+import { Route as ListsSlugRouteImport } from './routes/lists.$slug'
+import { Route as FeaturesSlugRouteImport } from './routes/features.$slug'
 
+const RadioRoute = RadioRouteImport.update({
+  id: '/radio',
+  path: '/radio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MastheadRoute = MastheadRouteImport.update({
+  id: '/masthead',
+  path: '/masthead',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BestNewRoute = BestNewRouteImport.update({
+  id: '/best-new',
+  path: '/best-new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchiveRoute = ArchiveRouteImport.update({
+  id: '/archive',
+  path: '/archive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewsIndexRoute = ReviewsIndexRouteImport.update({
+  id: '/reviews/',
+  path: '/reviews/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListsIndexRoute = ListsIndexRouteImport.update({
+  id: '/lists/',
+  path: '/lists/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesIndexRoute = FeaturesIndexRouteImport.update({
+  id: '/features/',
+  path: '/features/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsSlugRoute = ReviewsSlugRouteImport.update({
+  id: '/reviews/$slug',
+  path: '/reviews/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListsSlugRoute = ListsSlugRouteImport.update({
+  id: '/lists/$slug',
+  path: '/lists/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesSlugRoute = FeaturesSlugRouteImport.update({
+  id: '/features/$slug',
+  path: '/features/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/archive': typeof ArchiveRoute
+  '/best-new': typeof BestNewRoute
+  '/contact': typeof ContactRoute
+  '/masthead': typeof MastheadRoute
+  '/radio': typeof RadioRoute
+  '/features/$slug': typeof FeaturesSlugRoute
+  '/lists/$slug': typeof ListsSlugRoute
+  '/reviews/$slug': typeof ReviewsSlugRoute
+  '/features/': typeof FeaturesIndexRoute
+  '/lists/': typeof ListsIndexRoute
+  '/reviews/': typeof ReviewsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/archive': typeof ArchiveRoute
+  '/best-new': typeof BestNewRoute
+  '/contact': typeof ContactRoute
+  '/masthead': typeof MastheadRoute
+  '/radio': typeof RadioRoute
+  '/features/$slug': typeof FeaturesSlugRoute
+  '/lists/$slug': typeof ListsSlugRoute
+  '/reviews/$slug': typeof ReviewsSlugRoute
+  '/features': typeof FeaturesIndexRoute
+  '/lists': typeof ListsIndexRoute
+  '/reviews': typeof ReviewsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/archive': typeof ArchiveRoute
+  '/best-new': typeof BestNewRoute
+  '/contact': typeof ContactRoute
+  '/masthead': typeof MastheadRoute
+  '/radio': typeof RadioRoute
+  '/features/$slug': typeof FeaturesSlugRoute
+  '/lists/$slug': typeof ListsSlugRoute
+  '/reviews/$slug': typeof ReviewsSlugRoute
+  '/features/': typeof FeaturesIndexRoute
+  '/lists/': typeof ListsIndexRoute
+  '/reviews/': typeof ReviewsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/archive'
+    | '/best-new'
+    | '/contact'
+    | '/masthead'
+    | '/radio'
+    | '/features/$slug'
+    | '/lists/$slug'
+    | '/reviews/$slug'
+    | '/features/'
+    | '/lists/'
+    | '/reviews/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/archive'
+    | '/best-new'
+    | '/contact'
+    | '/masthead'
+    | '/radio'
+    | '/features/$slug'
+    | '/lists/$slug'
+    | '/reviews/$slug'
+    | '/features'
+    | '/lists'
+    | '/reviews'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/archive'
+    | '/best-new'
+    | '/contact'
+    | '/masthead'
+    | '/radio'
+    | '/features/$slug'
+    | '/lists/$slug'
+    | '/reviews/$slug'
+    | '/features/'
+    | '/lists/'
+    | '/reviews/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ArchiveRoute: typeof ArchiveRoute
+  BestNewRoute: typeof BestNewRoute
+  ContactRoute: typeof ContactRoute
+  MastheadRoute: typeof MastheadRoute
+  RadioRoute: typeof RadioRoute
+  FeaturesSlugRoute: typeof FeaturesSlugRoute
+  ListsSlugRoute: typeof ListsSlugRoute
+  ReviewsSlugRoute: typeof ReviewsSlugRoute
+  FeaturesIndexRoute: typeof FeaturesIndexRoute
+  ListsIndexRoute: typeof ListsIndexRoute
+  ReviewsIndexRoute: typeof ReviewsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/radio': {
+      id: '/radio'
+      path: '/radio'
+      fullPath: '/radio'
+      preLoaderRoute: typeof RadioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/masthead': {
+      id: '/masthead'
+      path: '/masthead'
+      fullPath: '/masthead'
+      preLoaderRoute: typeof MastheadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/best-new': {
+      id: '/best-new'
+      path: '/best-new'
+      fullPath: '/best-new'
+      preLoaderRoute: typeof BestNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/archive': {
+      id: '/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +250,65 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reviews/': {
+      id: '/reviews/'
+      path: '/reviews'
+      fullPath: '/reviews/'
+      preLoaderRoute: typeof ReviewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lists/': {
+      id: '/lists/'
+      path: '/lists'
+      fullPath: '/lists/'
+      preLoaderRoute: typeof ListsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features/': {
+      id: '/features/'
+      path: '/features'
+      fullPath: '/features/'
+      preLoaderRoute: typeof FeaturesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews/$slug': {
+      id: '/reviews/$slug'
+      path: '/reviews/$slug'
+      fullPath: '/reviews/$slug'
+      preLoaderRoute: typeof ReviewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lists/$slug': {
+      id: '/lists/$slug'
+      path: '/lists/$slug'
+      fullPath: '/lists/$slug'
+      preLoaderRoute: typeof ListsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features/$slug': {
+      id: '/features/$slug'
+      path: '/features/$slug'
+      fullPath: '/features/$slug'
+      preLoaderRoute: typeof FeaturesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ArchiveRoute: ArchiveRoute,
+  BestNewRoute: BestNewRoute,
+  ContactRoute: ContactRoute,
+  MastheadRoute: MastheadRoute,
+  RadioRoute: RadioRoute,
+  FeaturesSlugRoute: FeaturesSlugRoute,
+  ListsSlugRoute: ListsSlugRoute,
+  ReviewsSlugRoute: ReviewsSlugRoute,
+  FeaturesIndexRoute: FeaturesIndexRoute,
+  ListsIndexRoute: ListsIndexRoute,
+  ReviewsIndexRoute: ReviewsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
