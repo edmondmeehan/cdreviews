@@ -183,6 +183,14 @@ function ImportPage() {
 
         <aside className="lg:col-span-5 space-y-4 font-mono text-[11px] text-bone/70">
           <div className="border border-bone/10 p-4 space-y-3">
+            <div className="text-[10px] tracking-[0.25em] uppercase text-vermil">Download template</div>
+            <div className="text-bone/60 leading-relaxed">Pre-filled with the required headers and two example rows.</div>
+            <div className="flex gap-2 pt-1">
+              <button onClick={() => downloadTemplate("xlsx")} className="font-mono text-[10px] tracking-[0.25em] uppercase px-3 py-2 border bg-vermil text-bone border-vermil hover:bg-bone hover:text-ink">↓ .xlsx</button>
+              <button onClick={() => downloadTemplate("csv")} className="font-mono text-[10px] tracking-[0.25em] uppercase px-3 py-2 border bg-bone/0 text-bone/80 border-bone/20 hover:text-bone">↓ .csv</button>
+            </div>
+          </div>
+          <div className="border border-bone/10 p-4 space-y-3">
             <div className="text-[10px] tracking-[0.25em] uppercase text-vermil">Expected columns</div>
             <ul className="space-y-1">
               {EXPECTED.map((c) => <li key={c}>· {c}</li>)}
