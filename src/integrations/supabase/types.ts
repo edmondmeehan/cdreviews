@@ -159,6 +159,7 @@ export type Database = {
         Row: {
           archive_url: string | null
           art: string
+          art_url: string | null
           artist: string
           body: Json
           byline: string
@@ -176,6 +177,8 @@ export type Database = {
           read_mins: number
           score: number
           slug: string
+          spotify_album_id: string | null
+          spotify_url: string | null
           status: string
           title: string
           updated_at: string
@@ -183,6 +186,7 @@ export type Database = {
         Insert: {
           archive_url?: string | null
           art?: string
+          art_url?: string | null
           artist: string
           body?: Json
           byline?: string
@@ -200,6 +204,8 @@ export type Database = {
           read_mins?: number
           score?: number
           slug: string
+          spotify_album_id?: string | null
+          spotify_url?: string | null
           status?: string
           title: string
           updated_at?: string
@@ -207,6 +213,7 @@ export type Database = {
         Update: {
           archive_url?: string | null
           art?: string
+          art_url?: string | null
           artist?: string
           body?: Json
           byline?: string
@@ -224,6 +231,8 @@ export type Database = {
           read_mins?: number
           score?: number
           slug?: string
+          spotify_album_id?: string | null
+          spotify_url?: string | null
           status?: string
           title?: string
           updated_at?: string
