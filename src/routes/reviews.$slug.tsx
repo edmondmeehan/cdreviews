@@ -67,7 +67,19 @@ function ReviewPage() {
           </header>
 
           <aside className="lg:col-span-5 space-y-5">
-            <div className={`art ${review.art}`} />
+            {review.artUrl ? (
+              <img src={review.artUrl} alt={`${review.title} cover`} className="w-full aspect-square object-cover" loading="lazy" />
+            ) : (
+              <div className={`art ${review.art}`} />
+            )}
+            {review.spotifyAlbumId && (
+              <iframe
+                title="Spotify player"
+                src={`https://open.spotify.com/embed/album/${review.spotifyAlbumId}?utm_source=cdreviews`}
+                width="100%" height="152" frameBorder={0} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                loading="lazy"
+              />
+            )}
             <div className="grid grid-cols-12 gap-4 items-start">
               <div className="col-span-4">
                 <div className="fr-score text-[112px] text-vermil leading-none">
@@ -78,6 +90,9 @@ function ReviewPage() {
                 <div className="fr-card-title text-[22px]">{review.label}</div>
                 <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-mute">{review.format}</div>
                 <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-mute">{review.decade}</div>
+                {review.spotifyUrl && (
+                  <a href={review.spotifyUrl} target="_blank" rel="noopener noreferrer" className="block font-mono text-[10px] tracking-[0.18em] uppercase text-vermil hover:text-ink">↗ Open on Spotify</a>
+                )}
               </div>
             </div>
           </aside>

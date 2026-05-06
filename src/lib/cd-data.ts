@@ -28,6 +28,10 @@ export type Review = {
   contact?: string;
   archiveUrl?: string;
   period?: string;
+  // Artwork + Spotify
+  artUrl?: string;
+  spotifyUrl?: string;
+  spotifyAlbumId?: string;
 };
 
 export type Feature = {

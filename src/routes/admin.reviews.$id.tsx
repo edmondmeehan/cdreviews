@@ -3,6 +3,8 @@ import { useState, type FormEvent } from "react";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { slug as slugify, type Review, type ReviewKind, type Decade } from "@/lib/cd-data";
+import { supabase } from "@/integrations/supabase/client";
+import { lookupSpotifyAlbum } from "@/lib/spotify.functions";
 
 export const Route = createFileRoute("/admin/reviews/$id")({ component: EditReview });
 
@@ -20,6 +22,8 @@ function EditReview() {
     decade: "2020s", kind: "review", score: 7.5, art: "art-1", byline: "", readMins: 5,
     body: [""], status: "draft",
   });
+  const [artBusy, setArtBusy] = useState<string | null>(null);
+  const [artMsg, setArtMsg] = useState<string | null>(null);
 
   if (!isNew && !existing) return <p className="text-bone/60">Not found.</p>;
 
@@ -32,6 +36,40 @@ function EditReview() {
 
   function patch<K extends keyof Review>(k: K, v: Review[K]) { setR((p) => ({ ...p, [k]: v })); }
 
+  async function handleUpload(file: File) {
+    setArtBusy("upload"); setArtMsg(null);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const slug = r.slug || slugify(`${r.artist}-${r.title}`) || "review";
+      const path = `${slug}-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("review-art").upload(path, file, { upsert: true, contentType: file.type });
+      if (error) throw error;
+      const { data } = supabase.storage.from("review-art").getPublicUrl(path);
+      patch("artUrl", data.publicUrl);
+      setArtMsg("✓ Uploaded");
+    } catch (e) {
+      setArtMsg(e instanceof Error ? e.message : "Upload failed");
+    } finally { setArtBusy(null); }
+  }
+
+  async function handleSpotifyPull() {
+    if (!r.artist || !r.title) { setArtMsg("Add artist and title first"); return; }
+    setArtBusy("spotify"); setArtMsg(null);
+    try {
+      const res = await lookupSpotifyAlbum({ data: { artist: r.artist, album: r.title } });
+      if (!res.ok) { setArtMsg(res.error); return; }
+      setR((p) => ({
+        ...p,
+        artUrl: res.imageUrl ?? p.artUrl,
+        spotifyUrl: res.spotifyUrl,
+        spotifyAlbumId: res.albumId,
+      }));
+      setArtMsg(`✓ Matched: ${res.artistName} — ${res.albumName}`);
+    } catch (e) {
+      setArtMsg(e instanceof Error ? e.message : "Spotify lookup failed");
+    } finally { setArtBusy(null); }
+  }
+
   return (
     <div>
       <AdminHeader title={isNew ? "New review" : `Edit · ${r.title}`} action={
@@ -40,6 +78,48 @@ function EditReview() {
           <AdminButton type="submit" onClick={() => (document.getElementById("rf") as HTMLFormElement)?.requestSubmit()}>Save</AdminButton>
         </div>
       } />
+
+      {/* Artwork + Spotify panel */}
+      <div className="border border-bone/10 p-5 mb-8 max-w-[1100px] grid grid-cols-1 md:grid-cols-[180px_1fr] gap-5">
+        <div>
+          {r.artUrl ? (
+            <img src={r.artUrl} alt="cover" className="w-[180px] h-[180px] object-cover border border-bone/20" />
+          ) : (
+            <div className={`art ${r.art} w-[180px] h-[180px]`} />
+          )}
+        </div>
+        <div className="space-y-3">
+          <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Cover artwork</div>
+          <div className="flex flex-wrap gap-2 items-center">
+            <label className="font-mono text-[10px] tracking-[0.25em] uppercase px-4 py-2 border bg-bone/0 text-bone/80 border-bone/20 hover:text-bone cursor-pointer">
+              {artBusy === "upload" ? "Uploading…" : "↑ Upload image"}
+              <input type="file" accept="image/*" className="hidden" disabled={artBusy !== null}
+                onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
+            </label>
+            <AdminButton onClick={handleSpotifyPull}>
+              {artBusy === "spotify" ? "Searching…" : "↻ Pull from Spotify"}
+            </AdminButton>
+            {(r.artUrl || r.spotifyUrl) && (
+              <AdminButton tone="ghost" onClick={() => { patch("artUrl", undefined); patch("spotifyUrl", undefined); patch("spotifyAlbumId", undefined); setArtMsg("Cleared"); }}>
+                Clear
+              </AdminButton>
+            )}
+          </div>
+          {artMsg && <div className="font-mono text-[11px] text-bone/70">{artMsg}</div>}
+          <Field label="Image URL">
+            <input className={inputCls} value={r.artUrl ?? ""} onChange={(e) => patch("artUrl", e.target.value || undefined)} placeholder="https://…" />
+          </Field>
+          <Field label="Spotify album URL">
+            <input className={inputCls} value={r.spotifyUrl ?? ""} onChange={(e) => {
+              const v = e.target.value;
+              patch("spotifyUrl", v || undefined);
+              const m = v.match(/album\/([a-zA-Z0-9]+)/);
+              if (m) patch("spotifyAlbumId", m[1]);
+            }} placeholder="https://open.spotify.com/album/…" />
+          </Field>
+        </div>
+      </div>
+
       <form id="rf" onSubmit={save} className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-[1100px]">
         <Field label="Title"><input className={inputCls} value={r.title} onChange={(e) => patch("title", e.target.value)} required maxLength={120} /></Field>
         <Field label="Artist"><input className={inputCls} value={r.artist} onChange={(e) => patch("artist", e.target.value)} required maxLength={120} /></Field>
@@ -62,7 +142,7 @@ function EditReview() {
         </Field>
         <Field label="Score (0–10)"><input type="number" step="0.1" min="0" max="10" className={inputCls} value={r.score} onChange={(e) => patch("score", Number(e.target.value))} /></Field>
         <Field label="Read time (minutes)"><input type="number" min="1" max="60" className={inputCls} value={r.readMins} onChange={(e) => patch("readMins", Number(e.target.value))} /></Field>
-        <Field label="Sleeve art">
+        <Field label="Sleeve art (fallback CSS art when no image)">
           <select className={inputCls} value={r.art} onChange={(e) => patch("art", e.target.value)}>
             {ART_OPTS.map((a) => <option key={a}>{a}</option>)}
           </select>
@@ -82,9 +162,6 @@ function EditReview() {
           <Field label="Body (one paragraph per line, blank line between)">
             <textarea className={inputCls + " min-h-[300px]"} value={r.body.join("\n\n")} onChange={(e) => patch("body", e.target.value.split(/\n\s*\n/))} maxLength={20000} />
           </Field>
-        </div>
-        <div className="lg:col-span-2">
-          <div className={`art ${r.art} max-w-[200px]`} />
         </div>
       </form>
     </div>
