@@ -54,7 +54,14 @@ function ReviewPage() {
       <article className="max-w-[1200px] mx-auto px-6 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           <aside className="lg:col-span-4 space-y-4">
-            <Cover r={review} />
+            <button
+              type="button"
+              onClick={() => setZoom(true)}
+              aria-label={`Open ${review.title} cover`}
+              className="block w-full cursor-zoom-in hover:opacity-95 transition-opacity"
+            >
+              <Cover r={review} />
+            </button>
             <div className="flex items-baseline gap-3 border-t border-rule pt-3">
               <div className="fr-score text-[72px] text-vermil leading-none">{review.score.toFixed(1)}</div>
               <div className="text-ink text-[20px]">/10</div>
