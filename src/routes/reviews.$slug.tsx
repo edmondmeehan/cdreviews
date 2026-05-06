@@ -2,6 +2,7 @@ import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker, ReviewCard } from "@/components/site/bits";
+import { Cover } from "@/components/site/Cover";
 import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 
