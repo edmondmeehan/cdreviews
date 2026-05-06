@@ -135,6 +135,7 @@ function ReviewPage() {
       )}
 
       <SiteFooter />
+      {zoom && <CoverLightbox r={review} onClose={() => setZoom(false)} />}
     </div>
   );
 }
