@@ -72,7 +72,7 @@ function Hero() {
             <span>№ 011</span>
           </div>
           <Link to="/reviews/$slug" params={{ slug: featured.slug }}>
-            <div className={`art ${featured.art}`} />
+            <Cover r={featured} />
           </Link>
           <div className="grid grid-cols-12 gap-4 items-start">
             <div className="col-span-4">
