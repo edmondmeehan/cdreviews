@@ -194,21 +194,20 @@ function FromTheArchive() {
             Also from the stacks
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {minis.map((m, i) => {
-              const miniArt = ["art-mini-1", "art-mini-2", "art-mini-3"][i % 3];
-              return (
-                <Link key={m.id} to="/reviews/$slug" params={{ slug: m.slug }} className="flex items-start gap-4 border-t border-rule pt-4 hover:bg-bone/40">
-                  <div className={`art-mini ${miniArt} flex-shrink-0`} />
-                  <div className="flex-1">
-                    <h5 className="fr-mini-title text-[20px] text-ink">{m.title}</h5>
-                    <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute mt-1">
-                      {m.artist} · {m.label}
-                    </div>
+            {minis.map((m) => (
+              <Link key={m.id} to="/reviews/$slug" params={{ slug: m.slug }} className="flex items-start gap-4 border-t border-rule pt-4 hover:bg-bone/40">
+                <div className="w-[84px] h-[84px] flex-shrink-0">
+                  <Cover r={m} />
+                </div>
+                <div className="flex-1">
+                  <h5 className="fr-mini-title text-[20px] text-ink">{m.title}</h5>
+                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute mt-1">
+                    {m.artist} · {m.label}
                   </div>
-                  <div className="fr-score-card text-[28px] text-ink">{m.score.toFixed(1)}</div>
-                </Link>
-              );
-            })}
+                </div>
+                <div className="fr-score-card text-[28px] text-ink">{m.score.toFixed(1)}</div>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
