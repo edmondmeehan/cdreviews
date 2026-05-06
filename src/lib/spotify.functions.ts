@@ -44,7 +44,7 @@ export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
           name: string;
           external_urls?: { spotify?: string };
           images?: Array<{ url: string; width: number; height: number }>;
-          artists?: Array<{ name: string }>;
+          artists?: Array<{ id: string; name: string }>;
         }> };
       };
       const item = json.albums?.items?.[0];
@@ -54,6 +54,7 @@ export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
         ok: true as const,
         albumId: item.id,
         albumName: item.name,
+        artistId: item.artists?.[0]?.id ?? null,
         artistName: item.artists?.map((a) => a.name).join(", ") ?? "",
         spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
         imageUrl: image,
