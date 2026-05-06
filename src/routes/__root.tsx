@@ -120,7 +120,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <AuthProvider>
+        <InvalidatorMount />
+        <Outlet />
+      </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+function InvalidatorMount() {
+  useCdInvalidator();
+  return null;
 }
