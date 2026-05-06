@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
+import { LEGACY_LIST_SLUGS } from "@/lib/legacy-redirects";
 
 export const Route = createFileRoute("/lists/$slug")({
   component: ListPage,
@@ -28,7 +29,11 @@ function NotFound() {
 function ListPage() {
   const { slug } = Route.useParams();
   const l = useCdStore((s) => s.lists.find((x) => x.slug === slug));
-  if (!l) return <NotFound />;
+  if (!l) {
+    const redirectSlug = LEGACY_LIST_SLUGS[slug];
+    if (redirectSlug) return <Navigate to="/lists/$slug" params={{ slug: redirectSlug }} replace />;
+    return <NotFound />;
+  }
   return (
     <div className="bg-bone text-ink min-h-screen">
       <SiteHeader />

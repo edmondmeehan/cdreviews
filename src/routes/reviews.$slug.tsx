@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker, ReviewCard } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
+import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 
 export const Route = createFileRoute("/reviews/$slug")({
   component: ReviewPage,
@@ -35,7 +36,11 @@ function ReviewPage() {
   const review = useCdStore((s) => s.reviews.find((r) => r.slug === slug));
   const related = useCdStore((s) => s.reviews.filter((r) => r.slug !== slug && r.genre === review?.genre).slice(0, 4));
 
-  if (!review) return <NotFound />;
+  if (!review) {
+    const redirectSlug = LEGACY_REVIEW_SLUGS[slug];
+    if (redirectSlug) return <Navigate to="/reviews/$slug" params={{ slug: redirectSlug }} replace />;
+    return <NotFound />;
+  }
   const badge = review.kind === "bnm" ? "BEST NEW MUSIC" : review.kind === "bnr" ? "BEST NEW REISSUE" : null;
 
   return (
