@@ -38,6 +38,7 @@ function ReviewPage() {
   const { slug } = Route.useParams();
   const review = useCdStore((s) => s.reviews.find((r) => r.slug === slug));
   const related = useCdStore((s) => s.reviews.filter((r) => r.slug !== slug && r.genre === review?.genre).slice(0, 4));
+  const [zoom, setZoom] = useState(false);
 
   if (!review) {
     const redirectSlug = LEGACY_REVIEW_SLUGS[slug];
