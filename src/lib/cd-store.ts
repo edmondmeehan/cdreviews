@@ -207,7 +207,7 @@ export const cdActions = {
   // Reviews
   async upsertReview(review: Review) {
     const row = reviewToRow(review);
-    const { error } = await supabase.from("reviews").upsert(row, { onConflict: "slug" });
+    const { error } = await supabase.from("reviews").upsert(row as never, { onConflict: "slug" });
     if (error) console.error("upsertReview", error);
     invalidate();
   },
@@ -219,14 +219,14 @@ export const cdActions = {
   },
   async bulkUpsertReviews(rows: Review[]) {
     if (rows.length === 0) return;
-    const { error } = await supabase.from("reviews").upsert(rows.map(reviewToRow), { onConflict: "slug" });
+    const { error } = await supabase.from("reviews").upsert(rows.map(reviewToRow) as never, { onConflict: "slug" });
     if (error) console.error("bulkUpsertReviews", error);
     invalidate();
   },
 
   // Features
   async upsertFeature(feat: Feature) {
-    const { error } = await supabase.from("features").upsert(featureToRow(feat), { onConflict: "slug" });
+    const { error } = await supabase.from("features").upsert(featureToRow(feat) as never, { onConflict: "slug" });
     if (error) console.error("upsertFeature", error);
     invalidate();
   },
@@ -239,7 +239,7 @@ export const cdActions = {
 
   // Lists
   async upsertList(list: CdList) {
-    const { error } = await supabase.from("lists").upsert(listToRow(list), { onConflict: "slug" });
+    const { error } = await supabase.from("lists").upsert(listToRow(list) as never, { onConflict: "slug" });
     if (error) console.error("upsertList", error);
     invalidate();
   },
@@ -252,7 +252,7 @@ export const cdActions = {
 
   // Contributors
   async upsertContributor(c: Contributor) {
-    const { error } = await supabase.from("contributors").upsert(contributorToRow(c));
+    const { error } = await supabase.from("contributors").upsert(contributorToRow(c) as never);
     if (error) console.error("upsertContributor", error);
     invalidate();
   },
