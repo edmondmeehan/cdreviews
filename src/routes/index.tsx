@@ -423,28 +423,120 @@ function ArchiveTimeline() {
   );
 }
 
+const DECADE_OPTIONS: Array<{ key: Decade; label: string }> = [
+  { key: "all", label: "All decades" },
+  { key: "1990s", label: "1990s" },
+  { key: "2000s", label: "2000s" },
+  { key: "2010s", label: "2010s" },
+  { key: "2020s", label: "2020s" },
+];
+
+const KIND_OPTIONS: Array<{ key: Kind; label: string }> = [
+  { key: "all", label: "All types" },
+  { key: "bnm", label: "Best New Music" },
+  { key: "bnr", label: "Best New Reissue" },
+  { key: "review", label: "Standard review" },
+];
+
+function FilterChips<T extends string>({
+  options, current, paramKey,
+}: {
+  options: Array<{ key: T; label: string }>;
+  current: T;
+  paramKey: "decade" | "kind";
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {options.map((opt) => {
+        const active = opt.key === current;
+        return (
+          <Link
+            key={opt.key}
+            from="/"
+            search={(prev) => ({ ...prev, [paramKey]: opt.key })}
+            replace
+            className={`font-mono text-[10px] tracking-[0.2em] uppercase px-3 py-2 border transition-colors ${
+              active
+                ? "bg-ink text-bone border-ink"
+                : "bg-bone text-ink-2 border-rule hover:border-ink"
+            }`}
+          >
+            {opt.label}
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
 function LatestList() {
+  const { decade, kind } = Route.useSearch();
+  const filtered = LATEST.filter(
+    (r) => (decade === "all" || r.decade === decade) && (kind === "all" || r.kind === kind),
+  );
+  const isFiltered = decade !== "all" || kind !== "all";
+
   return (
     <section className="border-b border-rule">
       <div className="max-w-[1400px] mx-auto px-6 py-20">
-        <h3 className="fr-display text-[44px] md:text-[60px] text-ink mb-10">
-          Latest reviews, all of them.
-        </h3>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end mb-10">
+          <h3 className="lg:col-span-7 fr-display text-[44px] md:text-[60px] text-ink">
+            Latest reviews, all of them.
+          </h3>
+          <div className="lg:col-span-5 font-mono text-[10px] tracking-[0.2em] uppercase text-mute lg:text-right">
+            Showing <span className="text-ink">{filtered.length}</span> of {LATEST.length}
+            {isFiltered && (
+              <>
+                {" · "}
+                <Link from="/" search={{ decade: "all", kind: "all" }} replace className="text-vermil hover:underline">
+                  Reset →
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 pb-8 border-b border-rule">
+          <div className="space-y-3">
+            <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Decade</div>
+            <FilterChips options={DECADE_OPTIONS} current={decade} paramKey="decade" />
+          </div>
+          <div className="space-y-3">
+            <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Type</div>
+            <FilterChips options={KIND_OPTIONS} current={kind} paramKey="kind" />
+          </div>
+        </div>
+
         <div className="border-t border-rule">
-          {LATEST.map((row, i) => (
-            <div key={i} className="grid grid-cols-12 gap-4 items-center border-b border-rule py-5 hover:bg-bone-2 transition-colors">
-              <div className="col-span-1 font-mono text-[11px] tracking-[0.2em] text-mute">{row.num}</div>
-              <div className="col-span-12 md:col-span-5">
-                <h4 className="fr-row-title text-[26px] text-ink">{row.title}</h4>
-                <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute mt-1">{row.artist} · {row.label}</div>
-              </div>
-              <div className="col-span-6 md:col-span-2 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-2">{row.genre}</div>
-              <div className="col-span-3 md:col-span-2 font-mono text-[10px] tracking-[0.2em] uppercase text-mute">{row.date}</div>
-              <div className={`col-span-3 md:col-span-2 fr-score-card text-[36px] text-right ${row.tone === "hi" ? "text-vermil" : row.tone === "lo" ? "text-mute" : "text-ink"}`}>
-                {row.score}
-              </div>
+          {filtered.length === 0 ? (
+            <div className="py-16 text-center">
+              <p className="fr-pull text-[28px] text-ink-2">Nothing in the stacks for that combination.</p>
+              <Link from="/" search={{ decade: "all", kind: "all" }} replace
+                className="inline-block mt-6 font-mono text-[11px] tracking-[0.25em] uppercase text-vermil hover:underline">
+                → Clear filters
+              </Link>
             </div>
-          ))}
+          ) : (
+            filtered.map((row) => (
+              <div key={row.num} className="grid grid-cols-12 gap-4 items-center border-b border-rule py-5 hover:bg-bone-2 transition-colors">
+                <div className="col-span-1 font-mono text-[11px] tracking-[0.2em] text-mute">{row.num}</div>
+                <div className="col-span-12 md:col-span-4">
+                  <h4 className="fr-row-title text-[26px] text-ink">{row.title}</h4>
+                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute mt-1">{row.artist} · {row.label}</div>
+                </div>
+                <div className="col-span-6 md:col-span-1 font-mono text-[9px] tracking-[0.2em] uppercase">
+                  {row.kind === "bnm" && <span className="text-acid bg-ink px-1.5 py-1">BNM</span>}
+                  {row.kind === "bnr" && <span className="text-acid bg-ink px-1.5 py-1">BNR</span>}
+                  {row.kind === "review" && <span className="text-mute">REV</span>}
+                </div>
+                <div className="col-span-6 md:col-span-2 font-mono text-[10px] tracking-[0.2em] uppercase text-ink-2">{row.genre}</div>
+                <div className="col-span-3 md:col-span-2 font-mono text-[10px] tracking-[0.2em] uppercase text-mute">{row.date}</div>
+                <div className={`col-span-3 md:col-span-2 fr-score-card text-[36px] text-right ${row.tone === "hi" ? "text-vermil" : row.tone === "lo" ? "text-mute" : "text-ink"}`}>
+                  {row.score}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </section>
