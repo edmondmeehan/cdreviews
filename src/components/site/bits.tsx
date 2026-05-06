@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { Review } from "@/lib/cd-data";
+import { Cover } from "./Cover";
 
 export function Kicker({ children, color = "vermil" }: { children: React.ReactNode; color?: "vermil" | "acid" }) {
   const colorClass = color === "acid" ? "text-acid" : "text-vermil";
