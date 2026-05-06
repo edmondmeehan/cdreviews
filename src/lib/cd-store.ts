@@ -57,6 +57,7 @@ function rowToReview(row: Record<string, unknown>): Review {
     artUrl: (row.art_url as string | undefined) ?? undefined,
     spotifyUrl: (row.spotify_url as string | undefined) ?? undefined,
     spotifyAlbumId: (row.spotify_album_id as string | undefined) ?? undefined,
+    spotifyArtistId: (row.spotify_artist_id as string | undefined) ?? undefined,
   };
 }
 
@@ -85,6 +86,7 @@ function reviewToRow(r: Review): Record<string, unknown> {
     art_url: r.artUrl ?? null,
     spotify_url: r.spotifyUrl ?? null,
     spotify_album_id: r.spotifyAlbumId ?? null,
+    spotify_artist_id: r.spotifyArtistId ?? null,
   };
 }
 
@@ -213,7 +215,10 @@ export const cdActions = {
   // Reviews
   async upsertReview(review: Review) {
     const row = reviewToRow(review);
-    const { error } = await supabase.from("reviews").upsert(row as never, { onConflict: "slug" });
+    // If we already have a uuid id, conflict on id (slug may have changed).
+    // Otherwise let the DB assign an id and conflict on slug.
+    const onConflict = isUuid(review.id) ? "id" : "slug";
+    const { error } = await supabase.from("reviews").upsert(row as never, { onConflict });
     if (error) console.error("upsertReview", error);
     invalidate();
   },

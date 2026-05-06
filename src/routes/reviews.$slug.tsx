@@ -74,9 +74,17 @@ function ReviewPage() {
             )}
             {review.spotifyAlbumId && (
               <iframe
-                title="Spotify player"
+                title="Spotify album player"
                 src={`https://open.spotify.com/embed/album/${review.spotifyAlbumId}?utm_source=cdreviews`}
                 width="100%" height="152" frameBorder={0} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                loading="lazy"
+              />
+            )}
+            {review.spotifyArtistId && (
+              <iframe
+                title="Spotify artist player"
+                src={`https://open.spotify.com/embed/artist/${review.spotifyArtistId}?utm_source=cdreviews`}
+                width="100%" height="352" frameBorder={0} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
                 loading="lazy"
               />
             )}

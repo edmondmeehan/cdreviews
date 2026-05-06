@@ -29,8 +29,9 @@ function EditReview() {
 
   function save(e: FormEvent) {
     e.preventDefault();
-    const id = r.id || slugify(`${r.artist}-${r.title}`);
-    cdActions.upsertReview({ ...r, id, slug: id });
+    const newId = r.id || slugify(`${r.artist}-${r.title}`);
+    const newSlug = r.slug || slugify(`${r.artist}-${r.title}`);
+    cdActions.upsertReview({ ...r, id: newId, slug: newSlug });
     navigate({ to: "/admin/reviews" });
   }
 
@@ -63,6 +64,7 @@ function EditReview() {
         artUrl: res.imageUrl ?? p.artUrl,
         spotifyUrl: res.spotifyUrl,
         spotifyAlbumId: res.albumId,
+        spotifyArtistId: res.artistId ?? p.spotifyArtistId,
       }));
       setArtMsg(`✓ Matched: ${res.artistName} — ${res.albumName}`);
     } catch (e) {
@@ -99,8 +101,8 @@ function EditReview() {
             <AdminButton onClick={handleSpotifyPull}>
               {artBusy === "spotify" ? "Searching…" : "↻ Pull from Spotify"}
             </AdminButton>
-            {(r.artUrl || r.spotifyUrl) && (
-              <AdminButton tone="ghost" onClick={() => { patch("artUrl", undefined); patch("spotifyUrl", undefined); patch("spotifyAlbumId", undefined); setArtMsg("Cleared"); }}>
+            {(r.artUrl || r.spotifyUrl || r.spotifyArtistId) && (
+              <AdminButton tone="ghost" onClick={() => { patch("artUrl", undefined); patch("spotifyUrl", undefined); patch("spotifyAlbumId", undefined); patch("spotifyArtistId", undefined); setArtMsg("Cleared"); }}>
                 Clear
               </AdminButton>
             )}
@@ -116,6 +118,13 @@ function EditReview() {
               const m = v.match(/album\/([a-zA-Z0-9]+)/);
               if (m) patch("spotifyAlbumId", m[1]);
             }} placeholder="https://open.spotify.com/album/…" />
+          </Field>
+          <Field label="Spotify artist ID (for artist player)">
+            <input className={inputCls} value={r.spotifyArtistId ?? ""} onChange={(e) => {
+              const v = e.target.value.trim();
+              const m = v.match(/artist\/([a-zA-Z0-9]+)/);
+              patch("spotifyArtistId", (m ? m[1] : v) || undefined);
+            }} placeholder="artist id or https://open.spotify.com/artist/…" />
           </Field>
         </div>
       </div>

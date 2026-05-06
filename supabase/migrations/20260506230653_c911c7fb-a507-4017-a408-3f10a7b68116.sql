@@ -1,0 +1,1 @@
+ALTER TABLE public.reviews ADD COLUMN IF NOT EXISTS spotify_artist_id text;
