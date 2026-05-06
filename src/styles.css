@@ -223,6 +223,67 @@
 
   .art-row { width: 48px; height: 48px; position: relative; overflow: hidden; }
 
+  /* Vinyl/CD-style placeholder when no real cover image is available.
+     Renders the album title + artist on a sleeve with a record peeking out. */
+  .cover-fallback {
+    display: block;
+  }
+  .cover-fallback .cover-fallback__sleeve {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 8% 8% 10%;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.55) 100%);
+    color: #f1ecdf;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+  }
+  .cover-fallback .cover-fallback__title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "opsz" 96, "wght" 700;
+    font-size: clamp(14px, 2.4vw, 30px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+  .cover-fallback .cover-fallback__artist {
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(8px, 0.9vw, 11px);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.92;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Vinyl disc poking out of the right edge of the sleeve */
+  .cover-fallback::before {
+    content: '';
+    position: absolute;
+    top: 8%;
+    right: -22%;
+    width: 70%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 50%, #ff3b14 0 6%, #14110f 6.5% 14%, #1a1714 14.5% 100%);
+    box-shadow:
+      inset 0 0 0 1px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(255,255,255,0.05);
+    background-image:
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.04) 0 1px, transparent 1px 3px),
+      radial-gradient(circle at 50% 50%, #ff3b14 0 6%, #14110f 6.5% 14%, #1a1714 14.5% 100%);
+    z-index: 1;
+    opacity: 0.92;
+  }
+
   .dropcap::first-letter {
     font-family: 'Fraunces', serif;
     font-variation-settings: "opsz" 144, "wght" 700, "SOFT" 0;
