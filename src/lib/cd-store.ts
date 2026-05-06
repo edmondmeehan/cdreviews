@@ -89,9 +89,10 @@ export const cdActions = {
     emit();
   },
   bulkUpsertReviews(rows: Review[]) {
-    const map = new Map(snapshot.reviews.map((r) => [r.id, r] as const));
-    for (const r of rows) map.set(r.id, r);
-    snapshot = { ...snapshot, reviews: Array.from(map.values()) };
+    const incomingIds = new Set(rows.map((r) => r.id));
+    const untouched = snapshot.reviews.filter((r) => !incomingIds.has(r.id));
+    // New/updated rows go to the top so they appear immediately in admin and on /reviews.
+    snapshot = { ...snapshot, reviews: [...rows, ...untouched] };
     emit();
   },
 
