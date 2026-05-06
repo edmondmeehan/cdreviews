@@ -1,8 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker, ReviewCard } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
+import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 
 export const Route = createFileRoute("/reviews/$slug")({
   component: ReviewPage,
