@@ -54,6 +54,9 @@ function rowToReview(row: Record<string, unknown>): Review {
     contact: (row.contact as string | undefined) ?? undefined,
     archiveUrl: (row.archive_url as string | undefined) ?? undefined,
     period: (row.period as string | undefined) ?? undefined,
+    artUrl: (row.art_url as string | undefined) ?? undefined,
+    spotifyUrl: (row.spotify_url as string | undefined) ?? undefined,
+    spotifyAlbumId: (row.spotify_album_id as string | undefined) ?? undefined,
   };
 }
 
@@ -79,6 +82,9 @@ function reviewToRow(r: Review): Record<string, unknown> {
     contact: r.contact ?? null,
     archive_url: r.archiveUrl ?? null,
     period: r.period ?? null,
+    art_url: r.artUrl ?? null,
+    spotify_url: r.spotifyUrl ?? null,
+    spotify_album_id: r.spotifyAlbumId ?? null,
   };
 }
 
