@@ -11,6 +11,8 @@ import {
 import appCss from "../styles.css?url";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { AuthProvider } from "@/lib/auth";
+import { useCdInvalidator } from "@/lib/cd-store";
 
 function NotFoundComponent() {
   return (
