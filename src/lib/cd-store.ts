@@ -1,13 +1,17 @@
-// Tiny client-side store for the cdreviews mock backend.
-// Persists to localStorage so admin edits survive reloads.
-// Real Cloud-backed data layer lands in a follow-up.
+// Lovable Cloud-backed data layer. Preserves the (synchronous-feeling)
+// useCdStore + cdActions API the UI was already using, so route components
+// keep working while we swap the source of truth from localStorage to Postgres.
+//
+// Reads: react-query against Supabase (browser client + RLS). The selector-style
+//        useCdStore(selector) hook resolves the same Snapshot shape the UI expects.
+// Writes: cdActions.* fire Supabase mutations and invalidate the cache.
 
-import { useSyncExternalStore, useMemo } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
-  SEED_REVIEWS, SEED_FEATURES, SEED_LISTS, SEED_CONTRIBUTORS, SEED_SUBSCRIBERS,
   type Review, type Feature, type CdList, type Contributor, type Subscriber,
 } from "./cd-data";
-import { IMPORTED_REVIEWS } from "./cd-imported-reviews";
 
 type Snapshot = {
   reviews: Review[];
@@ -15,143 +19,259 @@ type Snapshot = {
   lists: CdList[];
   contributors: Contributor[];
   subscribers: Subscriber[];
+  ready: boolean;
 };
 
-const KEY = "cdreviews:store:v2";
-const isBrowser = typeof window !== "undefined";
+const EMPTY: Snapshot = {
+  reviews: [], features: [], lists: [], contributors: [], subscribers: [], ready: false,
+};
 
-function seed(): Snapshot {
+// ─── Row → app shape mappers ──────────────────────────────────────
+
+type Decade = Review["decade"];
+type Kind = Review["kind"];
+
+function rowToReview(row: Record<string, unknown>): Review {
   return {
-    reviews: [...SEED_REVIEWS, ...IMPORTED_REVIEWS],
-    features: SEED_FEATURES,
-    lists: SEED_LISTS,
-    contributors: SEED_CONTRIBUTORS,
-    subscribers: SEED_SUBSCRIBERS,
+    id: String(row.id),
+    slug: String(row.slug),
+    title: String(row.title),
+    artist: String(row.artist),
+    label: String(row.label ?? "—"),
+    format: String(row.format ?? ""),
+    genre: String(row.genre ?? ""),
+    date: String(row.date),
+    decade: String(row.decade) as Decade,
+    kind: String(row.kind) as Kind,
+    score: Number(row.score ?? 0),
+    art: String(row.art ?? "art-1"),
+    byline: String(row.byline ?? "Staff"),
+    readMins: Number(row.read_mins ?? 2),
+    body: Array.isArray(row.body) ? (row.body as string[]) : [],
+    status: row.status === "published" ? "published" : "draft",
+    pull: (row.pull as string | undefined) ?? undefined,
+    labelAddress: (row.label_address as string | undefined) ?? undefined,
+    contact: (row.contact as string | undefined) ?? undefined,
+    archiveUrl: (row.archive_url as string | undefined) ?? undefined,
+    period: (row.period as string | undefined) ?? undefined,
   };
 }
 
-function load(): Snapshot {
-  if (!isBrowser) return seed();
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return seed();
-    return JSON.parse(raw) as Snapshot;
-  } catch {
-    return seed();
-  }
+function reviewToRow(r: Review): Record<string, unknown> {
+  return {
+    id: isUuid(r.id) ? r.id : undefined, // let DB assign for slug-style ids
+    slug: r.slug,
+    title: r.title,
+    artist: r.artist,
+    label: r.label || "—",
+    format: r.format || "CD",
+    genre: r.genre || "Uncategorized",
+    date: r.date,
+    decade: r.decade,
+    kind: r.kind,
+    score: r.score,
+    art: r.art,
+    byline: r.byline || "Staff",
+    read_mins: r.readMins,
+    body: r.body,
+    status: r.status,
+    label_address: r.labelAddress ?? null,
+    contact: r.contact ?? null,
+    archive_url: r.archiveUrl ?? null,
+    period: r.period ?? null,
+  };
 }
 
-const SERVER_SNAPSHOT: Snapshot = seed();
-let snapshot: Snapshot = load();
-const listeners = new Set<() => void>();
-
-function emit() {
-  if (isBrowser) {
-    try { localStorage.setItem(KEY, JSON.stringify(snapshot)); } catch {}
-  }
-  listeners.forEach((l) => l());
+function rowToFeature(row: Record<string, unknown>): Feature {
+  return {
+    id: String(row.id),
+    slug: String(row.slug),
+    title: String(row.title),
+    dek: String(row.dek ?? ""),
+    byline: String(row.byline ?? "Staff"),
+    date: row.published_at ? new Date(row.published_at as string).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }).replace(/\//g, ".") : "",
+    readMins: 6,
+    art: String(row.hero ?? "art-hero"),
+    body: Array.isArray(row.body) ? (row.body as string[]) : [],
+    status: row.status === "published" ? "published" : "draft",
+  };
+}
+function featureToRow(f: Feature): Record<string, unknown> {
+  return {
+    id: isUuid(f.id) ? f.id : undefined,
+    slug: f.slug, title: f.title, dek: f.dek, byline: f.byline,
+    body: f.body, hero: f.art, status: f.status,
+    published_at: f.status === "published" ? new Date().toISOString() : null,
+  };
 }
 
-function subscribe(l: () => void) {
-  listeners.add(l);
-  return () => { listeners.delete(l); };
+function rowToList(row: Record<string, unknown>): CdList {
+  return {
+    id: String(row.id),
+    slug: String(row.slug),
+    title: String(row.title),
+    dek: String(row.dek ?? ""),
+    byline: "Editorial",
+    date: row.published_at ? new Date(row.published_at as string).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }).replace(/\//g, ".") : "",
+    art: "art-1",
+    items: Array.isArray(row.items) ? (row.items as CdList["items"]) : [],
+    status: row.status === "published" ? "published" : "draft",
+  };
+}
+function listToRow(l: CdList): Record<string, unknown> {
+  return {
+    id: isUuid(l.id) ? l.id : undefined,
+    slug: l.slug, title: l.title, dek: l.dek,
+    items: l.items, status: l.status,
+    published_at: l.status === "published" ? new Date().toISOString() : null,
+  };
 }
 
-const getSnapshot = () => snapshot;
-const getServerSnapshot = () => SERVER_SNAPSHOT;
+function rowToContributor(row: Record<string, unknown>): Contributor {
+  return {
+    id: String(row.id),
+    name: String(row.name),
+    role: String(row.role) as Contributor["role"],
+    bio: String(row.bio ?? ""),
+    city: String(row.city ?? ""),
+  };
+}
+function contributorToRow(c: Contributor): Record<string, unknown> {
+  return {
+    id: isUuid(c.id) ? c.id : undefined,
+    name: c.name, role: c.role, bio: c.bio, city: c.city,
+  };
+}
+
+function rowToSubscriber(row: Record<string, unknown>): Subscriber {
+  return {
+    id: String(row.id),
+    email: String(row.email),
+    signedUp: String(row.signed_up),
+  };
+}
+
+function isUuid(s: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+}
+
+// ─── Hook ─────────────────────────────────────────────────────────
+
+const KEY = ["cdreviews", "snapshot"] as const;
+
+async function fetchSnapshot(): Promise<Snapshot> {
+  const [reviews, features, lists, contributors, subscribers] = await Promise.all([
+    supabase.from("reviews").select("*").order("date", { ascending: false }),
+    supabase.from("features").select("*").order("created_at", { ascending: false }),
+    supabase.from("lists").select("*").order("created_at", { ascending: false }),
+    supabase.from("contributors").select("*").order("created_at", { ascending: true }),
+    // RLS: only admins see subscribers; non-admins get empty array silently
+    supabase.from("subscribers").select("*").order("signed_up", { ascending: false }),
+  ]);
+  return {
+    reviews: (reviews.data ?? []).map(rowToReview),
+    features: (features.data ?? []).map(rowToFeature),
+    lists: (lists.data ?? []).map(rowToList),
+    contributors: (contributors.data ?? []).map(rowToContributor),
+    subscribers: (subscribers.data ?? []).map(rowToSubscriber),
+    ready: true,
+  };
+}
 
 export function useCdStore<T>(selector: (s: Snapshot) => T): T {
-  // Subscribe to the stable snapshot reference, derive via useMemo so
-  // selectors returning new arrays/objects don't trip the
-  // "getSnapshot should be cached" warning + infinite-render loop.
-  const snap = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const { data } = useQuery({
+    queryKey: KEY,
+    queryFn: fetchSnapshot,
+    staleTime: 30_000,
+  });
+  const snap = data ?? EMPTY;
   return useMemo(() => selector(snap), [snap, selector]);
 }
 
-// ─── mutations ──────────────────────────────────────────────────
+// Imperative invalidator for actions to use.
+let _invalidate: () => void = () => {};
+export function useCdInvalidator() {
+  const qc = useQueryClient();
+  _invalidate = () => qc.invalidateQueries({ queryKey: KEY });
+}
+function invalidate() { _invalidate(); }
+
+// ─── Mutations ────────────────────────────────────────────────────
 
 export const cdActions = {
   resetAll() {
-    snapshot = seed();
-    emit();
+    // No longer destructive; just refetch from server.
+    invalidate();
   },
 
   // Reviews
-  upsertReview(review: Review) {
-    const i = snapshot.reviews.findIndex((r) => r.id === review.id);
-    snapshot = {
-      ...snapshot,
-      reviews: i === -1 ? [review, ...snapshot.reviews] : snapshot.reviews.map((r) => r.id === review.id ? review : r),
-    };
-    emit();
+  async upsertReview(review: Review) {
+    const row = reviewToRow(review);
+    const { error } = await supabase.from("reviews").upsert(row as never, { onConflict: "slug" });
+    if (error) console.error("upsertReview", error);
+    invalidate();
   },
-  deleteReview(id: string) {
-    snapshot = { ...snapshot, reviews: snapshot.reviews.filter((r) => r.id !== id) };
-    emit();
+  async deleteReview(id: string) {
+    const col = isUuid(id) ? "id" : "slug";
+    const { error } = await supabase.from("reviews").delete().eq(col, id);
+    if (error) console.error("deleteReview", error);
+    invalidate();
   },
-  bulkUpsertReviews(rows: Review[]) {
-    const incomingIds = new Set(rows.map((r) => r.id));
-    const untouched = snapshot.reviews.filter((r) => !incomingIds.has(r.id));
-    // New/updated rows go to the top so they appear immediately in admin and on /reviews.
-    snapshot = { ...snapshot, reviews: [...rows, ...untouched] };
-    emit();
+  async bulkUpsertReviews(rows: Review[]) {
+    if (rows.length === 0) return;
+    const { error } = await supabase.from("reviews").upsert(rows.map(reviewToRow) as never, { onConflict: "slug" });
+    if (error) console.error("bulkUpsertReviews", error);
+    invalidate();
   },
 
   // Features
-  upsertFeature(feat: Feature) {
-    const i = snapshot.features.findIndex((f) => f.id === feat.id);
-    snapshot = {
-      ...snapshot,
-      features: i === -1 ? [feat, ...snapshot.features] : snapshot.features.map((f) => f.id === feat.id ? feat : f),
-    };
-    emit();
+  async upsertFeature(feat: Feature) {
+    const { error } = await supabase.from("features").upsert(featureToRow(feat) as never, { onConflict: "slug" });
+    if (error) console.error("upsertFeature", error);
+    invalidate();
   },
-  deleteFeature(id: string) {
-    snapshot = { ...snapshot, features: snapshot.features.filter((f) => f.id !== id) };
-    emit();
+  async deleteFeature(id: string) {
+    const col = isUuid(id) ? "id" : "slug";
+    const { error } = await supabase.from("features").delete().eq(col, id);
+    if (error) console.error("deleteFeature", error);
+    invalidate();
   },
 
   // Lists
-  upsertList(list: CdList) {
-    const i = snapshot.lists.findIndex((l) => l.id === list.id);
-    snapshot = {
-      ...snapshot,
-      lists: i === -1 ? [list, ...snapshot.lists] : snapshot.lists.map((l) => l.id === list.id ? list : l),
-    };
-    emit();
+  async upsertList(list: CdList) {
+    const { error } = await supabase.from("lists").upsert(listToRow(list) as never, { onConflict: "slug" });
+    if (error) console.error("upsertList", error);
+    invalidate();
   },
-  deleteList(id: string) {
-    snapshot = { ...snapshot, lists: snapshot.lists.filter((l) => l.id !== id) };
-    emit();
+  async deleteList(id: string) {
+    const col = isUuid(id) ? "id" : "slug";
+    const { error } = await supabase.from("lists").delete().eq(col, id);
+    if (error) console.error("deleteList", error);
+    invalidate();
   },
 
   // Contributors
-  upsertContributor(c: Contributor) {
-    const i = snapshot.contributors.findIndex((x) => x.id === c.id);
-    snapshot = {
-      ...snapshot,
-      contributors: i === -1 ? [...snapshot.contributors, c] : snapshot.contributors.map((x) => x.id === c.id ? c : x),
-    };
-    emit();
+  async upsertContributor(c: Contributor) {
+    const { error } = await supabase.from("contributors").upsert(contributorToRow(c) as never);
+    if (error) console.error("upsertContributor", error);
+    invalidate();
   },
-  deleteContributor(id: string) {
-    snapshot = { ...snapshot, contributors: snapshot.contributors.filter((c) => c.id !== id) };
-    emit();
+  async deleteContributor(id: string) {
+    if (!isUuid(id)) { console.warn("deleteContributor needs uuid"); return; }
+    const { error } = await supabase.from("contributors").delete().eq("id", id);
+    if (error) console.error("deleteContributor", error);
+    invalidate();
   },
 
   // Subscribers
-  addSubscriber(email: string) {
-    if (snapshot.subscribers.some((s) => s.email.toLowerCase() === email.toLowerCase())) return;
-    const sub: Subscriber = {
-      id: crypto.randomUUID(),
-      email,
-      signedUp: new Date().toISOString(),
-    };
-    snapshot = { ...snapshot, subscribers: [sub, ...snapshot.subscribers] };
-    emit();
+  async addSubscriber(email: string) {
+    const { error } = await supabase.from("subscribers").insert({ email } as never);
+    if (error && !error.message.toLowerCase().includes("duplicate")) console.error("addSubscriber", error);
+    invalidate();
   },
-  deleteSubscriber(id: string) {
-    snapshot = { ...snapshot, subscribers: snapshot.subscribers.filter((s) => s.id !== id) };
-    emit();
+  async deleteSubscriber(id: string) {
+    const { error } = await supabase.from("subscribers").delete().eq("id", id);
+    if (error) console.error("deleteSubscriber", error);
+    invalidate();
   },
 };
