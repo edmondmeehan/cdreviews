@@ -9,25 +9,32 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { SiteHeader } from "@/components/site/SiteHeader";
+import { SiteFooter } from "@/components/site/SiteFooter";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
+    <div className="bg-bone text-ink min-h-screen flex flex-col">
+      <SiteHeader />
+      <main className="flex-1 max-w-[1100px] w-full mx-auto px-6 py-24 grid grid-cols-1 md:grid-cols-12 gap-10 items-start">
+        <div className="md:col-span-4">
+          <div className="font-mono text-[10px] tracking-[0.3em] uppercase text-vermil">§ 404 · Off the catalog</div>
+          <div className="fr-score-card text-[140px] md:text-[200px] leading-none text-ink mt-4">404</div>
         </div>
-      </div>
+        <div className="md:col-span-8 space-y-6 border-t border-rule pt-6">
+          <h1 className="fr-display text-[56px] md:text-[88px] text-ink leading-[0.95]">Not in the stacks.</h1>
+          <p className="fr-dek text-[20px] text-ink-2 max-w-[55ch]">
+            That record isn't on file. The page you asked for has been moved, mis-shelved, or was never pressed.
+          </p>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Link to="/" className="font-mono text-[11px] tracking-[0.25em] uppercase bg-vermil text-bone px-5 py-3 hover:bg-ink">→ Home</Link>
+            <Link to="/reviews" className="font-mono text-[11px] tracking-[0.25em] uppercase border border-rule px-5 py-3 hover:bg-bone-2">Reviews</Link>
+            <Link to="/archive" className="font-mono text-[11px] tracking-[0.25em] uppercase border border-rule px-5 py-3 hover:bg-bone-2">Archive</Link>
+            <Link to="/contact" className="font-mono text-[11px] tracking-[0.25em] uppercase border border-rule px-5 py-3 hover:bg-bone-2">Report a broken link</Link>
+          </div>
+        </div>
+      </main>
+      <SiteFooter />
     </div>
   );
 }
