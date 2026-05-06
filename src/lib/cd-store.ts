@@ -2,7 +2,7 @@
 // Persists to localStorage so admin edits survive reloads.
 // Real Cloud-backed data layer lands in a follow-up.
 
-import { useSyncExternalStore } from "react";
+import { useSyncExternalStore, useMemo } from "react";
 import {
   SEED_REVIEWS, SEED_FEATURES, SEED_LISTS, SEED_CONTRIBUTORS, SEED_SUBSCRIBERS,
   type Review, type Feature, type CdList, type Contributor, type Subscriber,
@@ -19,6 +19,16 @@ type Snapshot = {
 const KEY = "cdreviews:store:v1";
 const isBrowser = typeof window !== "undefined";
 
+function seed(): Snapshot {
+  return {
+    reviews: SEED_REVIEWS,
+    features: SEED_FEATURES,
+    lists: SEED_LISTS,
+    contributors: SEED_CONTRIBUTORS,
+    subscribers: SEED_SUBSCRIBERS,
+  };
+}
+
 function load(): Snapshot {
   if (!isBrowser) return seed();
   try {
@@ -30,16 +40,7 @@ function load(): Snapshot {
   }
 }
 
-function seed(): Snapshot {
-  return {
-    reviews: SEED_REVIEWS,
-    features: SEED_FEATURES,
-    lists: SEED_LISTS,
-    contributors: SEED_CONTRIBUTORS,
-    subscribers: SEED_SUBSCRIBERS,
-  };
-}
-
+const SERVER_SNAPSHOT: Snapshot = seed();
 let snapshot: Snapshot = load();
 const listeners = new Set<() => void>();
 
@@ -52,19 +53,18 @@ function emit() {
 
 function subscribe(l: () => void) {
   listeners.add(l);
-  return () => listeners.delete(l);
+  return () => { listeners.delete(l); };
 }
 
 const getSnapshot = () => snapshot;
-const getServerSnapshot = () => seed();
+const getServerSnapshot = () => SERVER_SNAPSHOT;
 
 export function useCdStore<T>(selector: (s: Snapshot) => T): T {
-  const sel = useSyncExternalStore(
-    subscribe,
-    () => selector(snapshot),
-    () => selector(seed()),
-  );
-  return sel;
+  // Subscribe to the stable snapshot reference, derive via useMemo so
+  // selectors returning new arrays/objects don't trip the
+  // "getSnapshot should be cached" warning + infinite-render loop.
+  const snap = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  return useMemo(() => selector(snap), [snap, selector]);
 }
 
 // ─── mutations ──────────────────────────────────────────────────
