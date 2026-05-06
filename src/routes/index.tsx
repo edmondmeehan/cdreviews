@@ -1,6 +1,17 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { fallback, zodValidator } from "@tanstack/zod-adapter";
+import { z } from "zod";
+
+const DECADE_KEYS = ["all", "1990s", "2000s", "2010s", "2020s"] as const;
+const KIND_KEYS = ["all", "bnm", "bnr", "review"] as const;
+
+const searchSchema = z.object({
+  decade: fallback(z.enum(DECADE_KEYS), "all").default("all"),
+  kind: fallback(z.enum(KIND_KEYS), "all").default("all"),
+});
 
 export const Route = createFileRoute("/")({
+  validateSearch: zodValidator(searchSchema),
   component: Index,
   head: () => ({
     meta: [
