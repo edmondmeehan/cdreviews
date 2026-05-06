@@ -29,8 +29,9 @@ function EditReview() {
 
   function save(e: FormEvent) {
     e.preventDefault();
-    const id = r.id || slugify(`${r.artist}-${r.title}`);
-    cdActions.upsertReview({ ...r, id, slug: id });
+    const newId = r.id || slugify(`${r.artist}-${r.title}`);
+    const newSlug = r.slug || slugify(`${r.artist}-${r.title}`);
+    cdActions.upsertReview({ ...r, id: newId, slug: newSlug });
     navigate({ to: "/admin/reviews" });
   }
 
