@@ -101,8 +101,8 @@ function EditReview() {
             <AdminButton onClick={handleSpotifyPull}>
               {artBusy === "spotify" ? "Searching…" : "↻ Pull from Spotify"}
             </AdminButton>
-            {(r.artUrl || r.spotifyUrl) && (
-              <AdminButton tone="ghost" onClick={() => { patch("artUrl", undefined); patch("spotifyUrl", undefined); patch("spotifyAlbumId", undefined); setArtMsg("Cleared"); }}>
+            {(r.artUrl || r.spotifyUrl || r.spotifyArtistId) && (
+              <AdminButton tone="ghost" onClick={() => { patch("artUrl", undefined); patch("spotifyUrl", undefined); patch("spotifyAlbumId", undefined); patch("spotifyArtistId", undefined); setArtMsg("Cleared"); }}>
                 Clear
               </AdminButton>
             )}
