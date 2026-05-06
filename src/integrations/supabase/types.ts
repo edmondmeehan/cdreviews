@@ -178,6 +178,7 @@ export type Database = {
           score: number
           slug: string
           spotify_album_id: string | null
+          spotify_artist_id: string | null
           spotify_url: string | null
           status: string
           title: string
@@ -205,6 +206,7 @@ export type Database = {
           score?: number
           slug: string
           spotify_album_id?: string | null
+          spotify_artist_id?: string | null
           spotify_url?: string | null
           status?: string
           title: string
@@ -232,6 +234,7 @@ export type Database = {
           score?: number
           slug?: string
           spotify_album_id?: string | null
+          spotify_artist_id?: string | null
           spotify_url?: string | null
           status?: string
           title?: string
