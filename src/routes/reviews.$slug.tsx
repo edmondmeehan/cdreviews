@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker, ReviewCard } from "@/components/site/bits";
@@ -6,25 +6,36 @@ import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/reviews/$slug")({
   component: ReviewPage,
-  notFoundComponent: () => (
+  notFoundComponent: NotFound,
+});
+
+function NotFound() {
+  const { slug } = Route.useParams();
+  return (
     <div className="bg-bone min-h-screen flex flex-col">
       <SiteHeader />
-      <div className="flex-1 max-w-[800px] mx-auto px-6 py-32 text-center space-y-6">
-        <div className="font-mono text-[11px] tracking-[0.25em] uppercase text-vermil">404 · Off the shelf</div>
-        <h1 className="fr-display text-[60px] text-ink">Review not found.</h1>
-        <Link to="/reviews" className="font-mono text-[11px] tracking-[0.25em] uppercase text-vermil hover:underline">→ Back to reviews</Link>
+      <div className="flex-1 max-w-[820px] mx-auto px-6 py-24 space-y-6">
+        <div className="font-mono text-[11px] tracking-[0.25em] uppercase text-vermil">§ 404 · Off the shelf</div>
+        <h1 className="fr-display text-[64px] md:text-[88px] text-ink">Review not found.</h1>
+        <p className="fr-dek text-[19px] text-ink-2 max-w-[55ch]">
+          We don't have a review at <span className="font-mono text-ink">/reviews/{slug}</span>. It may have been retitled, unpublished, or never existed.
+        </p>
+        <div className="flex flex-wrap gap-3 pt-2">
+          <Link to="/reviews" className="font-mono text-[11px] tracking-[0.25em] uppercase bg-vermil text-bone px-5 py-3 hover:bg-ink">→ All reviews</Link>
+          <Link to="/archive" className="font-mono text-[11px] tracking-[0.25em] uppercase border border-rule px-5 py-3 hover:bg-bone-2">Search the archive</Link>
+        </div>
       </div>
       <SiteFooter />
     </div>
-  ),
-});
+  );
+}
 
 function ReviewPage() {
   const { slug } = Route.useParams();
   const review = useCdStore((s) => s.reviews.find((r) => r.slug === slug));
   const related = useCdStore((s) => s.reviews.filter((r) => r.slug !== slug && r.genre === review?.genre).slice(0, 4));
 
-  if (!review) throw notFound();
+  if (!review) return <NotFound />;
   const badge = review.kind === "bnm" ? "BEST NEW MUSIC" : review.kind === "bnr" ? "BEST NEW REISSUE" : null;
 
   return (

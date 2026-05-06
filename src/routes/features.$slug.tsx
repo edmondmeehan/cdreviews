@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker } from "@/components/site/bits";
@@ -6,22 +6,29 @@ import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/features/$slug")({
   component: FeaturePage,
-  notFoundComponent: () => (
+  notFoundComponent: NotFound,
+});
+
+function NotFound() {
+  const { slug } = Route.useParams();
+  return (
     <div className="bg-bone min-h-screen flex flex-col">
       <SiteHeader />
-      <div className="flex-1 max-w-[800px] mx-auto px-6 py-32 text-center space-y-6">
-        <h1 className="fr-display text-[60px] text-ink">Feature not found.</h1>
-        <Link to="/features" className="font-mono text-[11px] tracking-[0.25em] uppercase text-vermil hover:underline">→ Back to features</Link>
+      <div className="flex-1 max-w-[820px] mx-auto px-6 py-24 space-y-6">
+        <div className="font-mono text-[11px] tracking-[0.25em] uppercase text-vermil">§ 404 · Spike not filed</div>
+        <h1 className="fr-display text-[64px] md:text-[88px] text-ink">Feature not found.</h1>
+        <p className="fr-dek text-[19px] text-ink-2 max-w-[55ch]">No feature lives at <span className="font-mono text-ink">/features/{slug}</span>.</p>
+        <Link to="/features" className="font-mono text-[11px] tracking-[0.25em] uppercase bg-vermil text-bone px-5 py-3 hover:bg-ink inline-block">→ All features</Link>
       </div>
       <SiteFooter />
     </div>
-  ),
-});
+  );
+}
 
 function FeaturePage() {
   const { slug } = Route.useParams();
   const f = useCdStore((s) => s.features.find((x) => x.slug === slug));
-  if (!f) throw notFound();
+  if (!f) return <NotFound />;
   return (
     <div className="bg-bone text-ink min-h-screen">
       <SiteHeader />
