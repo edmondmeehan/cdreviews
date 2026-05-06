@@ -265,7 +265,7 @@ export const cdActions = {
 
   // Subscribers
   async addSubscriber(email: string) {
-    const { error } = await supabase.from("subscribers").insert({ email });
+    const { error } = await supabase.from("subscribers").insert({ email } as never);
     if (error && !error.message.toLowerCase().includes("duplicate")) console.error("addSubscriber", error);
     invalidate();
   },
