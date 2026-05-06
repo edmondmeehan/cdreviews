@@ -119,6 +119,13 @@ function EditReview() {
               if (m) patch("spotifyAlbumId", m[1]);
             }} placeholder="https://open.spotify.com/album/…" />
           </Field>
+          <Field label="Spotify artist ID (for artist player)">
+            <input className={inputCls} value={r.spotifyArtistId ?? ""} onChange={(e) => {
+              const v = e.target.value.trim();
+              const m = v.match(/artist\/([a-zA-Z0-9]+)/);
+              patch("spotifyArtistId", (m ? m[1] : v) || undefined);
+            }} placeholder="artist id or https://open.spotify.com/artist/…" />
+          </Field>
         </div>
       </div>
 
