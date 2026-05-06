@@ -7,6 +7,7 @@ import {
   SEED_REVIEWS, SEED_FEATURES, SEED_LISTS, SEED_CONTRIBUTORS, SEED_SUBSCRIBERS,
   type Review, type Feature, type CdList, type Contributor, type Subscriber,
 } from "./cd-data";
+import { IMPORTED_REVIEWS } from "./cd-imported-reviews";
 
 type Snapshot = {
   reviews: Review[];
@@ -16,12 +17,12 @@ type Snapshot = {
   subscribers: Subscriber[];
 };
 
-const KEY = "cdreviews:store:v1";
+const KEY = "cdreviews:store:v2";
 const isBrowser = typeof window !== "undefined";
 
 function seed(): Snapshot {
   return {
-    reviews: SEED_REVIEWS,
+    reviews: [...SEED_REVIEWS, ...IMPORTED_REVIEWS],
     features: SEED_FEATURES,
     lists: SEED_LISTS,
     contributors: SEED_CONTRIBUTORS,
