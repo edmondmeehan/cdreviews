@@ -47,78 +47,71 @@ function ReviewPage() {
     <div className="bg-bone text-ink min-h-screen">
       <SiteHeader />
 
-      <article className="max-w-[1400px] mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          <header className="lg:col-span-7 space-y-6">
-            {badge && <Kicker color="vermil">{badge}</Kicker>}
-            <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-mute">{review.artist}</div>
-            <h1 className="fr-display text-[64px] md:text-[96px] text-ink">{review.title}</h1>
-            {review.pull && (
-              <p className="fr-pull text-[26px] md:text-[34px] text-ink-2 max-w-[28ch] border-l-2 border-vermil pl-5">
-                “{review.pull}”
-              </p>
-            )}
-            <div className="flex flex-wrap gap-x-6 gap-y-1 font-mono text-[10px] tracking-[0.2em] uppercase text-mute border-y border-rule py-3">
-              <span>By <span className="text-ink">{review.byline}</span></span>
-              <span>{review.date}</span>
-              <span>{review.readMins} min</span>
-              <span>{review.genre}</span>
-            </div>
-          </header>
-
-          <aside className="lg:col-span-5 space-y-5">
+      <article className="max-w-[1200px] mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <aside className="lg:col-span-4 space-y-4">
             {review.artUrl ? (
               <img src={review.artUrl} alt={`${review.title} cover`} className="w-full aspect-square object-cover" loading="lazy" />
             ) : (
-              <div className={`art ${review.art}`} />
+              <div className={`art ${review.art} aspect-square`} />
             )}
-            {review.spotifyAlbumId && (
-              <iframe
-                title="Spotify album player"
-                src={`https://open.spotify.com/embed/album/${review.spotifyAlbumId}?utm_source=cdreviews`}
-                width="100%" height="152" frameBorder={0} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
-                loading="lazy"
-              />
+            <div className="flex items-baseline gap-3 border-t border-rule pt-3">
+              <div className="fr-score text-[72px] text-vermil leading-none">{review.score.toFixed(1)}</div>
+              <div className="text-ink text-[20px]">/10</div>
+            </div>
+            <dl className="font-mono text-[10px] tracking-[0.18em] uppercase text-mute grid grid-cols-[80px_1fr] gap-y-1.5">
+              <dt>Label</dt><dd className="text-ink">{review.label}</dd>
+              <dt>Format</dt><dd>{review.format}</dd>
+              <dt>Genre</dt><dd>{review.genre}</dd>
+              <dt>Decade</dt><dd>{review.decade}</dd>
+            </dl>
+            {review.spotifyUrl && (
+              <a href={review.spotifyUrl} target="_blank" rel="noopener noreferrer" className="block font-mono text-[10px] tracking-[0.18em] uppercase text-vermil hover:text-ink">↗ Open on Spotify</a>
             )}
-            {review.spotifyArtistId && (
-              <iframe
-                title="Spotify artist player"
-                src={`https://open.spotify.com/embed/artist/${review.spotifyArtistId}?utm_source=cdreviews`}
-                width="100%" height="352" frameBorder={0} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
-                loading="lazy"
-              />
+          </aside>
+
+          <header className="lg:col-span-8 space-y-5">
+            {badge && <Kicker color="vermil">{badge}</Kicker>}
+            <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-mute">{review.artist}</div>
+            <h1 className="fr-display text-[52px] md:text-[80px] leading-[0.95] text-ink">{review.title}</h1>
+            {review.pull && (
+              <p className="fr-pull text-[22px] md:text-[28px] text-ink-2 max-w-[32ch] border-l-2 border-vermil pl-5">
+                "{review.pull}"
+              </p>
             )}
-            <div className="grid grid-cols-12 gap-4 items-start">
-              <div className="col-span-4">
-                <div className="fr-score text-[112px] text-vermil leading-none">
-                  {review.score.toFixed(1)}<span className="text-ink text-[34px] align-top">/10</span>
-                </div>
-              </div>
-              <div className="col-span-8 space-y-2">
-                <div className="fr-card-title text-[22px]">{review.label}</div>
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-mute">{review.format}</div>
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-mute">{review.decade}</div>
-                {review.spotifyUrl && (
-                  <a href={review.spotifyUrl} target="_blank" rel="noopener noreferrer" className="block font-mono text-[10px] tracking-[0.18em] uppercase text-vermil hover:text-ink">↗ Open on Spotify</a>
+            <div className="flex flex-wrap gap-x-5 gap-y-1 font-mono text-[10px] tracking-[0.2em] uppercase text-mute border-y border-rule py-2.5">
+              <span>By <span className="text-ink">{review.byline}</span></span>
+              <span>{review.date}</span>
+              <span>{review.readMins} min</span>
+            </div>
+            {(review.spotifyAlbumId || review.spotifyArtistId) && (
+              <div className="space-y-3 pt-1">
+                {review.spotifyAlbumId && (
+                  <iframe
+                    title="Spotify album player"
+                    src={`https://open.spotify.com/embed/album/${review.spotifyAlbumId}?utm_source=cdreviews`}
+                    width="100%" height="152" frameBorder={0} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                    loading="lazy"
+                  />
+                )}
+                {review.spotifyArtistId && (
+                  <iframe
+                    title="Spotify artist player"
+                    src={`https://open.spotify.com/embed/artist/${review.spotifyArtistId}?utm_source=cdreviews`}
+                    width="100%" height="152" frameBorder={0} allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                    loading="lazy"
+                  />
                 )}
               </div>
-            </div>
-          </aside>
+            )}
+          </header>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-16 pt-10 border-t border-rule">
-          <div className="lg:col-span-7 lg:col-start-1 space-y-6 fr-excerpt text-[19px] text-ink-2 max-w-[65ch]">
+        <div className="mt-12 pt-8 border-t border-rule grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-8 lg:col-start-3 space-y-5 fr-excerpt text-[19px] text-ink-2 max-w-[68ch]">
             {review.body.map((p, i) => (
               <p key={i} className={i === 0 ? "dropcap" : ""}>{p}</p>
             ))}
-          </div>
-          <div className="lg:col-span-4 lg:col-start-9 space-y-3">
-            <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Filed under</div>
-            <div className="font-mono text-[11px] text-ink-2 space-y-1">
-              <div>{review.genre}</div>
-              <div>{review.label}</div>
-              <div>{review.decade}</div>
-            </div>
           </div>
         </div>
       </article>
