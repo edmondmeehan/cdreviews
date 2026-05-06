@@ -32,6 +32,7 @@ export type Review = {
   artUrl?: string;
   spotifyUrl?: string;
   spotifyAlbumId?: string;
+  spotifyArtistId?: string;
 };
 
 export type Feature = {
