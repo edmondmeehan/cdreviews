@@ -28,6 +28,12 @@ async function getToken() {
   return data.access_token;
 }
 
+function pickBestImage(images?: Array<{ url: string; width?: number; height?: number }>): string | null {
+  if (!images || images.length === 0) return null;
+  const sorted = [...images].sort((a, b) => (b.width ?? 0) - (a.width ?? 0));
+  return sorted[0]?.url ?? null;
+}
+
 export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
   .inputValidator((d) => Input.parse(d))
   .handler(async ({ data }) => {
