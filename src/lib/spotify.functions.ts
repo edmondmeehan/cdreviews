@@ -34,6 +34,39 @@ function pickBestImage(images?: Array<{ url: string; width?: number; height?: nu
   return sorted[0]?.url ?? null;
 }
 
+// In-memory cache for Spotify lookups (per-worker instance).
+// TTL keeps entries fresh enough that artwork updates eventually propagate.
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+const MAX_CACHE_ENTRIES = 500;
+
+type CacheEntry<T> = { value: T; expiresAt: number };
+const lookupCache = new Map<string, CacheEntry<unknown>>();
+
+function cacheGet<T>(key: string): T | null {
+  const hit = lookupCache.get(key);
+  if (!hit) return null;
+  if (hit.expiresAt < Date.now()) {
+    lookupCache.delete(key);
+    return null;
+  }
+  // refresh LRU order
+  lookupCache.delete(key);
+  lookupCache.set(key, hit);
+  return hit.value as T;
+}
+
+function cacheSet<T>(key: string, value: T) {
+  if (lookupCache.size >= MAX_CACHE_ENTRIES) {
+    const oldest = lookupCache.keys().next().value;
+    if (oldest !== undefined) lookupCache.delete(oldest);
+  }
+  lookupCache.set(key, { value, expiresAt: Date.now() + CACHE_TTL_MS });
+}
+
+function normKey(...parts: string[]): string {
+  return parts.map((p) => p.trim().toLowerCase().replace(/\s+/g, " ")).join("|");
+}
+
 export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
   .inputValidator((d) => Input.parse(d))
   .handler(async ({ data }) => {
