@@ -67,49 +67,74 @@ function normKey(...parts: string[]): string {
   return parts.map((p) => p.trim().toLowerCase().replace(/\s+/g, " ")).join("|");
 }
 
+// Request coalescing: concurrent calls with the same key share one in-flight Promise.
+const inflight = new Map<string, Promise<unknown>>();
+
+function coalesce<T>(key: string, fn: () => Promise<T>): Promise<T> {
+  const existing = inflight.get(key) as Promise<T> | undefined;
+  if (existing) return existing;
+  const p = (async () => {
+    try {
+      return await fn();
+    } finally {
+      inflight.delete(key);
+    }
+  })();
+  inflight.set(key, p);
+  return p;
+}
+
 export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
   .inputValidator((d) => Input.parse(d))
   .handler(async ({ data }) => {
-    try {
-      const cacheKey = normKey("album", data.artist, data.album);
-      const cached = cacheGet<{
+    const cacheKey = normKey("album", data.artist, data.album);
+    const cached = cacheGet<{
+      ok: true; albumId: string; albumName: string; artistId: string | null;
+      artistName: string; spotifyUrl: string; imageUrl: string | null;
+    }>(cacheKey);
+    if (cached) return cached;
+
+    return coalesce(cacheKey, async () => {
+      // re-check cache in case another caller resolved while we were queued
+      const fresh = cacheGet<{
         ok: true; albumId: string; albumName: string; artistId: string | null;
         artistName: string; spotifyUrl: string; imageUrl: string | null;
       }>(cacheKey);
-      if (cached) return cached;
-
-      const token = await getToken();
-      const q = encodeURIComponent(`album:"${data.album}" artist:"${data.artist}"`);
-      const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=1&q=${q}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) return { ok: false as const, error: `Spotify search failed (${res.status})` };
-      const json = (await res.json()) as {
-        albums?: { items?: Array<{
-          id: string;
-          name: string;
-          external_urls?: { spotify?: string };
-          images?: Array<{ url: string; width: number; height: number }>;
-          artists?: Array<{ id: string; name: string }>;
-        }> };
-      };
-      const item = json.albums?.items?.[0];
-      if (!item) return { ok: false as const, error: "No matching album found on Spotify" };
-      const image = pickBestImage(item.images);
-      const result = {
-        ok: true as const,
-        albumId: item.id,
-        albumName: item.name,
-        artistId: item.artists?.[0]?.id ?? null,
-        artistName: item.artists?.map((a) => a.name).join(", ") ?? "",
-        spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
-        imageUrl: image,
-      };
-      cacheSet(cacheKey, result);
-      return result;
-    } catch (e) {
-      return { ok: false as const, error: e instanceof Error ? e.message : "Unknown error" };
-    }
+      if (fresh) return fresh;
+      try {
+        const token = await getToken();
+        const q = encodeURIComponent(`album:"${data.album}" artist:"${data.artist}"`);
+        const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=1&q=${q}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return { ok: false as const, error: `Spotify search failed (${res.status})` };
+        const json = (await res.json()) as {
+          albums?: { items?: Array<{
+            id: string;
+            name: string;
+            external_urls?: { spotify?: string };
+            images?: Array<{ url: string; width: number; height: number }>;
+            artists?: Array<{ id: string; name: string }>;
+          }> };
+        };
+        const item = json.albums?.items?.[0];
+        if (!item) return { ok: false as const, error: "No matching album found on Spotify" };
+        const image = pickBestImage(item.images);
+        const result = {
+          ok: true as const,
+          albumId: item.id,
+          albumName: item.name,
+          artistId: item.artists?.[0]?.id ?? null,
+          artistName: item.artists?.map((a) => a.name).join(", ") ?? "",
+          spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
+          imageUrl: image,
+        };
+        cacheSet(cacheKey, result);
+        return result;
+      } catch (e) {
+        return { ok: false as const, error: e instanceof Error ? e.message : "Unknown error" };
+      }
+    });
   });
 
 const SearchInput = z.object({ query: z.string().min(1).max(200) });
@@ -117,47 +142,52 @@ const SearchInput = z.object({ query: z.string().min(1).max(200) });
 export const searchSpotifyAlbums = createServerFn({ method: "POST" })
   .inputValidator((d) => SearchInput.parse(d))
   .handler(async ({ data }) => {
-    try {
-      const cacheKey = normKey("search", data.query);
-      const cached = cacheGet<{
-        ok: true; results: Array<{
-          albumId: string; albumName: string; artistId: string | null; artistName: string;
-          releaseDate: string; totalTracks: number; spotifyUrl: string; imageUrl: string | null;
-        }>;
-      }>(cacheKey);
-      if (cached) return cached;
+    const cacheKey = normKey("search", data.query);
+    type SearchOk = {
+      ok: true; results: Array<{
+        albumId: string; albumName: string; artistId: string | null; artistName: string;
+        releaseDate: string; totalTracks: number; spotifyUrl: string; imageUrl: string | null;
+      }>;
+    };
+    const cached = cacheGet<SearchOk>(cacheKey);
+    if (cached) return cached;
 
-      const token = await getToken();
-      const q = encodeURIComponent(data.query);
-      const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=12&q=${q}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) return { ok: false as const, error: `Spotify search failed (${res.status})`, results: [] };
-      const json = (await res.json()) as {
-        albums?: { items?: Array<{
-          id: string;
-          name: string;
-          release_date?: string;
-          total_tracks?: number;
-          external_urls?: { spotify?: string };
-          images?: Array<{ url: string; width: number; height: number }>;
-          artists?: Array<{ id: string; name: string }>;
-        }> };
-      };
-      const results = (json.albums?.items ?? []).map((item) => ({
-        albumId: item.id,
-        albumName: item.name,
-        artistId: item.artists?.[0]?.id ?? null,
-        artistName: item.artists?.map((a) => a.name).join(", ") ?? "",
-        releaseDate: item.release_date ?? "",
-        totalTracks: item.total_tracks ?? 0,
-        spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
-        imageUrl: pickBestImage(item.images),
-      }));
-      const out = { ok: true as const, results };
-      cacheSet(cacheKey, out);
-      return out;
-    } catch (e) {
-      return { ok: false as const, error: e instanceof Error ? e.message : "Unknown error", results: [] };
-    }
+    return coalesce(cacheKey, async () => {
+      const fresh = cacheGet<SearchOk>(cacheKey);
+      if (fresh) return fresh;
+      try {
+        const token = await getToken();
+        const q = encodeURIComponent(data.query);
+        const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=12&q=${q}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return { ok: false as const, error: `Spotify search failed (${res.status})`, results: [] };
+        const json = (await res.json()) as {
+          albums?: { items?: Array<{
+            id: string;
+            name: string;
+            release_date?: string;
+            total_tracks?: number;
+            external_urls?: { spotify?: string };
+            images?: Array<{ url: string; width: number; height: number }>;
+            artists?: Array<{ id: string; name: string }>;
+          }> };
+        };
+        const results = (json.albums?.items ?? []).map((item) => ({
+          albumId: item.id,
+          albumName: item.name,
+          artistId: item.artists?.[0]?.id ?? null,
+          artistName: item.artists?.map((a) => a.name).join(", ") ?? "",
+          releaseDate: item.release_date ?? "",
+          totalTracks: item.total_tracks ?? 0,
+          spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
+          imageUrl: pickBestImage(item.images),
+        }));
+        const out = { ok: true as const, results };
+        cacheSet(cacheKey, out);
+        return out;
+      } catch (e) {
+        return { ok: false as const, error: e instanceof Error ? e.message : "Unknown error", results: [] };
+      }
+    });
   });
