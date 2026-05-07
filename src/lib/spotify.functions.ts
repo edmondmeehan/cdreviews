@@ -68,11 +68,34 @@ function normKey(...parts: string[]): string {
 }
 
 // Request coalescing: concurrent calls with the same key share one in-flight Promise.
-const inflight = new Map<string, Promise<unknown>>();
+// Entries have a TTL guard so a hung handler can't pin a key in the map forever.
+const INFLIGHT_TTL_MS = 30_000;
+const INFLIGHT_SWEEP_MS = 60_000;
+
+type InflightEntry = { promise: Promise<unknown>; expiresAt: number };
+const inflight = new Map<string, InflightEntry>();
+
+function sweepInflight() {
+  const now = Date.now();
+  for (const [k, v] of inflight) {
+    if (v.expiresAt <= now) inflight.delete(k);
+  }
+}
+
+let sweepTimer: ReturnType<typeof setInterval> | null = null;
+function ensureSweeper() {
+  if (sweepTimer) return;
+  sweepTimer = setInterval(sweepInflight, INFLIGHT_SWEEP_MS);
+  (sweepTimer as unknown as { unref?: () => void })?.unref?.();
+}
 
 function coalesce<T>(key: string, fn: () => Promise<T>): Promise<T> {
-  const existing = inflight.get(key) as Promise<T> | undefined;
-  if (existing) return existing;
+  const existing = inflight.get(key);
+  if (existing && existing.expiresAt > Date.now()) {
+    return existing.promise as Promise<T>;
+  }
+  if (existing) inflight.delete(key);
+  ensureSweeper();
   const p = (async () => {
     try {
       return await fn();
@@ -80,7 +103,7 @@ function coalesce<T>(key: string, fn: () => Promise<T>): Promise<T> {
       inflight.delete(key);
     }
   })();
-  inflight.set(key, p);
+  inflight.set(key, { promise: p, expiresAt: Date.now() + INFLIGHT_TTL_MS });
   return p;
 }
 
