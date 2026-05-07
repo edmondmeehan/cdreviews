@@ -101,7 +101,7 @@ export const searchSpotifyAlbums = createServerFn({ method: "POST" })
         releaseDate: item.release_date ?? "",
         totalTracks: item.total_tracks ?? 0,
         spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
-        imageUrl: item.images?.sort((a, b) => b.width - a.width)[0]?.url ?? null,
+        imageUrl: pickBestImage(item.images),
       }));
       return { ok: true as const, results };
     } catch (e) {
