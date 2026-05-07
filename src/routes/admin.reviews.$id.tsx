@@ -11,6 +11,19 @@ export const Route = createFileRoute("/admin/reviews/$id")({ component: EditRevi
 
 const ART_OPTS = ["art-1","art-2","art-3","art-4","art-5","art-6","art-7","art-8","art-hero","art-archive"];
 
+function formatReleaseDate(iso: string): string {
+  // iso may be YYYY, YYYY-MM, or YYYY-MM-DD
+  const [y, m = "01", d = "01"] = iso.split("-");
+  return `${m.padStart(2, "0")}.${d.padStart(2, "0")}.${y}`;
+}
+function decadeFromYear(iso: string): Decade {
+  const y = Number(iso.slice(0, 4));
+  if (y >= 2020) return "2020s";
+  if (y >= 2010) return "2010s";
+  if (y >= 2000) return "2000s";
+  return "1990s";
+}
+
 function EditReview() {
   const { id } = Route.useParams();
   const isNew = id === "new";
