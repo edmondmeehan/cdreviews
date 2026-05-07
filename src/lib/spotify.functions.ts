@@ -118,6 +118,15 @@ export const searchSpotifyAlbums = createServerFn({ method: "POST" })
   .inputValidator((d) => SearchInput.parse(d))
   .handler(async ({ data }) => {
     try {
+      const cacheKey = normKey("search", data.query);
+      const cached = cacheGet<{
+        ok: true; results: Array<{
+          albumId: string; albumName: string; artistId: string | null; artistName: string;
+          releaseDate: string; totalTracks: number; spotifyUrl: string; imageUrl: string | null;
+        }>;
+      }>(cacheKey);
+      if (cached) return cached;
+
       const token = await getToken();
       const q = encodeURIComponent(data.query);
       const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=12&q=${q}`, {
@@ -145,7 +154,9 @@ export const searchSpotifyAlbums = createServerFn({ method: "POST" })
         spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
         imageUrl: pickBestImage(item.images),
       }));
-      return { ok: true as const, results };
+      const out = { ok: true as const, results };
+      cacheSet(cacheKey, out);
+      return out;
     } catch (e) {
       return { ok: false as const, error: e instanceof Error ? e.message : "Unknown error", results: [] };
     }
