@@ -117,3 +117,19 @@ function Stat({ label, n, to }: { label: string; n: number; to: string }) {
     </Link>
   );
 }
+
+function ChangePasswordButton({ email }: { email: string }) {
+  const { resetPassword } = useAuth();
+  async function send() {
+    if (!email) return;
+    if (!confirm(`Send a password reset link to ${email}?`)) return;
+    const { error } = await resetPassword(email);
+    if (error) alert(error);
+    else alert("Password reset email sent. Check your inbox.");
+  }
+  return (
+    <button onClick={send} className="text-bone/70 hover:text-vermil">
+      Change password
+    </button>
+  );
+}
