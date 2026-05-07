@@ -67,6 +67,23 @@ function normKey(...parts: string[]): string {
   return parts.map((p) => p.trim().toLowerCase().replace(/\s+/g, " ")).join("|");
 }
 
+// Request coalescing: concurrent calls with the same key share one in-flight Promise.
+const inflight = new Map<string, Promise<unknown>>();
+
+function coalesce<T>(key: string, fn: () => Promise<T>): Promise<T> {
+  const existing = inflight.get(key) as Promise<T> | undefined;
+  if (existing) return existing;
+  const p = (async () => {
+    try {
+      return await fn();
+    } finally {
+      inflight.delete(key);
+    }
+  })();
+  inflight.set(key, p);
+  return p;
+}
+
 export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
   .inputValidator((d) => Input.parse(d))
   .handler(async ({ data }) => {
