@@ -158,6 +158,44 @@ function EditReview() {
             )}
           </div>
           {artMsg && <div className="font-mono text-[11px] text-bone/70">{artMsg}</div>}
+          <div className="border-t border-bone/10 pt-3 space-y-2">
+            <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Search Spotify</div>
+            <div className="flex gap-2">
+              <input
+                className={inputCls + " flex-1"}
+                value={searchQ}
+                placeholder={`e.g. "${r.artist || "artist"} ${r.title || "album"}"`}
+                onChange={(e) => setSearchQ(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSpotifySearch(); } }}
+              />
+              <AdminButton onClick={handleSpotifySearch}>
+                {artBusy === "search" ? "Searching…" : "Search"}
+              </AdminButton>
+            </div>
+            {searchResults.length > 0 && (
+              <div className="max-h-[280px] overflow-y-auto border border-bone/10 divide-y divide-bone/10">
+                {searchResults.map((item) => (
+                  <button
+                    key={item.albumId}
+                    type="button"
+                    onClick={() => applyResult(item)}
+                    className="w-full text-left flex gap-3 p-2 hover:bg-bone/5"
+                  >
+                    {item.imageUrl ? (
+                      <img src={item.imageUrl} alt="" className="w-12 h-12 object-cover border border-bone/20 flex-shrink-0" />
+                    ) : (
+                      <div className="w-12 h-12 bg-bone/10 flex-shrink-0" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-bone text-sm truncate">{item.albumName}</div>
+                      <div className="font-mono text-[10px] text-bone/60 truncate">{item.artistName}</div>
+                      <div className="font-mono text-[10px] text-bone/40">{item.releaseDate} · {item.totalTracks} tracks</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <Field label="Image URL">
             <input className={inputCls} value={r.artUrl ?? ""} onChange={(e) => patch("artUrl", e.target.value || undefined)} placeholder="https://…" />
           </Field>
