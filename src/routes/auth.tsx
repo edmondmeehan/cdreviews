@@ -21,6 +21,17 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [info, setInfo] = useState<string | null>(null);
+
+  async function forgot() {
+    setErr(null); setInfo(null);
+    if (!email) return setErr("Enter your email above first.");
+    setBusy(true);
+    const { error } = await resetPassword(email);
+    setBusy(false);
+    if (error) setErr(error);
+    else setInfo("Check your email for a password reset link.");
+  }
 
   if (!loading && user) return <Navigate to={redirect} />;
 
