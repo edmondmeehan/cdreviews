@@ -4,7 +4,7 @@ import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { slug as slugify, type Review, type ReviewKind, type Decade } from "@/lib/cd-data";
 import { supabase } from "@/integrations/supabase/client";
-import { lookupSpotifyAlbum } from "@/lib/spotify.functions";
+import { lookupSpotifyAlbum, searchSpotifyAlbums } from "@/lib/spotify.functions";
 import { Cover } from "@/components/site/Cover";
 
 export const Route = createFileRoute("/admin/reviews/$id")({ component: EditReview });
