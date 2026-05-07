@@ -4,12 +4,25 @@ import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { slug as slugify, type Review, type ReviewKind, type Decade } from "@/lib/cd-data";
 import { supabase } from "@/integrations/supabase/client";
-import { lookupSpotifyAlbum } from "@/lib/spotify.functions";
+import { lookupSpotifyAlbum, searchSpotifyAlbums } from "@/lib/spotify.functions";
 import { Cover } from "@/components/site/Cover";
 
 export const Route = createFileRoute("/admin/reviews/$id")({ component: EditReview });
 
 const ART_OPTS = ["art-1","art-2","art-3","art-4","art-5","art-6","art-7","art-8","art-hero","art-archive"];
+
+function formatReleaseDate(iso: string): string {
+  // iso may be YYYY, YYYY-MM, or YYYY-MM-DD
+  const [y, m = "01", d = "01"] = iso.split("-");
+  return `${m.padStart(2, "0")}.${d.padStart(2, "0")}.${y}`;
+}
+function decadeFromYear(iso: string): Decade {
+  const y = Number(iso.slice(0, 4));
+  if (y >= 2020) return "2020s";
+  if (y >= 2010) return "2010s";
+  if (y >= 2000) return "2000s";
+  return "1990s";
+}
 
 function EditReview() {
   const { id } = Route.useParams();
@@ -25,6 +38,11 @@ function EditReview() {
   });
   const [artBusy, setArtBusy] = useState<string | null>(null);
   const [artMsg, setArtMsg] = useState<string | null>(null);
+  const [searchQ, setSearchQ] = useState("");
+  const [searchResults, setSearchResults] = useState<Array<{
+    albumId: string; albumName: string; artistId: string | null; artistName: string;
+    releaseDate: string; totalTracks: number; spotifyUrl: string; imageUrl: string | null;
+  }>>([]);
 
   if (!isNew && !existing) return <p className="text-bone/60">Not found.</p>;
 
@@ -73,6 +91,37 @@ function EditReview() {
     } finally { setArtBusy(null); }
   }
 
+  async function handleSpotifySearch() {
+    const q = searchQ.trim() || `${r.artist} ${r.title}`.trim();
+    if (!q) { setArtMsg("Enter a search term, or add artist/title"); return; }
+    setArtBusy("search"); setArtMsg(null); setSearchResults([]);
+    try {
+      const res = await searchSpotifyAlbums({ data: { query: q } });
+      if (!res.ok) { setArtMsg(res.error); return; }
+      if (res.results.length === 0) { setArtMsg("No results"); return; }
+      setSearchResults(res.results);
+      setArtMsg(`Found ${res.results.length} result${res.results.length === 1 ? "" : "s"}`);
+    } catch (e) {
+      setArtMsg(e instanceof Error ? e.message : "Search failed");
+    } finally { setArtBusy(null); }
+  }
+
+  function applyResult(item: typeof searchResults[number]) {
+    setR((p) => ({
+      ...p,
+      artist: item.artistName || p.artist,
+      title: item.albumName || p.title,
+      artUrl: item.imageUrl ?? p.artUrl,
+      spotifyUrl: item.spotifyUrl,
+      spotifyAlbumId: item.albumId,
+      spotifyArtistId: item.artistId ?? p.spotifyArtistId,
+      date: item.releaseDate ? formatReleaseDate(item.releaseDate) : p.date,
+      decade: item.releaseDate ? decadeFromYear(item.releaseDate) : p.decade,
+    }));
+    setArtMsg(`✓ Applied: ${item.artistName} — ${item.albumName}`);
+    setSearchResults([]);
+  }
+
   return (
     <div>
       <AdminHeader title={isNew ? "New review" : `Edit · ${r.title}`} action={
@@ -109,6 +158,44 @@ function EditReview() {
             )}
           </div>
           {artMsg && <div className="font-mono text-[11px] text-bone/70">{artMsg}</div>}
+          <div className="border-t border-bone/10 pt-3 space-y-2">
+            <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Search Spotify</div>
+            <div className="flex gap-2">
+              <input
+                className={inputCls + " flex-1"}
+                value={searchQ}
+                placeholder={`e.g. "${r.artist || "artist"} ${r.title || "album"}"`}
+                onChange={(e) => setSearchQ(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSpotifySearch(); } }}
+              />
+              <AdminButton onClick={handleSpotifySearch}>
+                {artBusy === "search" ? "Searching…" : "Search"}
+              </AdminButton>
+            </div>
+            {searchResults.length > 0 && (
+              <div className="max-h-[280px] overflow-y-auto border border-bone/10 divide-y divide-bone/10">
+                {searchResults.map((item) => (
+                  <button
+                    key={item.albumId}
+                    type="button"
+                    onClick={() => applyResult(item)}
+                    className="w-full text-left flex gap-3 p-2 hover:bg-bone/5"
+                  >
+                    {item.imageUrl ? (
+                      <img src={item.imageUrl} alt="" className="w-12 h-12 object-cover border border-bone/20 flex-shrink-0" />
+                    ) : (
+                      <div className="w-12 h-12 bg-bone/10 flex-shrink-0" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="text-bone text-sm truncate">{item.albumName}</div>
+                      <div className="font-mono text-[10px] text-bone/60 truncate">{item.artistName}</div>
+                      <div className="font-mono text-[10px] text-bone/40">{item.releaseDate} · {item.totalTracks} tracks</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <Field label="Image URL">
             <input className={inputCls} value={r.artUrl ?? ""} onChange={(e) => patch("artUrl", e.target.value || undefined)} placeholder="https://…" />
           </Field>
