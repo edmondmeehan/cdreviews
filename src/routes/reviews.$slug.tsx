@@ -89,6 +89,7 @@ function ReviewPage() {
             <div className="flex flex-wrap gap-x-5 gap-y-1 font-mono text-[10px] tracking-[0.2em] uppercase text-mute border-y border-rule py-2.5">
               <span>By <span className="text-ink">{review.byline}</span></span>
               <span>{review.date}</span>
+              <span className="text-vermil">{review.genre}</span>
               <span>{review.readMins} min</span>
             </div>
             {(review.spotifyAlbumId || review.spotifyArtistId) && (
