@@ -87,46 +87,54 @@ function coalesce<T>(key: string, fn: () => Promise<T>): Promise<T> {
 export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
   .inputValidator((d) => Input.parse(d))
   .handler(async ({ data }) => {
-    try {
-      const cacheKey = normKey("album", data.artist, data.album);
-      const cached = cacheGet<{
+    const cacheKey = normKey("album", data.artist, data.album);
+    const cached = cacheGet<{
+      ok: true; albumId: string; albumName: string; artistId: string | null;
+      artistName: string; spotifyUrl: string; imageUrl: string | null;
+    }>(cacheKey);
+    if (cached) return cached;
+
+    return coalesce(cacheKey, async () => {
+      // re-check cache in case another caller resolved while we were queued
+      const fresh = cacheGet<{
         ok: true; albumId: string; albumName: string; artistId: string | null;
         artistName: string; spotifyUrl: string; imageUrl: string | null;
       }>(cacheKey);
-      if (cached) return cached;
-
-      const token = await getToken();
-      const q = encodeURIComponent(`album:"${data.album}" artist:"${data.artist}"`);
-      const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=1&q=${q}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) return { ok: false as const, error: `Spotify search failed (${res.status})` };
-      const json = (await res.json()) as {
-        albums?: { items?: Array<{
-          id: string;
-          name: string;
-          external_urls?: { spotify?: string };
-          images?: Array<{ url: string; width: number; height: number }>;
-          artists?: Array<{ id: string; name: string }>;
-        }> };
-      };
-      const item = json.albums?.items?.[0];
-      if (!item) return { ok: false as const, error: "No matching album found on Spotify" };
-      const image = pickBestImage(item.images);
-      const result = {
-        ok: true as const,
-        albumId: item.id,
-        albumName: item.name,
-        artistId: item.artists?.[0]?.id ?? null,
-        artistName: item.artists?.map((a) => a.name).join(", ") ?? "",
-        spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
-        imageUrl: image,
-      };
-      cacheSet(cacheKey, result);
-      return result;
-    } catch (e) {
-      return { ok: false as const, error: e instanceof Error ? e.message : "Unknown error" };
-    }
+      if (fresh) return fresh;
+      try {
+        const token = await getToken();
+        const q = encodeURIComponent(`album:"${data.album}" artist:"${data.artist}"`);
+        const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=1&q=${q}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) return { ok: false as const, error: `Spotify search failed (${res.status})` };
+        const json = (await res.json()) as {
+          albums?: { items?: Array<{
+            id: string;
+            name: string;
+            external_urls?: { spotify?: string };
+            images?: Array<{ url: string; width: number; height: number }>;
+            artists?: Array<{ id: string; name: string }>;
+          }> };
+        };
+        const item = json.albums?.items?.[0];
+        if (!item) return { ok: false as const, error: "No matching album found on Spotify" };
+        const image = pickBestImage(item.images);
+        const result = {
+          ok: true as const,
+          albumId: item.id,
+          albumName: item.name,
+          artistId: item.artists?.[0]?.id ?? null,
+          artistName: item.artists?.map((a) => a.name).join(", ") ?? "",
+          spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
+          imageUrl: image,
+        };
+        cacheSet(cacheKey, result);
+        return result;
+      } catch (e) {
+        return { ok: false as const, error: e instanceof Error ? e.message : "Unknown error" };
+      }
+    });
   });
 
 const SearchInput = z.object({ query: z.string().min(1).max(200) });
