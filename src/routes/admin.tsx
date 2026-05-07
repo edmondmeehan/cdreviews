@@ -69,6 +69,7 @@ function AdminLayout() {
           <Link to="/" className="fr-display-bold text-[28px] text-bone leading-none">cdreviews. <span className="text-vermil text-[12px] font-mono tracking-[0.3em] align-middle ml-2">ADMIN</span></Link>
           <div className="flex items-center gap-4 font-mono text-[10px] tracking-[0.25em] uppercase">
             <span className="text-bone/50">{user.email}</span>
+            <ChangePasswordButton email={user.email ?? ""} />
             <button onClick={() => { if (confirm("Reset all admin data to seed?")) cdActions.resetAll(); }} className="text-vermil hover:underline">Reset data</button>
             <button onClick={signOut} className="text-bone/70 hover:text-vermil">Sign out</button>
             <Link to="/" className="text-bone/80 hover:text-vermil">→ View site</Link>
@@ -114,5 +115,21 @@ function Stat({ label, n, to }: { label: string; n: number; to: string }) {
       <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-bone/50">{label}</div>
       <div className="fr-score-card text-[56px] text-bone mt-2">{n}</div>
     </Link>
+  );
+}
+
+function ChangePasswordButton({ email }: { email: string }) {
+  const { resetPassword } = useAuth();
+  async function send() {
+    if (!email) return;
+    if (!confirm(`Send a password reset link to ${email}?`)) return;
+    const { error } = await resetPassword(email);
+    if (error) alert(error);
+    else alert("Password reset email sent. Check your inbox.");
+  }
+  return (
+    <button onClick={send} className="text-bone/70 hover:text-vermil">
+      Change password
+    </button>
   );
 }

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RadioRouteImport } from './routes/radio'
 import { Route as MastheadRouteImport } from './routes/masthead'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -33,6 +34,11 @@ import { Route as AdminReviewsIndexRouteImport } from './routes/admin.reviews.in
 import { Route as AdminReviewsImportRouteImport } from './routes/admin.reviews.import'
 import { Route as AdminReviewsIdRouteImport } from './routes/admin.reviews.$id'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RadioRoute = RadioRouteImport.update({
   id: '/radio',
   path: '/radio',
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
@@ -237,6 +246,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/masthead'
     | '/radio'
+    | '/reset-password'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
@@ -262,6 +272,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/masthead'
     | '/radio'
+    | '/reset-password'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/masthead'
     | '/radio'
+    | '/reset-password'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
@@ -313,6 +325,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   MastheadRoute: typeof MastheadRoute
   RadioRoute: typeof RadioRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   FeaturesSlugRoute: typeof FeaturesSlugRoute
   ListsSlugRoute: typeof ListsSlugRoute
   ReviewsSlugRoute: typeof ReviewsSlugRoute
@@ -323,6 +336,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/radio': {
       id: '/radio'
       path: '/radio'
@@ -521,6 +541,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   MastheadRoute: MastheadRoute,
   RadioRoute: RadioRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   FeaturesSlugRoute: FeaturesSlugRoute,
   ListsSlugRoute: ListsSlugRoute,
   ReviewsSlugRoute: ReviewsSlugRoute,
@@ -531,13 +552,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

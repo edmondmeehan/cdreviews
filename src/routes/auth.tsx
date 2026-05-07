@@ -13,7 +13,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, signIn, signUp, resetPassword, loading } = useAuth();
   const { redirect } = useSearch({ from: "/auth" });
   const navigate = useNavigate();
   const [mode, setMode] = useState<"in" | "up">("in");
@@ -21,6 +21,17 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [info, setInfo] = useState<string | null>(null);
+
+  async function forgot() {
+    setErr(null); setInfo(null);
+    if (!email) return setErr("Enter your email above first.");
+    setBusy(true);
+    const { error } = await resetPassword(email);
+    setBusy(false);
+    if (error) setErr(error);
+    else setInfo("Check your email for a password reset link.");
+  }
 
   if (!loading && user) return <Navigate to={redirect} />;
 
@@ -52,14 +63,23 @@ function AuthPage() {
             className="w-full bg-ink border border-bone/20 px-3 py-2 font-mono text-[13px] outline-none focus:border-vermil" />
         </label>
         {err && <div className="font-mono text-[11px] text-vermil border border-vermil/40 p-3">{err}</div>}
+        {info && <div className="font-mono text-[11px] text-bone/80 border border-bone/30 p-3">{info}</div>}
         <button type="submit" disabled={busy}
           className="w-full font-mono text-[10px] tracking-[0.3em] uppercase bg-vermil text-bone py-3 hover:bg-bone hover:text-ink disabled:opacity-50">
           {busy ? "…" : mode === "in" ? "Sign in" : "Create account"}
         </button>
-        <button type="button" onClick={() => { setMode(mode === "in" ? "up" : "in"); setErr(null); }}
-          className="w-full font-mono text-[10px] tracking-[0.25em] uppercase text-bone/60 hover:text-bone">
-          {mode === "in" ? "Need an account? Sign up →" : "Have an account? Sign in →"}
-        </button>
+        <div className="flex items-center justify-between gap-4">
+          <button type="button" onClick={() => { setMode(mode === "in" ? "up" : "in"); setErr(null); setInfo(null); }}
+            className="font-mono text-[10px] tracking-[0.25em] uppercase text-bone/60 hover:text-bone">
+            {mode === "in" ? "Sign up →" : "Sign in →"}
+          </button>
+          {mode === "in" && (
+            <button type="button" onClick={forgot} disabled={busy}
+              className="font-mono text-[10px] tracking-[0.25em] uppercase text-bone/60 hover:text-vermil disabled:opacity-50">
+              Forgot password?
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

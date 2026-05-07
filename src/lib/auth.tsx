@@ -15,6 +15,8 @@ type AuthState = {
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
   signUp: (email: string, password: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error?: string }>;
+  updatePassword: (password: string) => Promise<{ error?: string }>;
 };
 
 const Ctx = createContext<AuthState | null>(null);
@@ -68,6 +70,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     async signOut() {
       await supabase.auth.signOut();
+    },
+    async resetPassword(email) {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      return { error: error?.message };
+    },
+    async updatePassword(password) {
+      const { error } = await supabase.auth.updateUser({ password });
+      return { error: error?.message };
     },
   };
 
