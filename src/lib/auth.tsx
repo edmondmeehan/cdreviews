@@ -71,6 +71,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async signOut() {
       await supabase.auth.signOut();
     },
+    async resetPassword(email) {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      return { error: error?.message };
+    },
+    async updatePassword(password) {
+      const { error } = await supabase.auth.updateUser({ password });
+      return { error: error?.message };
+    },
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
