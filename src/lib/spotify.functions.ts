@@ -28,6 +28,12 @@ async function getToken() {
   return data.access_token;
 }
 
+function pickBestImage(images?: Array<{ url: string; width?: number; height?: number }>): string | null {
+  if (!images || images.length === 0) return null;
+  const sorted = [...images].sort((a, b) => (b.width ?? 0) - (a.width ?? 0));
+  return sorted[0]?.url ?? null;
+}
+
 export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
   .inputValidator((d) => Input.parse(d))
   .handler(async ({ data }) => {
@@ -49,7 +55,7 @@ export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
       };
       const item = json.albums?.items?.[0];
       if (!item) return { ok: false as const, error: "No matching album found on Spotify" };
-      const image = item.images?.sort((a, b) => b.width - a.width)[0]?.url ?? null;
+      const image = pickBestImage(item.images);
       return {
         ok: true as const,
         albumId: item.id,
@@ -95,7 +101,7 @@ export const searchSpotifyAlbums = createServerFn({ method: "POST" })
         releaseDate: item.release_date ?? "",
         totalTracks: item.total_tracks ?? 0,
         spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
-        imageUrl: item.images?.sort((a, b) => b.width - a.width)[0]?.url ?? null,
+        imageUrl: pickBestImage(item.images),
       }));
       return { ok: true as const, results };
     } catch (e) {
