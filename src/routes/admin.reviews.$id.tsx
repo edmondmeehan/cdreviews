@@ -25,6 +25,11 @@ function EditReview() {
   });
   const [artBusy, setArtBusy] = useState<string | null>(null);
   const [artMsg, setArtMsg] = useState<string | null>(null);
+  const [searchQ, setSearchQ] = useState("");
+  const [searchResults, setSearchResults] = useState<Array<{
+    albumId: string; albumName: string; artistId: string | null; artistName: string;
+    releaseDate: string; totalTracks: number; spotifyUrl: string; imageUrl: string | null;
+  }>>([]);
 
   if (!isNew && !existing) return <p className="text-bone/60">Not found.</p>;
 
