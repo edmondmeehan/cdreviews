@@ -49,7 +49,7 @@ export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
       };
       const item = json.albums?.items?.[0];
       if (!item) return { ok: false as const, error: "No matching album found on Spotify" };
-      const image = item.images?.sort((a, b) => b.width - a.width)[0]?.url ?? null;
+      const image = pickBestImage(item.images);
       return {
         ok: true as const,
         albumId: item.id,
