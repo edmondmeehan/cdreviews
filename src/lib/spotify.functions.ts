@@ -63,3 +63,42 @@ export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
       return { ok: false as const, error: e instanceof Error ? e.message : "Unknown error" };
     }
   });
+
+const SearchInput = z.object({ query: z.string().min(1).max(200) });
+
+export const searchSpotifyAlbums = createServerFn({ method: "POST" })
+  .inputValidator((d) => SearchInput.parse(d))
+  .handler(async ({ data }) => {
+    try {
+      const token = await getToken();
+      const q = encodeURIComponent(data.query);
+      const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=12&q=${q}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return { ok: false as const, error: `Spotify search failed (${res.status})`, results: [] };
+      const json = (await res.json()) as {
+        albums?: { items?: Array<{
+          id: string;
+          name: string;
+          release_date?: string;
+          total_tracks?: number;
+          external_urls?: { spotify?: string };
+          images?: Array<{ url: string; width: number; height: number }>;
+          artists?: Array<{ id: string; name: string }>;
+        }> };
+      };
+      const results = (json.albums?.items ?? []).map((item) => ({
+        albumId: item.id,
+        albumName: item.name,
+        artistId: item.artists?.[0]?.id ?? null,
+        artistName: item.artists?.map((a) => a.name).join(", ") ?? "",
+        releaseDate: item.release_date ?? "",
+        totalTracks: item.total_tracks ?? 0,
+        spotifyUrl: item.external_urls?.spotify ?? `https://open.spotify.com/album/${item.id}`,
+        imageUrl: item.images?.sort((a, b) => b.width - a.width)[0]?.url ?? null,
+      }));
+      return { ok: true as const, results };
+    } catch (e) {
+      return { ok: false as const, error: e instanceof Error ? e.message : "Unknown error", results: [] };
+    }
+  });
