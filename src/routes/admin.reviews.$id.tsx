@@ -78,6 +78,37 @@ function EditReview() {
     } finally { setArtBusy(null); }
   }
 
+  async function handleSpotifySearch() {
+    const q = searchQ.trim() || `${r.artist} ${r.title}`.trim();
+    if (!q) { setArtMsg("Enter a search term, or add artist/title"); return; }
+    setArtBusy("search"); setArtMsg(null); setSearchResults([]);
+    try {
+      const res = await searchSpotifyAlbums({ data: { query: q } });
+      if (!res.ok) { setArtMsg(res.error); return; }
+      if (res.results.length === 0) { setArtMsg("No results"); return; }
+      setSearchResults(res.results);
+      setArtMsg(`Found ${res.results.length} result${res.results.length === 1 ? "" : "s"}`);
+    } catch (e) {
+      setArtMsg(e instanceof Error ? e.message : "Search failed");
+    } finally { setArtBusy(null); }
+  }
+
+  function applyResult(item: typeof searchResults[number]) {
+    setR((p) => ({
+      ...p,
+      artist: item.artistName || p.artist,
+      title: item.albumName || p.title,
+      artUrl: item.imageUrl ?? p.artUrl,
+      spotifyUrl: item.spotifyUrl,
+      spotifyAlbumId: item.albumId,
+      spotifyArtistId: item.artistId ?? p.spotifyArtistId,
+      date: item.releaseDate ? formatReleaseDate(item.releaseDate) : p.date,
+      decade: item.releaseDate ? decadeFromYear(item.releaseDate) : p.decade,
+    }));
+    setArtMsg(`✓ Applied: ${item.artistName} — ${item.albumName}`);
+    setSearchResults([]);
+  }
+
   return (
     <div>
       <AdminHeader title={isNew ? "New review" : `Edit · ${r.title}`} action={
