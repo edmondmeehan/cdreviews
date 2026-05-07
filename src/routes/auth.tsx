@@ -13,7 +13,7 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, signIn, signUp, resetPassword, loading } = useAuth();
   const { redirect } = useSearch({ from: "/auth" });
   const navigate = useNavigate();
   const [mode, setMode] = useState<"in" | "up">("in");
