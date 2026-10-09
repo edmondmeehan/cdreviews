@@ -10,7 +10,7 @@ function UtilityBar() {
         <div className="flex items-center gap-5">
           <Link to="/admin" className="hover:text-vermil">Account</Link>
           <a href="#mailer" className="hover:text-vermil">Subscribe</a>
-          <a href="#" className="hover:text-vermil">Search ⌘K</a>
+          <Link to="/archive" className="hover:text-vermil">Archive</Link>
         </div>
       </div>
     </div>
