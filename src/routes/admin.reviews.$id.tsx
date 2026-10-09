@@ -5,6 +5,7 @@ import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bi
 import { slug as slugify, type Review, type ReviewKind, type Decade } from "@/lib/cd-data";
 import { supabase } from "@/integrations/supabase/client";
 import { lookupSpotifyAlbum, searchSpotifyAlbums } from "@/lib/spotify.functions";
+import { lookupDiscogsAlbum } from "@/lib/discogs.functions";
 import { Cover } from "@/components/site/Cover";
 
 export const Route = createFileRoute("/admin/reviews/$id")({ component: EditReview });
@@ -81,18 +82,30 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
     setArtBusy("spotify"); setArtMsg(null);
     try {
       const res = await lookupSpotifyAlbum({ data: { artist: r.artist, album: r.title } });
-      if (!res.ok) {
-        if ("mismatch" in res && res.mismatch) setR((p) => ({ ...p, artUrl: undefined, spotifyUrl: undefined, spotifyAlbumId: undefined, spotifyArtistId: undefined }));
-        setArtMsg(res.error); return;
+      if (res.ok && res.imageUrl) {
+        setR((p) => ({
+          ...p,
+          artUrl: res.imageUrl ?? p.artUrl,
+          spotifyUrl: res.spotifyUrl,
+          spotifyAlbumId: res.albumId,
+          spotifyArtistId: res.artistId ?? p.spotifyArtistId,
+        }));
+        setArtMsg(`✓ Matched on Spotify: ${res.artistName} — ${res.albumName}`);
+        return;
       }
-      setR((p) => ({
-        ...p,
-        artUrl: res.imageUrl ?? p.artUrl,
-        spotifyUrl: res.spotifyUrl,
-        spotifyAlbumId: res.albumId,
-        spotifyArtistId: res.artistId ?? p.spotifyArtistId,
-      }));
-      setArtMsg(`✓ Matched: ${res.artistName} — ${res.albumName}`);
+      if (res.ok) {
+        setR((p) => ({ ...p, spotifyUrl: res.spotifyUrl, spotifyAlbumId: res.albumId, spotifyArtistId: res.artistId ?? p.spotifyArtistId }));
+      } else if ("mismatch" in res && res.mismatch) {
+        setR((p) => ({ ...p, artUrl: undefined, spotifyUrl: undefined, spotifyAlbumId: undefined, spotifyArtistId: undefined }));
+      }
+      // Fallback: Discogs artwork (exact artist + album match only)
+      const dg = await lookupDiscogsAlbum({ data: { artist: r.artist, album: r.title } });
+      if (dg.ok) {
+        setR((p) => ({ ...p, artUrl: dg.imageUrl }));
+        setArtMsg(`✓ Cover from Discogs: ${dg.title}${res.ok ? " (Spotify player linked)" : ""}`);
+      } else {
+        setArtMsg(`Spotify: ${res.ok ? "no image" : res.error} · Discogs: ${dg.error}`);
+      }
     } catch (e) {
       setArtMsg(e instanceof Error ? e.message : "Spotify lookup failed");
     } finally { setArtBusy(null); }
