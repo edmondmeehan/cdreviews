@@ -24,11 +24,11 @@ function ContribAdmin() {
       <AdminHeader title="Contributors" action={<AdminButton onClick={() => setE(blank())}>+ Add contributor</AdminButton>} />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {list.map((c) => (
-          <div key={c.id} className="border border-bone/10 p-5 space-y-2">
+          <div key={c.id} className="border border-ink/10 p-5 space-y-2">
             <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">{c.role}</div>
-            <div className="fr-card-title text-[22px] text-bone">{c.name}</div>
-            <div className="font-mono text-[10px] text-bone/50">{c.city}</div>
-            <p className="text-[13px] text-bone/70">{c.bio}</p>
+            <div className="fr-card-title text-[22px] text-ink">{c.name}</div>
+            <div className="font-mono text-[10px] text-ink/50">{c.city}</div>
+            <p className="text-[13px] text-ink/70">{c.bio}</p>
             <div className="flex gap-2 pt-2">
               <AdminButton tone="ghost" onClick={() => setE(c)}>Edit</AdminButton>
               <AdminButton tone="danger" onClick={() => { if (confirm(`Remove ${c.name}?`)) cdActions.deleteContributor(c.id); }}>Remove</AdminButton>
@@ -38,9 +38,9 @@ function ContribAdmin() {
       </div>
 
       {e && (
-        <div className="fixed inset-0 bg-ink/90 z-50 overflow-auto p-6 flex items-start justify-center">
-          <div className="bg-ink border border-bone/20 max-w-[600px] w-full p-8 space-y-5">
-            <h2 className="fr-display text-[32px] text-bone">{e.id ? "Edit" : "New"} contributor</h2>
+        <div className="fixed inset-0 bg-bone/90 z-50 overflow-auto p-6 flex items-start justify-center">
+          <div className="bg-bone border border-ink/20 max-w-[600px] w-full p-8 space-y-5">
+            <h2 className="fr-display text-[32px] text-ink">{e.id ? "Edit" : "New"} contributor</h2>
             <Field label="Name"><input className={inputCls} maxLength={120} value={e.name} onChange={(ev) => setE({ ...e, name: ev.target.value })} /></Field>
             <Field label="Role">
               <select className={inputCls} value={e.role} onChange={(ev) => setE({ ...e, role: ev.target.value as Contributor["role"] })}>

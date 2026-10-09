@@ -26,13 +26,13 @@ export function CoverLightbox({
       aria-modal="true"
       aria-label={`${r.title} cover`}
       onClick={onClose}
-      className="fixed inset-0 z-[100] bg-ink/90 flex items-center justify-center p-6 md:p-12 cursor-zoom-out"
+      className="fixed inset-0 z-[100] bg-bone/95 flex items-center justify-center p-6 md:p-12 cursor-zoom-out"
     >
       <button
         type="button"
         onClick={onClose}
         aria-label="Close"
-        className="absolute top-4 right-4 md:top-6 md:right-6 text-bone font-mono text-[11px] tracking-[0.25em] uppercase border border-bone/40 px-3 py-2 hover:bg-bone hover:text-ink"
+        className="absolute top-4 right-4 md:top-6 md:right-6 text-ink font-mono text-[11px] tracking-[0.25em] uppercase border border-ink/40 px-3 py-2 hover:bg-ink hover:text-bone"
       >
         ✕ Close
       </button>

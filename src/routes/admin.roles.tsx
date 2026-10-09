@@ -37,12 +37,12 @@ function RolesAdmin() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin", "roles"] }),
   });
 
-  if (loading) return <p className="font-mono text-[11px] text-bone/50">Loading…</p>;
+  if (loading) return <p className="font-mono text-[11px] text-ink/50">Loading…</p>;
   if (!isAdmin) {
     return (
       <div>
         <AdminHeader title="Roles" />
-        <p className="font-mono text-[11px] text-bone/60">Admin role required to manage user roles.</p>
+        <p className="font-mono text-[11px] text-ink/60">Admin role required to manage user roles.</p>
       </div>
     );
   }
@@ -53,7 +53,7 @@ function RolesAdmin() {
 
       <form
         onSubmit={(e) => { e.preventDefault(); setMsg(null); grant.mutate({ email, role }); }}
-        className="grid md:grid-cols-[1fr_180px_auto] gap-4 items-end max-w-3xl border border-bone/10 p-6"
+        className="grid md:grid-cols-[1fr_180px_auto] gap-4 items-end max-w-3xl border border-ink/10 p-6"
       >
         <Field label="User email">
           <input className={inputCls} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="person@example.com" />
@@ -67,34 +67,34 @@ function RolesAdmin() {
         </Field>
         <AdminButton type="submit">{grant.isPending ? "Granting…" : "Grant role"}</AdminButton>
         {msg && (
-          <p className={`md:col-span-3 font-mono text-[11px] ${msg.kind === "ok" ? "text-bone/80" : "text-vermil"}`}>{msg.text}</p>
+          <p className={`md:col-span-3 font-mono text-[11px] ${msg.kind === "ok" ? "text-ink/80" : "text-vermil"}`}>{msg.text}</p>
         )}
-        <p className="md:col-span-3 font-mono text-[10px] text-bone/40 leading-relaxed">
-          The user must already have signed up at <span className="text-bone/70">/auth</span>. Granting an existing role is a no-op.
+        <p className="md:col-span-3 font-mono text-[10px] text-ink/40 leading-relaxed">
+          The user must already have signed up at <span className="text-ink/70">/auth</span>. Granting an existing role is a no-op.
         </p>
       </form>
 
       <div>
-        <h2 className="font-mono text-[11px] tracking-[0.25em] uppercase text-bone/50 mb-4">Current assignments</h2>
+        <h2 className="font-mono text-[11px] tracking-[0.25em] uppercase text-ink/50 mb-4">Current assignments</h2>
         {rolesQ.isLoading ? (
-          <p className="font-mono text-[11px] text-bone/50">Loading…</p>
+          <p className="font-mono text-[11px] text-ink/50">Loading…</p>
         ) : rolesQ.error ? (
           <p className="font-mono text-[11px] text-vermil">{(rolesQ.error as Error).message}</p>
         ) : !rolesQ.data?.length ? (
-          <p className="font-mono text-[11px] text-bone/50">No role assignments yet.</p>
+          <p className="font-mono text-[11px] text-ink/50">No role assignments yet.</p>
         ) : (
           <table className="w-full font-mono text-[11px]">
             <thead>
-              <tr className="text-left text-bone/50 tracking-[0.2em] uppercase text-[10px] border-b border-bone/10">
+              <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
                 <th className="py-3">Email</th><th>Role</th><th>Granted</th><th></th>
               </tr>
             </thead>
             <tbody>
               {rolesQ.data.map((r) => (
-                <tr key={r.id} className="border-b border-bone/5">
-                  <td className="py-3 text-bone">{r.email}</td>
+                <tr key={r.id} className="border-b border-ink/5">
+                  <td className="py-3 text-ink">{r.email}</td>
                   <td className="text-vermil uppercase tracking-[0.2em]">{r.role}</td>
-                  <td className="text-bone/60">{new Date(r.created_at).toLocaleDateString()}</td>
+                  <td className="text-ink/60">{new Date(r.created_at).toLocaleDateString()}</td>
                   <td className="text-right">
                     <AdminButton tone="danger" onClick={() => { if (confirm(`Revoke ${r.role} from ${r.email}?`)) revoke.mutate(r.id); }}>Revoke</AdminButton>
                   </td>

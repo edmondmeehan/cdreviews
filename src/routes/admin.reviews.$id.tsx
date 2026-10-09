@@ -28,8 +28,8 @@ function EditReview() {
   const { id } = Route.useParams();
   const existing = useCdStore((s) => s.reviews.find((r) => r.id === id));
   const ready = useCdStore((s) => s.ready);
-  if (id !== "new" && !ready) return <p className="text-bone/60">Loading review…</p>;
-  if (id !== "new" && !existing) return <p className="text-bone/60">Not found.</p>;
+  if (id !== "new" && !ready) return <p className="text-ink/60">Loading review…</p>;
+  if (id !== "new" && !existing) return <p className="text-ink/60">Not found.</p>;
   return <ReviewEditor key={id} existing={existing} isNew={id === "new"} />;
 }
 
@@ -137,10 +137,10 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
       } />
 
       {/* Artwork + Spotify panel */}
-      <div className="border border-bone/10 p-5 mb-8 max-w-[1100px] grid grid-cols-1 md:grid-cols-[180px_1fr] gap-5">
+      <div className="border border-ink/10 p-5 mb-8 max-w-[1100px] grid grid-cols-1 md:grid-cols-[180px_1fr] gap-5">
         <div>
           {r.artUrl ? (
-            <img src={r.artUrl} alt="cover" className="w-[180px] h-[180px] object-cover border border-bone/20" />
+            <img src={r.artUrl} alt="cover" className="w-[180px] h-[180px] object-cover border border-ink/20" />
           ) : (
             <div className="w-[180px] h-[180px]"><Cover r={r} /></div>
           )}
@@ -148,7 +148,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
         <div className="space-y-3">
           <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Cover artwork</div>
           <div className="flex flex-wrap gap-2 items-center">
-            <label className="font-mono text-[10px] tracking-[0.25em] uppercase px-4 py-2 border bg-bone/0 text-bone/80 border-bone/20 hover:text-bone cursor-pointer">
+            <label className="font-mono text-[10px] tracking-[0.25em] uppercase px-4 py-2 border bg-ink/0 text-ink/80 border-ink/20 hover:text-ink cursor-pointer">
               {artBusy === "upload" ? "Uploading…" : "↑ Upload image"}
               <input type="file" accept="image/*" className="hidden" disabled={artBusy !== null}
                 onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
@@ -162,8 +162,8 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
               </AdminButton>
             )}
           </div>
-          {artMsg && <div className="font-mono text-[11px] text-bone/70">{artMsg}</div>}
-          <div className="border-t border-bone/10 pt-3 space-y-2">
+          {artMsg && <div className="font-mono text-[11px] text-ink/70">{artMsg}</div>}
+          <div className="border-t border-ink/10 pt-3 space-y-2">
             <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Search Spotify</div>
             <div className="flex gap-2">
               <input
@@ -178,23 +178,23 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
               </AdminButton>
             </div>
             {searchResults.length > 0 && (
-              <div className="max-h-[280px] overflow-y-auto border border-bone/10 divide-y divide-bone/10">
+              <div className="max-h-[280px] overflow-y-auto border border-ink/10 divide-y divide-ink/10">
                 {searchResults.map((item) => (
                   <button
                     key={item.albumId}
                     type="button"
                     onClick={() => applyResult(item)}
-                    className="w-full text-left flex gap-3 p-2 hover:bg-bone/5"
+                    className="w-full text-left flex gap-3 p-2 hover:bg-ink/5"
                   >
                     {item.imageUrl ? (
-                      <img src={item.imageUrl} alt="" className="w-12 h-12 object-cover border border-bone/20 flex-shrink-0" />
+                      <img src={item.imageUrl} alt="" className="w-12 h-12 object-cover border border-ink/20 flex-shrink-0" />
                     ) : (
-                      <div className="w-12 h-12 bg-bone/10 flex-shrink-0" />
+                      <div className="w-12 h-12 bg-ink/10 flex-shrink-0" />
                     )}
                     <div className="min-w-0 flex-1">
-                      <div className="text-bone text-sm truncate">{item.albumName}</div>
-                      <div className="font-mono text-[10px] text-bone/60 truncate">{item.artistName}</div>
-                      <div className="font-mono text-[10px] text-bone/40">{item.releaseDate} · {item.totalTracks} tracks</div>
+                      <div className="text-ink text-sm truncate">{item.albumName}</div>
+                      <div className="font-mono text-[10px] text-ink/60 truncate">{item.artistName}</div>
+                      <div className="font-mono text-[10px] text-ink/40">{item.releaseDate} · {item.totalTracks} tracks</div>
                     </div>
                   </button>
                 ))}

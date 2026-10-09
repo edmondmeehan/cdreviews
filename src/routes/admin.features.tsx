@@ -26,10 +26,10 @@ function FeaturesAdmin() {
       <AdminHeader title="Features" action={<AdminButton onClick={() => setEditing(blankFeature())}>+ New feature</AdminButton>} />
       <div className="space-y-2">
         {features.map((f) => (
-          <div key={f.id} className="flex items-center justify-between border-b border-bone/10 py-3">
+          <div key={f.id} className="flex items-center justify-between border-b border-ink/10 py-3">
             <div>
-              <div className="font-mono text-[12px] text-bone">{f.title}</div>
-              <div className="font-mono text-[10px] text-bone/50">{f.byline} · {f.date} · {f.status}</div>
+              <div className="font-mono text-[12px] text-ink">{f.title}</div>
+              <div className="font-mono text-[10px] text-ink/50">{f.byline} · {f.date} · {f.status}</div>
             </div>
             <div className="flex gap-2">
               <AdminButton tone="ghost" onClick={() => setEditing(f)}>Edit</AdminButton>
@@ -40,9 +40,9 @@ function FeaturesAdmin() {
       </div>
 
       {editing && (
-        <div className="fixed inset-0 bg-ink/90 z-50 overflow-auto p-6 flex items-start justify-center">
-          <div className="bg-ink border border-bone/20 max-w-[800px] w-full p-8 space-y-5">
-            <h2 className="fr-display text-[32px] text-bone">{editing.id ? "Edit" : "New"} feature</h2>
+        <div className="fixed inset-0 bg-bone/90 z-50 overflow-auto p-6 flex items-start justify-center">
+          <div className="bg-bone border border-ink/20 max-w-[800px] w-full p-8 space-y-5">
+            <h2 className="fr-display text-[32px] text-ink">{editing.id ? "Edit" : "New"} feature</h2>
             <Field label="Title"><input className={inputCls} maxLength={140} value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value })} /></Field>
             <Field label="Dek"><input className={inputCls} maxLength={240} value={editing.dek} onChange={(e) => setEditing({ ...editing, dek: e.target.value })} /></Field>
             <div className="grid grid-cols-3 gap-4">

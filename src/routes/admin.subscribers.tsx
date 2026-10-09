@@ -20,19 +20,19 @@ function SubsAdmin() {
     <div>
       <AdminHeader title={`Subscribers (${subs.length})`} action={<AdminButton onClick={exportCsv}>Export CSV</AdminButton>} />
       {subs.length === 0 ? (
-        <p className="font-mono text-[11px] text-bone/50">No subscribers yet. Try the footer signup form on the public site.</p>
+        <p className="font-mono text-[11px] text-ink/50">No subscribers yet. Try the footer signup form on the public site.</p>
       ) : (
         <table className="w-full font-mono text-[11px]">
           <thead>
-            <tr className="text-left text-bone/50 tracking-[0.2em] uppercase text-[10px] border-b border-bone/10">
+            <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
               <th className="py-3">Email</th><th>Signed up</th><th></th>
             </tr>
           </thead>
           <tbody>
             {subs.map((s) => (
-              <tr key={s.id} className="border-b border-bone/5">
-                <td className="py-3 text-bone">{s.email}</td>
-                <td className="text-bone/60">{new Date(s.signedUp).toLocaleString()}</td>
+              <tr key={s.id} className="border-b border-ink/5">
+                <td className="py-3 text-ink">{s.email}</td>
+                <td className="text-ink/60">{new Date(s.signedUp).toLocaleString()}</td>
                 <td className="text-right">
                   <AdminButton tone="danger" onClick={() => { if (confirm(`Remove ${s.email}?`)) cdActions.deleteSubscriber(s.id); }}>Remove</AdminButton>
                 </td>
