@@ -65,17 +65,16 @@ function AdminLayout() {
   return (
     <div className="bg-ink text-bone min-h-screen">
       <header className="border-b border-bone/10">
-        <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-[1400px] mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <Link to="/" className="fr-display-bold text-[28px] text-bone leading-none">cdreviews. <span className="text-vermil text-[12px] font-mono tracking-[0.3em] align-middle ml-2">ADMIN</span></Link>
-          <div className="flex items-center gap-4 font-mono text-[10px] tracking-[0.25em] uppercase">
-            <span className="text-bone/50">{user.email}</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] tracking-[0.25em] uppercase">
+            <span className="text-bone/50 break-all">{user.email}</span>
             <ChangePasswordButton email={user.email ?? ""} />
-            <button onClick={() => { if (confirm("Reset all admin data to seed?")) cdActions.resetAll(); }} className="text-vermil hover:underline">Reset data</button>
             <button onClick={signOut} className="text-bone/70 hover:text-vermil">Sign out</button>
             <Link to="/" className="text-bone/80 hover:text-vermil">→ View site</Link>
           </div>
         </div>
-        <nav className="max-w-[1400px] mx-auto px-6 pb-3 flex flex-wrap gap-5">
+        <nav className="max-w-[1400px] mx-auto px-6 pb-3 flex flex-wrap gap-x-5 gap-y-2">
           {NAV.filter((n) => !n.adminOnly || roles.includes("admin")).map((n) => {
             const active = n.exact ? pathname === n.to : pathname.startsWith(n.to);
             return (
@@ -98,7 +97,7 @@ function AdminLayout() {
               <Stat label="Subscribers" n={counts.s} to="/admin/subscribers" />
             </div>
             <p className="fr-blurb text-[16px] text-bone/60 max-w-[60ch]">
-              All edits are saved to your browser. Wire up Lovable Cloud (auth + Postgres) when you're ready and this admin will swap to a real backend.
+              Edits save straight to the live site. Drafts stay hidden until you publish them.
             </p>
           </div>
         ) : (

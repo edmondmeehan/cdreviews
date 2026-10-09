@@ -14,7 +14,8 @@ function ReviewsAdmin() {
           <AdminLinkButton to="/admin/reviews/$id" params={{ id: "new" }}>+ New review</AdminLinkButton>
         </div>
       } />
-      <table className="w-full font-mono text-[11px]">
+      <div className="overflow-x-auto -mx-6 px-6">
+      <table className="w-full min-w-[640px] font-mono text-[11px]">
         <thead>
           <tr className="text-left text-bone/50 tracking-[0.2em] uppercase text-[10px] border-b border-bone/10">
             <th className="py-3">Title</th><th>Artist</th><th>Score</th><th>Type</th><th>Status</th><th></th>
@@ -35,6 +36,7 @@ function ReviewsAdmin() {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }
