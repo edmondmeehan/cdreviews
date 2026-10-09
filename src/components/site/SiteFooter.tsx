@@ -53,7 +53,7 @@ export function SiteFooter() {
         <div className="md:col-span-4 space-y-5">
           <Link to="/" className="block fr-display-bold text-[56px] text-bone leading-none">cdreviews.</Link>
           <p className="fr-dek text-[16px] text-bone/70 max-w-[36ch]">
-            A music review publication of record. Independent since 1995. Reading rooms in Brooklyn, Berlin & Tokyo.
+            A music review publication of record. Independent since 1995.
           </p>
         </div>
 

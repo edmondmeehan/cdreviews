@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -6,9 +7,7 @@ import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/masthead")({
   component: Masthead,
-  head: () => ({
-    meta: [{ title: "Masthead — cdreviews." }, { name: "description", content: "The editors and contributors of cdreviews." }],
-  }),
+  head: () => pageMeta("Masthead \u2014 cdreviews.", "The editors and contributors of cdreviews."),
 });
 
 function Masthead() {

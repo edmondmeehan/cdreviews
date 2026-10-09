@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -11,6 +12,7 @@ import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 export const Route = createFileRoute("/reviews/$slug")({
   component: ReviewPage,
   notFoundComponent: NotFound,
+  head: ({ params }) => pageMeta(`${params.slug.replace(/-/g, " ")} — Review — cdreviews.`, "Album criticism, scores, and listening from the cdreviews archive.", "article"),
 });
 
 function NotFound() {
@@ -37,8 +39,11 @@ function NotFound() {
 function ReviewPage() {
   const { slug } = Route.useParams();
   const review = useCdStore((s) => s.reviews.find((r) => r.slug === slug));
+  const ready = useCdStore((s) => s.ready);
   const related = useCdStore((s) => s.reviews.filter((r) => r.slug !== slug && r.genre === review?.genre).slice(0, 4));
   const [zoom, setZoom] = useState(false);
+
+  if (!ready) return <div className="bg-bone text-ink min-h-screen"><SiteHeader /><main className="max-w-[1200px] mx-auto px-6 py-12">Loading review…</main><SiteFooter /></div>;
 
   if (!review) {
     const redirectSlug = LEGACY_REVIEW_SLUGS[slug];

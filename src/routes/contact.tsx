@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
@@ -7,9 +8,7 @@ import { PageHead } from "@/components/site/bits";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
-  head: () => ({
-    meta: [{ title: "Contact — cdreviews." }, { name: "description", content: "Submissions, advertising, corrections, letters." }],
-  }),
+  head: () => pageMeta("Contact \u2014 cdreviews.", "Submissions, advertising, corrections, letters."),
 });
 
 const schema = z.object({

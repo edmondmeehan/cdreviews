@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -16,12 +17,7 @@ const schema = z.object({
 export const Route = createFileRoute("/reviews/")({
   validateSearch: zodValidator(schema),
   component: ReviewsIndex,
-  head: () => ({
-    meta: [
-      { title: "Reviews — cdreviews." },
-      { name: "description", content: "Every published review, filterable by decade, type, and score." },
-    ],
-  }),
+  head: () => pageMeta("Reviews \u2014 cdreviews.", "Every published review, filterable by decade, type, and score."),
 });
 
 function ReviewsIndex() {
@@ -76,8 +72,8 @@ function FilterRow<T extends string>({ label, options, current, paramKey }: {
           return (
             <Link
               key={opt.key}
-              from="/reviews"
-              search={(prev: Record<string, unknown>) => ({ ...prev, [paramKey]: opt.key })}
+              from="/reviews/"
+              search={(prev) => ({ ...prev, [paramKey]: opt.key })}
               replace
               className={`font-mono text-[10px] tracking-[0.2em] uppercase px-3 py-2 border transition-colors ${
                 active ? "bg-ink text-bone border-ink" : "bg-bone text-ink-2 border-rule hover:border-ink"

@@ -21,6 +21,7 @@ const FIELD_ALIASES: Record<string, string[]> = {
   album: ["album", "title", "record"],
   reviewDate: ["reviewdate", "date"],
   period: ["period", "era"],
+  genre: ["genre", "style"],
   hotPick: ["hotpick", "bestnew", "pick"],
   label: ["label"],
   labelAddress: ["labeladdress", "address"],
@@ -99,8 +100,15 @@ export function rowsToReviews(rows: RawRow[]): ImportResult {
     }
 
     const rawDate = pick(row, "reviewDate");
-    const date = toMMDDYYYY(rawDate) ?? fmt(new Date());
-    if (!toMMDDYYYY(rawDate)) issues.push({ row: idx, field: "reviewDate", message: `Could not parse "${rawDate}", used today` });
+    const period = pick(row, "period");
+    const year = period.match(/\b(?:19|20)\d{2}\b/)?.[0];
+    const month = period.match(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/i)?.[0];
+    const date = toMMDDYYYY(rawDate) ?? (year ? (month ? `${month} ${year}` : year) : null);
+    if (!date) {
+      skipped++;
+      issues.push({ row: idx, field: "reviewDate", message: `Could not parse "${rawDate}" or its period — row skipped` });
+      return;
+    }
 
     const ratingRaw = pick(row, "rating");
     const score = parseRating(ratingRaw);
@@ -123,7 +131,7 @@ export function rowsToReviews(rows: RawRow[]): ImportResult {
       artist,
       label: pick(row, "label") || "—",
       format: "LP",
-      genre: pick(row, "period") || "Uncategorized",
+      genre: pick(row, "genre") || "Uncategorized",
       date,
       decade: decadeOf(date),
       kind,

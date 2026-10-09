@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -8,6 +9,7 @@ import { LEGACY_FEATURE_SLUGS } from "@/lib/legacy-redirects";
 export const Route = createFileRoute("/features/$slug")({
   component: FeaturePage,
   notFoundComponent: NotFound,
+  head: ({ params }) => pageMeta(`${params.slug.replace(/-/g, " ")} — Feature — cdreviews.`, "Long-form music criticism and interviews from cdreviews.", "article"),
 });
 
 function NotFound() {

@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -16,12 +17,7 @@ const schema = z.object({
 export const Route = createFileRoute("/archive")({
   validateSearch: zodValidator(schema),
   component: Archive,
-  head: () => ({
-    meta: [
-      { title: "Archive — cdreviews." },
-      { name: "description", content: "Browse three decades of reviews. Filter by decade, search by artist, label, or title." },
-    ],
-  }),
+  head: () => pageMeta("Archive \u2014 cdreviews.", "Browse three decades of reviews. Filter by decade, search by artist, label, or title."),
 });
 
 function Archive() {

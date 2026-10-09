@@ -1,0 +1,7 @@
+- [x] Load Fraunces, Geist, and JetBrains Mono reliably.
+- [x] Correct decades from saved review dates; keep article/editor fields tied to their own record; recover 31 archived bodies, including Entity and Mac Charles.
+- [ ] Recover the remaining 64 imported bodies — blocked by unavailable original archive pages; uploaded spreadsheets contain the same mixed text.
+- [x] Require artist and album matches for Spotify artwork; audit existing covers and remove incorrect/unverified saved matches.
+- [x] Remove hardcoded header timestamp, reader count, and unsupported footer locations.
+- [x] Remove duplicated card dates by separating date periods from genre data; verify browser rendering and editor loading.
+- [x] Apply required package security update; tests and latest build diagnostics pass.

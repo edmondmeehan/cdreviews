@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { matchesSpotifyAlbum } from "./spotify-match";
 
 const Input = z.object({
   artist: z.string().min(1).max(200),
@@ -110,7 +111,7 @@ function coalesce<T>(key: string, fn: () => Promise<T>): Promise<T> {
 export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
   .inputValidator((d) => Input.parse(d))
   .handler(async ({ data }) => {
-    const cacheKey = normKey("album", data.artist, data.album);
+    const cacheKey = normKey("album-exact-v2", data.artist, data.album);
     const cached = cacheGet<{
       ok: true; albumId: string; albumName: string; artistId: string | null;
       artistName: string; spotifyUrl: string; imageUrl: string | null;
@@ -127,7 +128,7 @@ export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
       try {
         const token = await getToken();
         const q = encodeURIComponent(`album:"${data.album}" artist:"${data.artist}"`);
-        const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=1&q=${q}`, {
+        const res = await fetch(`https://api.spotify.com/v1/search?type=album&limit=20&q=${q}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) return { ok: false as const, error: `Spotify search failed (${res.status})` };
@@ -140,8 +141,8 @@ export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
             artists?: Array<{ id: string; name: string }>;
           }> };
         };
-        const item = json.albums?.items?.[0];
-        if (!item) return { ok: false as const, error: "No matching album found on Spotify" };
+        const item = json.albums?.items?.find((candidate) => matchesSpotifyAlbum(candidate, data.artist, data.album));
+        if (!item) return { ok: false as const, error: "No exact artist and album match found on Spotify", mismatch: true as const };
         const image = pickBestImage(item.images);
         const result = {
           ok: true as const,

@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -19,12 +20,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/")({
   validateSearch: zodValidator(searchSchema),
   component: Index,
-  head: () => ({
-    meta: [
-      { title: "cdreviews. — A music review publication of record" },
-      { name: "description", content: "Independent music criticism since 1995. Reviews, features, and an archive of 38,412 records." },
-    ],
-  }),
+  head: () => pageMeta("cdreviews. \u2014 A music review publication of record", "Independent music criticism since 1995. Album reviews, features, and the cdreviews archive."),
 });
 
 const DECADE_TIMELINE = [

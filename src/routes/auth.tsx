@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Navigate, useNavigate, useSearch } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
@@ -9,7 +10,7 @@ const schema = z.object({ redirect: fallback(z.string(), "/admin").default("/adm
 export const Route = createFileRoute("/auth")({
   validateSearch: zodValidator(schema),
   component: AuthPage,
-  head: () => ({ meta: [{ title: "Sign in — cdreviews." }] }),
+  head: () => pageMeta("Sign in \u2014 cdreviews.", "Sign in to your cdreviews editorial account."),
 });
 
 function AuthPage() {
