@@ -4,7 +4,7 @@ import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { PageHead, ReviewCard } from "@/components/site/bits";
+import { CrateGrid, PageHead, ReviewCard } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 import { DECADE_LABELS, KIND_LABELS } from "@/lib/cd-data";
 
@@ -41,18 +41,18 @@ function ReviewsIndex() {
         dek="Every record we've graded since 1995. Filter by decade, type, or sort by score."
         right={<><div>{sorted.length} results</div></>}
       />
-      <section className="max-w-[1400px] mx-auto px-6 py-12 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-6 border-b border-rule">
+      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-12 space-y-8">
+        <div className="flex flex-wrap gap-x-10 gap-y-6 pb-8 border-b border-rule">
           <FilterRow label="Decade" options={DECADE_LABELS} current={decade} paramKey="decade" />
           <FilterRow label="Type" options={KIND_LABELS} current={kind} paramKey="kind" />
           <FilterRow label="Sort" options={[{ key: "newest", label: "Newest" }, { key: "score", label: "Highest score" }] as const} current={sort} paramKey="sort" />
         </div>
         {sorted.length === 0 ? (
-          <p className="fr-pull text-[28px] text-ink-2 py-16 text-center">Nothing in the stacks.</p>
+          <p className="fr-pull text-[30px] text-ink-2 py-16 text-center">Nothing in the stacks.</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+          <CrateGrid>
             {sorted.map((r) => <ReviewCard key={r.id} r={r} />)}
-          </div>
+          </CrateGrid>
         )}
       </section>
       <SiteFooter />
@@ -65,7 +65,7 @@ function FilterRow<T extends string>({ label, options, current, paramKey }: {
 }) {
   return (
     <div className="space-y-3">
-      <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">{label}</div>
+      <div className="font-mono text-[11px] tracking-[0.12em] uppercase text-vermil">{label}</div>
       <div className="flex flex-wrap gap-2">
         {options.map((opt) => {
           const active = opt.key === current;
@@ -75,8 +75,8 @@ function FilterRow<T extends string>({ label, options, current, paramKey }: {
               from="/reviews/"
               search={(prev) => ({ ...prev, [paramKey]: opt.key })}
               replace
-              className={`font-mono text-[10px] tracking-[0.2em] uppercase px-3 py-2 border transition-colors ${
-                active ? "bg-ink text-bone border-ink" : "bg-bone text-ink-2 border-rule hover:border-ink"
+              className={`inline-flex items-center h-11 px-[18px] rounded-full font-mono text-[12px] tracking-[0.08em] uppercase border transition-colors ${
+                active ? "bg-paper text-night border-paper" : "text-ink border-ink/25 hover:border-ink"
               }`}
             >
               {opt.label}

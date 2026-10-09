@@ -1,46 +1,56 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { NAV_LINKS } from "@/lib/cd-data";
 import { useCdStore } from "@/lib/cd-store";
 
-function UtilityBar() {
+const WORDMARK = "cdreviews".split("");
+
+function EqBars({ className = "" }: { className?: string }) {
   return (
-    <div className="border-b border-rule bg-bone">
-      <div className="max-w-[1400px] mx-auto px-6 py-2 flex items-center justify-between font-mono text-[10px] tracking-[0.2em] uppercase text-ink-2">
-        <div>Independent music criticism · Since 1995</div>
-        <div className="flex items-center gap-5">
-          <Link to="/admin" className="hover:text-vermil">Account</Link>
-          <a href="#mailer" className="hover:text-vermil">Subscribe</a>
-          <a href="#" className="hover:text-vermil">Search ⌘K</a>
-        </div>
-      </div>
-    </div>
+    <span className={`flex items-end gap-[3px] h-[18px] ${className}`} aria-hidden="true">
+      {[0, 1, 2, 3, 4].map((k) => (
+        <span
+          key={k}
+          className="eq-bar block w-[3px] h-[18px] bg-vermil"
+          style={{ animationDelay: `${k * 0.17}s` }}
+        />
+      ))}
+    </span>
   );
 }
 
-function Ticker() {
-  const reviews = useCdStore((s) => s.reviews.slice(0, 8));
-  const items = [...reviews, ...reviews];
+/** Thin top bar: CDR Radio "now spinning" + account links. */
+function RadioBar() {
+  const nowSpinning = useCdStore((s) =>
+    [...s.reviews].filter((r) => r.status === "published").sort((a, b) => b.score - a.score)[0],
+  );
   return (
-    <div className="bg-ink overflow-hidden border-b border-ink">
-      <div className="flex animate-marquee whitespace-nowrap py-2.5">
-        {items.map((it, i) => {
-          const tag = it.kind === "bnm" ? "BNM" : it.kind === "bnr" ? "BNR" : "NEW";
-          const tagColor = tag === "NEW" ? "text-vermil" : "text-acid";
-          return (
+    <div className="border-b border-rule bg-bone relative z-10">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-2.5 flex flex-wrap items-center gap-x-6 gap-y-2">
+        <Link
+          to="/radio"
+          className="flex items-center gap-2.5 bg-ink text-bone rounded-full pl-1.5 pr-4 h-11 font-mono text-[11px] tracking-[0.12em] uppercase hover:bg-vermil hover:text-bone transition-colors"
+        >
+          <span className="cd-disc spin block w-8 h-8" aria-hidden="true" />
+          CDR Radio
+        </Link>
+        <EqBars className="hidden sm:flex" />
+        <div className="flex items-center gap-2.5 font-mono text-[11px] tracking-[0.12em] uppercase text-mute flex-1 min-w-[200px]">
+          <span className="text-vermil">On air</span>
+          {nowSpinning && (
             <Link
-              key={`${it.id}-${i}`}
               to="/reviews/$slug"
-              params={{ slug: it.slug }}
-              className="font-mono text-[11px] text-bone px-6 flex-shrink-0 hover:opacity-80"
+              params={{ slug: nowSpinning.slug }}
+              className="text-ink truncate hover:text-vermil"
             >
-              <span className={`${tagColor} mr-2`}>{tag}</span>
-              <span className="text-bone/90">{it.artist}</span>
-              <span className="text-bone/60"> — {it.title}</span>
-              <span className="text-bone/40"> · </span>
-              <span className="text-acid">{it.score.toFixed(1)}</span>
+              Now: {nowSpinning.artist} — {nowSpinning.title}
             </Link>
-          );
-        })}
+          )}
+        </div>
+        <nav aria-label="Account" className="hidden sm:flex items-center gap-6 font-mono text-[11px] tracking-[0.12em] uppercase text-ink-2">
+          <Link to="/archive" className="hover:text-vermil">Search</Link>
+          <a href="#mailer" className="hover:text-vermil">Subscribe</a>
+          <Link to="/admin" className="hover:text-vermil">Account</Link>
+        </nav>
       </div>
     </div>
   );
@@ -48,40 +58,86 @@ function Ticker() {
 
 function Masthead() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const isHome = pathname === "/";
   return (
-    <header className="border-b border-rule bg-bone">
-      <div className="max-w-[1400px] mx-auto px-6 pt-8 pb-4 flex items-end justify-between gap-6">
-        <div className="flex items-baseline gap-4">
-          <Link to="/" className="block">
-            <h1 className="fr-display-bold text-[80px] md:text-[120px] lg:text-[160px] text-ink leading-none">cdreviews.</h1>
-          </Link>
-          <span className="hidden md:inline font-mono text-[10px] tracking-[0.3em] uppercase text-mute">EST. 1995</span>
+    <header className="bg-bone">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-8 md:pt-10">
+        <div className="flex flex-wrap justify-between gap-3 font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
+          <span>Independent music criticism</span>
+          <span className="hidden sm:inline">Est. 1995 · New York</span>
+          <span>Vol. 31</span>
         </div>
-        <span className="hidden lg:inline font-mono text-[10px] tracking-[0.3em] uppercase text-mute">VOL · 31</span>
-      </div>
-      <nav className="max-w-[1400px] mx-auto px-6 pb-3 flex items-center gap-7 border-t border-rule pt-3 overflow-x-auto">
-        {NAV_LINKS.map((l) => {
-          const active = l.to === "/" ? pathname === "/" : pathname.startsWith(l.to);
-          return (
-            <Link
-              key={l.label}
-              to={l.to}
-              className={`font-mono text-[11px] tracking-[0.2em] uppercase whitespace-nowrap ${active ? "text-vermil" : "text-ink-2 hover:text-vermil"}`}
+        <div className="flex items-end gap-4 md:gap-6 mt-1">
+          <Link to="/" aria-label="cdreviews — home" className="block min-w-0">
+            <span
+              className={`block fr-display-bold text-ink whitespace-nowrap ${
+                isHome
+                  ? "text-[clamp(64px,15.5vw,236px)]"
+                  : "text-[clamp(56px,9vw,128px)]"
+              }`}
+              aria-hidden="true"
             >
-              {l.label}
-            </Link>
-          );
-        })}
-      </nav>
+              {WORDMARK.map((l, i) => (
+                <span key={i} className="wm-letter">{l}</span>
+              ))}
+              <span className="text-vermil">.</span>
+            </span>
+          </Link>
+          <span
+            className={`cd-disc spin flex-none mb-1 ${
+              isHome ? "w-[clamp(56px,11vw,168px)] h-[clamp(56px,11vw,168px)]" : "w-[clamp(44px,6vw,88px)] h-[clamp(44px,6vw,88px)]"
+            }`}
+            aria-hidden="true"
+          />
+        </div>
+        <nav
+          aria-label="Sections"
+          className="mt-7 md:mt-8 border-t-2 border-ink border-b border-b-rule flex items-center gap-x-8 gap-y-2 py-4 overflow-x-auto"
+        >
+          {NAV_LINKS.map((l) => {
+            const active = l.to === "/" ? pathname === "/" : pathname.startsWith(l.to);
+            return (
+              <Link
+                key={l.label}
+                to={l.to}
+                className={`font-mono text-[12px] tracking-[0.12em] uppercase whitespace-nowrap ${
+                  active ? "text-vermil" : "text-ink hover:text-vermil"
+                }`}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
+          <RandomLink />
+        </nav>
+      </div>
     </header>
+  );
+}
+
+/** "Random from the vault" — jumps to a random published review. */
+function RandomLink() {
+  const slugs = useCdStore((s) => s.reviews.filter((r) => r.status === "published").map((r) => r.slug));
+  const navigate = useNavigate();
+  if (slugs.length === 0) return null;
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        const pick = slugs[Math.floor(Math.random() * slugs.length)];
+        navigate({ to: "/reviews/$slug", params: { slug: pick } });
+      }}
+      className="ml-auto font-mono text-[12px] tracking-[0.12em] uppercase whitespace-nowrap text-mute hover:text-vermil cursor-pointer"
+    >
+      Random from the vault ↻
+    </button>
   );
 }
 
 export function SiteHeader() {
   return (
     <>
-      <UtilityBar />
-      <Ticker />
+      <RadioBar />
       <Masthead />
     </>
   );

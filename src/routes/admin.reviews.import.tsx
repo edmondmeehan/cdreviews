@@ -100,7 +100,7 @@ function ImportPage() {
     <div>
       <AdminHeader
         title="Bulk import reviews"
-        action={<Link to="/admin/reviews" className="font-mono text-[10px] tracking-[0.25em] uppercase text-bone/60 hover:text-bone">← Back to reviews</Link>}
+        action={<Link to="/admin/reviews" className="font-mono text-[10px] tracking-[0.25em] uppercase text-ink/60 hover:text-ink">← Back to reviews</Link>}
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
@@ -110,51 +110,51 @@ function ImportPage() {
               type="file"
               accept=".xlsx,.xls,.csv"
               onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
-              className="block w-full text-bone/80 font-mono text-[12px] file:mr-4 file:py-2 file:px-4 file:border file:border-vermil file:bg-vermil file:text-bone file:font-mono file:text-[10px] file:tracking-[0.25em] file:uppercase hover:file:bg-bone hover:file:text-ink"
+              className="block w-full text-ink/80 font-mono text-[12px] file:mr-4 file:py-2 file:px-4 file:border file:border-vermil file:bg-vermil file:text-ink file:font-mono file:text-[10px] file:tracking-[0.25em] file:uppercase hover:file:bg-ink hover:file:text-bone"
             />
           </Field>
 
-          {fileName && <div className="font-mono text-[11px] text-bone/60">Loaded <span className="text-bone">{fileName}</span></div>}
+          {fileName && <div className="font-mono text-[11px] text-ink/60">Loaded <span className="text-ink">{fileName}</span></div>}
           {error && <div className="font-mono text-[12px] text-vermil border border-vermil/40 p-3">{error}</div>}
 
           {result && (
             <div className="space-y-4">
-              <div className="border border-bone/10 p-4 space-y-1 font-mono text-[12px] text-bone/80">
+              <div className="border border-ink/10 p-4 space-y-1 font-mono text-[12px] text-ink/80">
                 <div><span className="text-acid">{result.reviews.length}</span> reviews ready to import</div>
                 <div><span className="text-vermil">{result.skipped}</span> rows skipped</div>
-                <div><span className="text-bone/60">{result.issues.length}</span> warnings</div>
+                <div><span className="text-ink/60">{result.issues.length}</span> warnings</div>
               </div>
 
               {result.reviews.length > 0 && (
-                <div className="border border-bone/10">
+                <div className="border border-ink/10">
                   <table className="w-full font-mono text-[11px]">
                     <thead>
-                      <tr className="text-left text-bone/50 tracking-[0.2em] uppercase text-[10px] border-b border-bone/10">
+                      <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
                         <th className="py-2 px-3">Artist</th><th>Album</th><th>Date</th><th>Rating</th><th>Type</th>
                       </tr>
                     </thead>
                     <tbody>
                       {result.reviews.slice(0, 50).map((r) => (
-                        <tr key={r.id} className="border-b border-bone/5">
-                          <td className="py-2 px-3 text-bone/80">{r.artist}</td>
-                          <td className="text-bone">{r.title}</td>
-                          <td className="text-bone/60">{r.date}</td>
-                          <td className={r.score >= 8.5 ? "text-vermil" : "text-bone/70"}>{r.score.toFixed(1)}</td>
-                          <td className="uppercase text-bone/60">{r.kind}</td>
+                        <tr key={r.id} className="border-b border-ink/5">
+                          <td className="py-2 px-3 text-ink/80">{r.artist}</td>
+                          <td className="text-ink">{r.title}</td>
+                          <td className="text-ink/60">{r.date}</td>
+                          <td className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{r.score.toFixed(1)}</td>
+                          <td className="uppercase text-ink/60">{r.kind}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                   {result.reviews.length > 50 && (
-                    <div className="font-mono text-[10px] text-bone/40 px-3 py-2 border-t border-bone/10">+ {result.reviews.length - 50} more</div>
+                    <div className="font-mono text-[10px] text-ink/40 px-3 py-2 border-t border-ink/10">+ {result.reviews.length - 50} more</div>
                   )}
                 </div>
               )}
 
               {result.issues.length > 0 && (
-                <details className="border border-bone/10 p-3">
+                <details className="border border-ink/10 p-3">
                   <summary className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil cursor-pointer">{result.issues.length} warnings</summary>
-                  <ul className="mt-3 space-y-1 font-mono text-[11px] text-bone/70 max-h-[280px] overflow-auto">
+                  <ul className="mt-3 space-y-1 font-mono text-[11px] text-ink/70 max-h-[280px] overflow-auto">
                     {result.issues.map((iss, i) => (
                       <li key={i}>row {iss.row} · <span className="text-vermil">{iss.field}</span> · {iss.message}</li>
                     ))}
@@ -165,37 +165,37 @@ function ImportPage() {
               {committed ? (
                 <div className="border border-acid/50 bg-acid/5 p-4 space-y-2">
                   <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-acid">✓ Import complete</div>
-                  <div className="font-mono text-[12px] text-bone">{result.reviews.length} reviews submitted to the catalog.</div>
+                  <div className="font-mono text-[12px] text-ink">{result.reviews.length} reviews submitted to the catalog.</div>
                   <div className="flex gap-3 pt-1">
-                    <Link to="/admin/reviews" className="font-mono text-[11px] text-acid hover:text-bone">→ View in reviews list</Link>
-                    <button onClick={() => { setResult(null); setFileName(null); setCommitted(false); }} className="font-mono text-[11px] text-bone/60 hover:text-bone">↺ Import another file</button>
+                    <Link to="/admin/reviews" className="font-mono text-[11px] text-acid hover:text-ink">→ View in reviews list</Link>
+                    <button onClick={() => { setResult(null); setFileName(null); setCommitted(false); }} className="font-mono text-[11px] text-ink/60 hover:text-ink">↺ Import another file</button>
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-3 pt-2">
                   <AdminButton onClick={commit} tone="primary">Submit {result.reviews.length} reviews</AdminButton>
-                  <span className="font-mono text-[10px] text-bone/50 tracking-[0.2em] uppercase">Review the preview above before submitting</span>
+                  <span className="font-mono text-[10px] text-ink/50 tracking-[0.2em] uppercase">Review the preview above before submitting</span>
                 </div>
               )}
             </div>
           )}
         </section>
 
-        <aside className="lg:col-span-5 space-y-4 font-mono text-[11px] text-bone/70">
-          <div className="border border-bone/10 p-4 space-y-3">
+        <aside className="lg:col-span-5 space-y-4 font-mono text-[11px] text-ink/70">
+          <div className="border border-ink/10 p-4 space-y-3">
             <div className="text-[10px] tracking-[0.25em] uppercase text-vermil">Download template</div>
-            <div className="text-bone/60 leading-relaxed">Pre-filled with the required headers and two example rows.</div>
+            <div className="text-ink/60 leading-relaxed">Pre-filled with the required headers and two example rows.</div>
             <div className="flex gap-2 pt-1">
-              <button onClick={() => downloadTemplate("xlsx")} className="font-mono text-[10px] tracking-[0.25em] uppercase px-3 py-2 border bg-vermil text-bone border-vermil hover:bg-bone hover:text-ink">↓ .xlsx</button>
-              <button onClick={() => downloadTemplate("csv")} className="font-mono text-[10px] tracking-[0.25em] uppercase px-3 py-2 border bg-bone/0 text-bone/80 border-bone/20 hover:text-bone">↓ .csv</button>
+              <button onClick={() => downloadTemplate("xlsx")} className="font-mono text-[10px] tracking-[0.25em] uppercase px-3 py-2 border bg-vermil text-night border-vermil hover:bg-ink hover:text-bone">↓ .xlsx</button>
+              <button onClick={() => downloadTemplate("csv")} className="font-mono text-[10px] tracking-[0.25em] uppercase px-3 py-2 border bg-ink/0 text-ink/80 border-ink/20 hover:text-ink">↓ .csv</button>
             </div>
           </div>
-          <div className="border border-bone/10 p-4 space-y-3">
+          <div className="border border-ink/10 p-4 space-y-3">
             <div className="text-[10px] tracking-[0.25em] uppercase text-vermil">Expected columns</div>
             <ul className="space-y-1">
               {EXPECTED.map((c) => <li key={c}>· {c}</li>)}
             </ul>
-            <div className="pt-2 border-t border-bone/10 text-bone/50 leading-relaxed">
+            <div className="pt-2 border-t border-ink/10 text-ink/50 leading-relaxed">
               Header row required. Column order doesn't matter. Headers are matched case- and space-insensitively.
               Rating accepts 0–10, 0.0–1.0, or percentages. Hot Pick of "Y/Yes/True/X" marks the row as Best New Music.
               Paragraph breaks in Review Text use blank lines.

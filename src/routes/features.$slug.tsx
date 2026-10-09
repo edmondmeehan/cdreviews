@@ -21,7 +21,7 @@ function NotFound() {
         <div className="font-mono text-[11px] tracking-[0.25em] uppercase text-vermil">§ 404 · Spike not filed</div>
         <h1 className="fr-display text-[64px] md:text-[88px] text-ink">Feature not found.</h1>
         <p className="fr-dek text-[19px] text-ink-2 max-w-[55ch]">No feature lives at <span className="font-mono text-ink">/features/{slug}</span>.</p>
-        <Link to="/features" className="font-mono text-[11px] tracking-[0.25em] uppercase bg-vermil text-bone px-5 py-3 hover:bg-ink inline-block">→ All features</Link>
+        <Link to="/features" className="font-mono text-[11px] tracking-[0.25em] uppercase bg-vermil text-night px-5 py-3 hover:bg-ink inline-block">→ All features</Link>
       </div>
       <SiteFooter />
     </div>

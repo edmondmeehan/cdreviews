@@ -2,7 +2,7 @@ import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { PageHead, ReviewCard } from "@/components/site/bits";
+import { CrateGrid, PageHead, ReviewCard } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/best-new")({
@@ -11,8 +11,19 @@ export const Route = createFileRoute("/best-new")({
 });
 
 function BestNew() {
-  const bnm = useCdStore((s) => s.reviews.filter((r) => r.kind === "bnm" && r.status === "published"));
-  const bnr = useCdStore((s) => s.reviews.filter((r) => r.kind === "bnr" && r.status === "published"));
+  const published = useCdStore((s) => s.reviews.filter((r) => r.status === "published"));
+  const bnm = published.filter((r) => r.kind === "bnm");
+  const bnr = published.filter((r) => r.kind === "bnr");
+  // Until editors flag Best New picks, show the highest-rated records instead of an empty page.
+  const topRated = [...published].filter((r) => r.score >= 8.5).sort((a, b) => b.score - a.score);
+
+  const sections = [
+    { title: "Best New", italic: "Music.", items: bnm },
+    { title: "Best New", italic: "Reissue.", items: bnr },
+  ].filter((sec) => sec.items.length > 0);
+  if (sections.length === 0 && topRated.length > 0) {
+    sections.push({ title: "Highest", italic: "rated.", items: topRated });
+  }
 
   return (
     <div className="bg-bone text-ink min-h-screen">
@@ -22,19 +33,20 @@ function BestNew() {
         title="Best new."
         dek="The records we believe in most. Updated as we go — never inflated, occasionally regretted."
       />
-      <section className="max-w-[1400px] mx-auto px-6 py-16 space-y-16">
-        <div>
-          <h2 className="fr-display text-[40px] text-vermil mb-8">Best New Music</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {bnm.map((r) => <ReviewCard key={r.id} r={r} />)}
+      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-16 space-y-24">
+        {sections.map((sec) => (
+          <div key={sec.italic}>
+            <h2 className="fr-display text-[clamp(40px,4.4vw,64px)] text-ink border-b border-rule pb-5">
+              {sec.title} <span className="serif-it text-vermil">{sec.italic}</span>
+            </h2>
+            <CrateGrid>
+              {sec.items.map((r) => <ReviewCard key={r.id} r={r} />)}
+            </CrateGrid>
           </div>
-        </div>
-        <div>
-          <h2 className="fr-display text-[40px] text-vermil mb-8">Best New Reissue</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
-            {bnr.map((r) => <ReviewCard key={r.id} r={r} />)}
-          </div>
-        </div>
+        ))}
+        {sections.length === 0 && (
+          <p className="fr-pull text-[30px] text-ink-2 py-16 text-center">The shelf is being restocked.</p>
+        )}
       </section>
       <SiteFooter />
     </div>

@@ -54,7 +54,7 @@ function Contact() {
             </select>
           </Field>
           <Field label="Message"><textarea name="message" rows={7} maxLength={2000} required className="w-full bg-bone border border-rule px-3 py-2 font-mono text-[12px]" /></Field>
-          <button className="font-mono text-[11px] tracking-[0.25em] uppercase bg-vermil text-bone px-5 py-3 hover:bg-ink">Send →</button>
+          <button className="font-mono text-[11px] tracking-[0.25em] uppercase bg-vermil text-night px-5 py-3 hover:bg-ink">Send →</button>
           {status === "ok" && <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-vermil">→ Thanks. We'll be in touch.</p>}
           {status === "err" && errors.map((e, i) => <p key={i} className="font-mono text-[10px] tracking-[0.2em] uppercase text-vermil">· {e}</p>)}
         </form>

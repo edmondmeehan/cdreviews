@@ -42,14 +42,14 @@ function ResetPasswordPage() {
   }
 
   return (
-    <div className="bg-ink text-bone min-h-screen flex items-center justify-center px-6">
-      <form onSubmit={submit} className="w-full max-w-[420px] border border-bone/10 p-8 space-y-6">
+    <div className="bg-bone text-ink min-h-screen flex items-center justify-center px-6">
+      <form onSubmit={submit} className="w-full max-w-[420px] border border-ink/10 p-8 space-y-6">
         <div>
           <div className="font-mono text-[10px] tracking-[0.3em] uppercase text-vermil">§ Editorial</div>
           <h1 className="fr-display text-[40px] mt-2">Set new password.</h1>
         </div>
         {!ready ? (
-          <p className="font-mono text-[11px] text-bone/60">Waiting for recovery link…</p>
+          <p className="font-mono text-[11px] text-ink/60">Waiting for recovery link…</p>
         ) : done ? (
           <p className="font-mono text-[11px] text-vermil">Password updated. Redirecting…</p>
         ) : (
@@ -57,21 +57,21 @@ function ResetPasswordPage() {
             <label className="block space-y-2">
               <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">New password</span>
               <input type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-ink border border-bone/20 px-3 py-2 font-mono text-[13px] outline-none focus:border-vermil" />
+                className="w-full bg-bone border border-ink/20 px-3 py-2 font-mono text-[13px] outline-none focus:border-vermil" />
             </label>
             <label className="block space-y-2">
               <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Confirm</span>
               <input type="password" required minLength={6} value={confirm} onChange={(e) => setConfirm(e.target.value)}
-                className="w-full bg-ink border border-bone/20 px-3 py-2 font-mono text-[13px] outline-none focus:border-vermil" />
+                className="w-full bg-bone border border-ink/20 px-3 py-2 font-mono text-[13px] outline-none focus:border-vermil" />
             </label>
             {err && <div className="font-mono text-[11px] text-vermil border border-vermil/40 p-3">{err}</div>}
             <button type="submit" disabled={busy}
-              className="w-full font-mono text-[10px] tracking-[0.3em] uppercase bg-vermil text-bone py-3 hover:bg-bone hover:text-ink disabled:opacity-50">
+              className="w-full font-mono text-[10px] tracking-[0.3em] uppercase bg-vermil text-night py-3 hover:bg-ink hover:text-bone disabled:opacity-50">
               {busy ? "…" : "Update password"}
             </button>
           </>
         )}
-        <Link to="/auth" search={{ redirect: "/admin" }} className="block text-center font-mono text-[10px] tracking-[0.25em] uppercase text-bone/60 hover:text-bone">
+        <Link to="/auth" search={{ redirect: "/admin" }} className="block text-center font-mono text-[10px] tracking-[0.25em] uppercase text-ink/60 hover:text-ink">
           ← Back to sign in
         </Link>
       </form>

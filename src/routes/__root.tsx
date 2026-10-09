@@ -24,12 +24,12 @@ function NotFoundComponent() {
           <div className="fr-score-card text-[140px] md:text-[200px] leading-none text-ink mt-4">404</div>
         </div>
         <div className="md:col-span-8 space-y-6 border-t border-rule pt-6">
-          <h1 className="fr-display text-[56px] md:text-[88px] text-ink leading-[0.95]">Not in the stacks.</h1>
+          <h1 className="fr-display text-[56px] md:text-[88px] text-ink">Not in the <span className="serif-it">stacks.</span></h1>
           <p className="fr-dek text-[20px] text-ink-2 max-w-[55ch]">
             That record isn't on file. The page you asked for has been moved, mis-shelved, or was never pressed.
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
-            <Link to="/" className="font-mono text-[11px] tracking-[0.25em] uppercase bg-vermil text-bone px-5 py-3 hover:bg-ink">→ Home</Link>
+            <Link to="/" className="font-mono text-[11px] tracking-[0.25em] uppercase bg-vermil text-night px-5 py-3 btn-pop">→ Home</Link>
             <Link to="/reviews" className="font-mono text-[11px] tracking-[0.25em] uppercase border border-rule px-5 py-3 hover:bg-bone-2">Reviews</Link>
             <Link to="/archive" className="font-mono text-[11px] tracking-[0.25em] uppercase border border-rule px-5 py-3 hover:bg-bone-2">Archive</Link>
             <Link to="/contact" className="font-mono text-[11px] tracking-[0.25em] uppercase border border-rule px-5 py-3 hover:bg-bone-2">Report a broken link</Link>
@@ -82,20 +82,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "cdreviews." },
-      { name: "description", content: "cdreviews." },
-      { name: "author", content: "Lovable" },
+      { name: "description", content: "Independent music criticism since 1995." },
+      { name: "author", content: "cdreviews" },
+      { name: "theme-color", content: "#0f0e0c" },
       { property: "og:title", content: "cdreviews." },
-      { property: "og:description", content: "cdreviews." },
+      { property: "og:description", content: "Independent music criticism since 1995." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "cdreviews." },
-      { name: "twitter:description", content: "cdreviews." },
+      { name: "twitter:description", content: "Independent music criticism since 1995." },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;700&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap" },
       {
         rel: "stylesheet",
         href: appCss,

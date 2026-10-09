@@ -48,58 +48,69 @@ export function SiteFooter() {
   }
 
   return (
-    <footer id="mailer" className="bg-ink text-bone">
-      <div className="max-w-[1400px] mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-12 gap-10">
-        <div className="md:col-span-4 space-y-5">
-          <Link to="/" className="block fr-display-bold text-[56px] text-bone leading-none">cdreviews.</Link>
-          <p className="fr-dek text-[16px] text-bone/70 max-w-[36ch]">
-            A music review publication of record. Independent since 1995.
-          </p>
-        </div>
-
-        {FOOTER_COLS.map((col) => (
-          <div key={col.heading} className="md:col-span-2 space-y-4">
-            <div className="font-mono text-[10px] tracking-[0.3em] uppercase text-acid">{col.heading}</div>
-            <ul className="space-y-2">
-              {col.links.map((link) => (
-                <li key={link.label}>
-                  <Link to={link.to} className="font-mono text-[11px] text-bone/80 hover:text-vermil tracking-wide">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+    <footer className="bg-bone text-ink">
+      {/* The Mailer */}
+      <section id="mailer" className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-16 pb-20">
+        <div className="relative overflow-hidden bg-vermil text-night p-8 md:p-14 flex flex-wrap gap-10 items-center justify-between">
+          <div className="cd-disc spin-slow absolute -right-36 -top-36 w-[360px] h-[360px] opacity-35" aria-hidden="true" />
+          <div className="relative flex-[1_1_420px] min-w-0">
+            <div className="font-mono text-[12px] tracking-[0.12em] uppercase">The Mailer · weekly</div>
+            <h2 className="fr-display text-[40px] md:text-[60px] mt-4">
+              Liner notes for <span className="serif-it">your inbox.</span>
+            </h2>
+            <p className="mt-4 text-[17px]">A weekly letter from the editor. Reviews, dispatches, the occasional argument.</p>
           </div>
-        ))}
-
-        <div className="md:col-span-2 space-y-4">
-          <div className="font-mono text-[10px] tracking-[0.3em] uppercase text-acid">The Mailer</div>
-          <p className="fr-blurb text-[14px] text-bone/70">
-            A weekly letter from the editor. Reviews, dispatches, the occasional argument.
-          </p>
-          <form className="flex border border-bone/20" onSubmit={onSubmit}>
+          <form className="relative flex-[1_1_420px] min-w-0 flex flex-wrap gap-3" onSubmit={onSubmit}>
+            <label htmlFor="mailer-email" className="sr-only">Email address</label>
             <input
+              id="mailer-email"
               type="email"
               required
+              autoComplete="email"
               value={value}
               onChange={(e) => { setValue(e.target.value); setStatus("idle"); }}
-              placeholder="@email"
-              className="flex-1 min-w-0 bg-transparent border-0 px-3 py-2.5 text-bone font-mono text-[11px] outline-none placeholder:text-bone/40"
+              placeholder="you@email.com"
+              className="flex-[1_1_240px] min-w-0 h-14 px-5 bg-night text-paper font-mono text-[14px] outline-none focus:ring-2 focus:ring-paper"
             />
-            <button className="bg-vermil text-bone font-mono text-[10px] tracking-[0.2em] uppercase px-4 hover:bg-bone hover:text-ink transition-colors">
-              Send →
+            <button className="h-14 px-7 border-2 border-night bg-paper text-night font-bold text-[16px] hover:bg-night hover:text-paper transition-colors">
+              Subscribe →
             </button>
+            <p className="basis-full font-mono text-[11px] tracking-[0.12em] uppercase min-h-[1em]" aria-live="polite">
+              {status === "ok" && "→ You're on the list."}
+              {status === "err" && "That email doesn't look right."}
+            </p>
           </form>
-          {status === "ok" && <p className="font-mono text-[10px] text-acid tracking-[0.2em] uppercase">→ Subscribed.</p>}
-          {status === "err" && <p className="font-mono text-[10px] text-vermil tracking-[0.2em] uppercase">Invalid email.</p>}
         </div>
-      </div>
+      </section>
 
-      <div className="border-t border-bone/10">
-        <div className="max-w-[1400px] mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4 font-mono text-[10px] tracking-[0.2em] uppercase text-bone/50">
-          <span>© 1995 — 2026 cdreviews</span>
-          <span>All rights reserved · Print ISSN 1095‑3814</span>
-          <Link to="/admin" className="hover:text-vermil">Admin</Link>
+      <div className="border-t border-rule overflow-hidden">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-16">
+          <div className="flex flex-wrap gap-12 justify-between">
+            <p className="flex-[1_1_300px] max-w-[360px] text-mute text-[15px] leading-relaxed">
+              A music review publication of record. Independent since 1995.
+            </p>
+            {FOOTER_COLS.map((col) => (
+              <nav key={col.heading} aria-label={col.heading} className="flex flex-col gap-3 text-[15px]">
+                <span className="font-mono text-[11px] tracking-[0.12em] uppercase text-vermil">{col.heading}</span>
+                {col.links.map((link) => (
+                  <Link key={link.label} to={link.to} className="text-ink hover:text-vermil">
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            ))}
+          </div>
+          <div className="mt-16 pt-6 border-t border-rule flex flex-wrap items-center justify-between gap-4 font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
+            <span>© 1995 — 2026 cdreviews</span>
+            <span>Made in New York · Vol. 31</span>
+            <Link to="/admin" className="hover:text-vermil">Admin</Link>
+          </div>
+          <div
+            aria-hidden="true"
+            className="fr-display-bold text-[clamp(90px,21vw,320px)] text-bone-2 whitespace-nowrap mt-8 -mb-[0.12em] select-none"
+          >
+            cdreviews<span className="text-vermil">.</span>
+          </div>
         </div>
       </div>
     </footer>
