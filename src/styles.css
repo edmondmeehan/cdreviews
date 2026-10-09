@@ -1,6 +1,5 @@
 @import "tailwindcss" source(none);
 @source "../src";
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=JetBrains+Mono:wght@400;500;700&family=Geist:wght@300;400;500;600;700&display=swap');
 
 @theme {
   --color-bone: #f1ecdf;

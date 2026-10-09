@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -8,6 +9,7 @@ import { LEGACY_LIST_SLUGS } from "@/lib/legacy-redirects";
 export const Route = createFileRoute("/lists/$slug")({
   component: ListPage,
   notFoundComponent: NotFound,
+  head: ({ params }) => pageMeta(`${params.slug.replace(/-/g, " ")} — List — cdreviews.`, "Records selected and ranked by cdreviews.", "article"),
 });
 
 function NotFound() {

@@ -6,8 +6,7 @@ function UtilityBar() {
   return (
     <div className="border-b border-rule bg-bone">
       <div className="max-w-[1400px] mx-auto px-6 py-2 flex items-center justify-between font-mono text-[10px] tracking-[0.2em] uppercase text-ink-2">
-        <div className="flex items-center"><span className="live-dot" />LIVE · 14,892 readers</div>
-        <div className="hidden md:block">WED · 06 MAY 2026 · 14:32 EST · CYCLE 31</div>
+        <div>Independent music criticism · Since 1995</div>
         <div className="flex items-center gap-5">
           <Link to="/admin" className="hover:text-vermil">Account</Link>
           <a href="#mailer" className="hover:text-vermil">Subscribe</a>

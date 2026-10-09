@@ -26,8 +26,14 @@ function decadeFromYear(iso: string): Decade {
 
 function EditReview() {
   const { id } = Route.useParams();
-  const isNew = id === "new";
   const existing = useCdStore((s) => s.reviews.find((r) => r.id === id));
+  const ready = useCdStore((s) => s.ready);
+  if (id !== "new" && !ready) return <p className="text-bone/60">Loading review…</p>;
+  if (id !== "new" && !existing) return <p className="text-bone/60">Not found.</p>;
+  return <ReviewEditor key={id} existing={existing} isNew={id === "new"} />;
+}
+
+function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }) {
   const navigate = useNavigate();
 
   const [r, setR] = useState<Review>(existing ?? {
@@ -44,13 +50,11 @@ function EditReview() {
     releaseDate: string; totalTracks: number; spotifyUrl: string; imageUrl: string | null;
   }>>([]);
 
-  if (!isNew && !existing) return <p className="text-bone/60">Not found.</p>;
-
-  function save(e: FormEvent) {
+  async function save(e: FormEvent) {
     e.preventDefault();
     const newId = r.id || slugify(`${r.artist}-${r.title}`);
     const newSlug = r.slug || slugify(`${r.artist}-${r.title}`);
-    cdActions.upsertReview({ ...r, id: newId, slug: newSlug });
+    await cdActions.upsertReview({ ...r, id: newId, slug: newSlug });
     navigate({ to: "/admin/reviews" });
   }
 
@@ -77,7 +81,10 @@ function EditReview() {
     setArtBusy("spotify"); setArtMsg(null);
     try {
       const res = await lookupSpotifyAlbum({ data: { artist: r.artist, album: r.title } });
-      if (!res.ok) { setArtMsg(res.error); return; }
+      if (!res.ok) {
+        if ("mismatch" in res && res.mismatch) setR((p) => ({ ...p, artUrl: undefined, spotifyUrl: undefined, spotifyAlbumId: undefined, spotifyArtistId: undefined }));
+        setArtMsg(res.error); return;
+      }
       setR((p) => ({
         ...p,
         artUrl: res.imageUrl ?? p.artUrl,
@@ -115,8 +122,6 @@ function EditReview() {
       spotifyUrl: item.spotifyUrl,
       spotifyAlbumId: item.albumId,
       spotifyArtistId: item.artistId ?? p.spotifyArtistId,
-      date: item.releaseDate ? formatReleaseDate(item.releaseDate) : p.date,
-      decade: item.releaseDate ? decadeFromYear(item.releaseDate) : p.decade,
     }));
     setArtMsg(`✓ Applied: ${item.artistName} — ${item.albumName}`);
     setSearchResults([]);
@@ -224,7 +229,7 @@ function EditReview() {
         <Field label="Format"><input className={inputCls} value={r.format} onChange={(e) => patch("format", e.target.value)} maxLength={60} /></Field>
         <Field label="Genre"><input className={inputCls} value={r.genre} onChange={(e) => patch("genre", e.target.value)} maxLength={60} /></Field>
         <Field label="Byline"><input className={inputCls} value={r.byline} onChange={(e) => patch("byline", e.target.value)} maxLength={80} /></Field>
-        <Field label="Date (MM.DD.YYYY)"><input className={inputCls} value={r.date} onChange={(e) => patch("date", e.target.value)} maxLength={10} /></Field>
+        <Field label="Review date"><input className={inputCls} value={r.date} onChange={(e) => patch("date", e.target.value)} maxLength={40} /></Field>
         <Field label="Decade">
           <select className={inputCls} value={r.decade} onChange={(e) => patch("decade", e.target.value as Decade)}>
             {(["1990s","2000s","2010s","2020s"] as const).map((d) => <option key={d}>{d}</option>)}

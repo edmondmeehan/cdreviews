@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/reset-password")({
   component: ResetPasswordPage,
-  head: () => ({ meta: [{ title: "Reset password — cdreviews." }] }),
+  head: () => pageMeta("Reset password \u2014 cdreviews.", "Set a new password for your cdreviews account."),
 });
 
 function ResetPasswordPage() {

@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -5,9 +6,7 @@ import { PageHead } from "@/components/site/bits";
 
 export const Route = createFileRoute("/radio")({
   component: Radio,
-  head: () => ({
-    meta: [{ title: "CDR Radio — cdreviews." }, { name: "description", content: "A 24-hour listening room curated from three decades of reviews." }],
-  }),
+  head: () => pageMeta("CDR Radio \u2014 cdreviews.", "A 24-hour listening room curated from three decades of reviews."),
 });
 
 function Radio() {

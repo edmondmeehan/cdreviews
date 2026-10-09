@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -6,12 +7,7 @@ import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/best-new")({
   component: BestNew,
-  head: () => ({
-    meta: [
-      { title: "Best New — cdreviews." },
-      { name: "description", content: "Best New Music and Best New Reissue, the records we believe in most this season." },
-    ],
-  }),
+  head: () => pageMeta("Best New \u2014 cdreviews.", "Best New Music and Best New Reissue, the records we believe in most this season."),
 });
 
 function BestNew() {

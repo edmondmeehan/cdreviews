@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -6,9 +7,7 @@ import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/lists/")({
   component: ListsIndex,
-  head: () => ({
-    meta: [{ title: "Lists — cdreviews." }, { name: "description", content: "Ranked lists, working documents, year-end arguments." }],
-  }),
+  head: () => pageMeta("Lists \u2014 cdreviews.", "Ranked lists, working documents, year-end arguments."),
 });
 
 function ListsIndex() {

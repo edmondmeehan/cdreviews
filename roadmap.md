@@ -1,0 +1,6 @@
+- [ ] Load Fraunces, Geist, and JetBrains Mono reliably.
+- [ ] Repair record-specific review body, date, and decade data.
+- [ ] Require artist and album matches for Spotify artwork; remove incorrect saved matches.
+- [ ] Remove hardcoded header timestamp, reader count, and unsupported footer locations.
+- [ ] Remove duplicated card dates and verify pages.
+- [ ] Apply required package security update and check diagnostics.

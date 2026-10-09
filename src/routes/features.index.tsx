@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -6,9 +7,7 @@ import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/features/")({
   component: FeaturesIndex,
-  head: () => ({
-    meta: [{ title: "Features — cdreviews." }, { name: "description", content: "Long-form essays, interviews and arguments." }],
-  }),
+  head: () => pageMeta("Features \u2014 cdreviews.", "Long-form essays, interviews and arguments."),
 });
 
 function FeaturesIndex() {
