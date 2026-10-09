@@ -1,17 +1,18 @@
-import { describe, expect, it } from "bun:test";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import { matchesDiscogsTitle } from "./discogs-match";
 
 describe("matchesDiscogsTitle", () => {
   it("accepts exact artist and album", () => {
-    expect(matchesDiscogsTitle("Mac Charles - Whirlwind", "mac charles", "Whirlwind")).toBe(true);
+    assert.equal(matchesDiscogsTitle("Mac Charles - Whirlwind", "mac charles", "Whirlwind"), true);
   });
   it("ignores Discogs numeric disambiguation suffix", () => {
-    expect(matchesDiscogsTitle("Entity (2) - Ghost Train", "Entity", "Ghost Train")).toBe(true);
+    assert.equal(matchesDiscogsTitle("Entity (2) - Ghost Train", "Entity", "Ghost Train"), true);
   });
   it("rejects a different album by the same artist", () => {
-    expect(matchesDiscogsTitle("Mac Charles - Other Album", "Mac Charles", "Whirlwind")).toBe(false);
+    assert.equal(matchesDiscogsTitle("Mac Charles - Other Album", "Mac Charles", "Whirlwind"), false);
   });
   it("rejects a different artist with the same album title", () => {
-    expect(matchesDiscogsTitle("Warner Classics - Whirlwind", "Mac Charles", "Whirlwind")).toBe(false);
+    assert.equal(matchesDiscogsTitle("Warner Classics - Whirlwind", "Mac Charles", "Whirlwind"), false);
   });
 });
