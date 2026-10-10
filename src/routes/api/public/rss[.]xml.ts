@@ -13,8 +13,9 @@ export const Route = createFileRoute("/api/public/rss.xml")({
   server: {
     handlers: {
       GET: async () => {
-        const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
-        const supabase = createClient<Database>(process.env["SUPABASE_URL"]!, key, {
+        const url = process.env["SUPABASE_URL"] ?? process.env["VITE_SUPABASE_URL"]!;
+        const key = process.env["SUPABASE_PUBLISHABLE_KEY"] ?? process.env["VITE_SUPABASE_PUBLISHABLE_KEY"]!;
+        const supabase = createClient<Database>(url, key, {
           auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
           global: {
             fetch: (input, init) => {
@@ -26,7 +27,7 @@ export const Route = createFileRoute("/api/public/rss.xml")({
           },
         });
 
-        const { data: reviews } = await supabase
+        const { data: reviews, error } = await supabase
           .from("reviews")
           .select("slug, title, artist, label, genre, score, byline, date, published_at")
           .eq("status", "published")
