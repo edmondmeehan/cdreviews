@@ -8,6 +8,7 @@ import { Cover } from "@/components/site/Cover";
 import { CoverLightbox } from "@/components/site/CoverLightbox";
 import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
+import { relatedReviews } from "@/lib/related-reviews";
 
 export const Route = createFileRoute("/reviews/$slug")({
   component: ReviewPage,
@@ -40,7 +41,7 @@ function ReviewPage() {
   const { slug } = Route.useParams();
   const review = useCdStore((s) => s.reviews.find((r) => r.slug === slug));
   const ready = useCdStore((s) => s.ready);
-  const related = useCdStore((s) => s.reviews.filter((r) => r.slug !== slug && r.genre === review?.genre).slice(0, 4));
+  const related = useCdStore((s) => (review ? relatedReviews(review, s.reviews, 4) : []));
   const [zoom, setZoom] = useState(false);
 
   if (!ready) return <div className="bg-bone text-ink min-h-screen"><SiteHeader /><main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-24 flex items-center gap-4 font-mono text-[12px] tracking-[0.12em] uppercase text-mute"><span className="cd-disc spin w-10 h-10" aria-hidden="true" />Loading review…</main><SiteFooter /></div>;
