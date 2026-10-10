@@ -48,25 +48,25 @@ function Radio() {
       </section>
 
       <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pb-12">
-        <div className="bg-night text-bone border border-rule flex flex-col lg:flex-row">
+        <div className="bg-bone-2 border border-rule flex flex-col lg:flex-row">
           <div className="flex-[1_1_420px] min-w-0 p-8 md:p-12 space-y-6">
             <Kicker>Now spinning · Full program</Kicker>
-            <h2 className="fr-display text-[clamp(40px,4.4vw,64px)] text-bone">
+            <h2 className="fr-display text-[clamp(40px,4.4vw,64px)] text-ink">
               Fuck It, <span className="serif-it">It's Fall.</span>
             </h2>
-            <p className="fr-dek text-[17px] text-bone/70 max-w-[48ch]">
+            <p className="fr-dek text-[17px] text-ink-2 max-w-[48ch]">
               The standing CDR Radio playlist — the same records we argue about in the reviews, sequenced back to back. It updates as the editors rotate the stacks.
             </p>
             <a
               href="https://open.spotify.com/playlist/0Lxt9bg9qMX4He0UDkxRL8?si=UWtWoMY_TC2kBjBHnOZ0rA"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 border border-bone/40 px-5 py-3 font-mono text-[12px] tracking-[0.12em] uppercase text-bone hover:bg-bone hover:text-ink transition-colors"
+              className="inline-flex items-center gap-2 border border-ink/40 px-5 py-3 font-mono text-[12px] tracking-[0.12em] uppercase text-ink hover:bg-ink hover:text-bone transition-colors"
             >
               Open in Spotify ↗
             </a>
           </div>
-          <div className="flex-[1_1_560px] min-w-0 p-6 md:p-8 border-t lg:border-t-0 lg:border-l border-bone/20">
+          <div className="flex-[1_1_560px] min-w-0 p-6 md:p-8 border-t lg:border-t-0 lg:border-l border-rule">
             <iframe
               title="CDR Radio playlist on Spotify"
               src="https://open.spotify.com/embed/playlist/0Lxt9bg9qMX4He0UDkxRL8?utm_source=cdreviews&theme=0"
