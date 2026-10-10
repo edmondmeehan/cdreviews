@@ -23,6 +23,7 @@ import { Route as ReviewsIndexRouteImport } from './routes/reviews.index'
 import { Route as ListsIndexRouteImport } from './routes/lists.index'
 import { Route as FeaturesIndexRouteImport } from './routes/features.index'
 import { Route as ReviewsSlugRouteImport } from './routes/reviews.$slug'
+import { Route as PreviewTokenRouteImport } from './routes/preview.$token'
 import { Route as ListsSlugRouteImport } from './routes/lists.$slug'
 import { Route as FeaturesSlugRouteImport } from './routes/features.$slug'
 import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
@@ -105,6 +106,11 @@ const ReviewsSlugRoute = ReviewsSlugRouteImport.update({
   path: '/reviews/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreviewTokenRoute = PreviewTokenRouteImport.update({
+  id: '/preview/$token',
+  path: '/preview/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ListsSlugRoute = ListsSlugRouteImport.update({
   id: '/lists/$slug',
   path: '/lists/$slug',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
+  '/preview/$token': typeof PreviewTokenRoute
   '/reviews/$slug': typeof ReviewsSlugRoute
   '/features/': typeof FeaturesIndexRoute
   '/lists/': typeof ListsIndexRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
+  '/preview/$token': typeof PreviewTokenRoute
   '/reviews/$slug': typeof ReviewsSlugRoute
   '/features': typeof FeaturesIndexRoute
   '/lists': typeof ListsIndexRoute
@@ -234,6 +242,7 @@ export interface FileRoutesById {
   '/admin/subscribers': typeof AdminSubscribersRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
+  '/preview/$token': typeof PreviewTokenRoute
   '/reviews/$slug': typeof ReviewsSlugRoute
   '/features/': typeof FeaturesIndexRoute
   '/lists/': typeof ListsIndexRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/admin/subscribers'
     | '/features/$slug'
     | '/lists/$slug'
+    | '/preview/$token'
     | '/reviews/$slug'
     | '/features/'
     | '/lists/'
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/admin/subscribers'
     | '/features/$slug'
     | '/lists/$slug'
+    | '/preview/$token'
     | '/reviews/$slug'
     | '/features'
     | '/lists'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/admin/subscribers'
     | '/features/$slug'
     | '/lists/$slug'
+    | '/preview/$token'
     | '/reviews/$slug'
     | '/features/'
     | '/lists/'
@@ -340,6 +352,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   FeaturesSlugRoute: typeof FeaturesSlugRoute
   ListsSlugRoute: typeof ListsSlugRoute
+  PreviewTokenRoute: typeof PreviewTokenRoute
   ReviewsSlugRoute: typeof ReviewsSlugRoute
   FeaturesIndexRoute: typeof FeaturesIndexRoute
   ListsIndexRoute: typeof ListsIndexRoute
@@ -445,6 +458,13 @@ declare module '@tanstack/react-router' {
       path: '/reviews/$slug'
       fullPath: '/reviews/$slug'
       preLoaderRoute: typeof ReviewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview/$token': {
+      id: '/preview/$token'
+      path: '/preview/$token'
+      fullPath: '/preview/$token'
+      preLoaderRoute: typeof PreviewTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lists/$slug': {
@@ -564,6 +584,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   FeaturesSlugRoute: FeaturesSlugRoute,
   ListsSlugRoute: ListsSlugRoute,
+  PreviewTokenRoute: PreviewTokenRoute,
   ReviewsSlugRoute: ReviewsSlugRoute,
   FeaturesIndexRoute: FeaturesIndexRoute,
   ListsIndexRoute: ListsIndexRoute,
