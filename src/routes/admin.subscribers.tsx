@@ -1,24 +1,34 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton } from "@/components/admin/bits";
+import {
+  buildSubscriberCsv,
+  subscriberExportFilename,
+  uniqueSubscriberCount,
+} from "@/lib/subscriber-export";
 
 export const Route = createFileRoute("/admin/subscribers")({ component: SubsAdmin });
 
 function SubsAdmin() {
   const subs = useCdStore((s) => s.subscribers);
 
+  const unique = uniqueSubscriberCount(subs);
+
   function exportCsv() {
-    const csv = "email,signed_up\n" + subs.map((s) => `${s.email},${s.signedUp}`).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
+    const blob = new Blob([buildSubscriberCsv(subs)], { type: "text/csv;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "cdreviews-subscribers.csv";
+    a.download = subscriberExportFilename();
     a.click();
+    URL.revokeObjectURL(a.href);
   }
 
   return (
     <div>
-      <AdminHeader title={`Subscribers (${subs.length})`} action={<AdminButton onClick={exportCsv}>Export CSV</AdminButton>} />
+      <AdminHeader
+        title={`Subscribers (${unique}${unique === subs.length ? "" : ` · ${subs.length - unique} duplicate${subs.length - unique === 1 ? "" : "s"} hidden`})`}
+        action={<AdminButton onClick={exportCsv}>Export CSV</AdminButton>}
+      />
       {subs.length === 0 ? (
         <p className="font-mono text-[11px] text-ink/50">No subscribers yet. Try the footer signup form on the public site.</p>
       ) : (
