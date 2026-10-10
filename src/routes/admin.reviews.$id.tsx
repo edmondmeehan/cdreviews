@@ -36,6 +36,7 @@ function EditReview() {
 }
 
 function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }) {
+  const { canPublish } = useAuth();
   const navigate = useNavigate();
 
   const [r, setR] = useState<Review>(existing ?? {

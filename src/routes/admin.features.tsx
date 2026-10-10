@@ -12,6 +12,7 @@ function blankFeature(): Feature {
 }
 
 function FeaturesAdmin() {
+  const { canPublish } = useAuth();
   const features = useCdStore((s) => s.features);
   const [editing, setEditing] = useState<Feature | null>(null);
 
