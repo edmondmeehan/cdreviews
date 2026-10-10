@@ -47,7 +47,7 @@ function RadioBar() {
           )}
         </div>
         <nav aria-label="Account" className="hidden sm:flex items-center gap-6 font-mono text-[11px] tracking-[0.12em] uppercase text-ink-2">
-          <Link to="/archive" className="hover:text-vermil">Search</Link>
+          <Link to="/search" className="hover:text-vermil">Search</Link>
           <a href="#mailer" className="hover:text-vermil">Subscribe</a>
           <Link to="/admin" className="hover:text-vermil">Account</Link>
         </nav>
