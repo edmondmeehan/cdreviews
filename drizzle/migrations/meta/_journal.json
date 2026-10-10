@@ -15,6 +15,13 @@
       "when": 1791617686056,
       "tag": "0001_tighten_profiles_select_policy",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791670087169,
+      "tag": "0002_admin_workflow",
+      "breakpoints": true
     }
   ]
 }
