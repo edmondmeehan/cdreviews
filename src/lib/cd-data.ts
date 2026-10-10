@@ -33,6 +33,10 @@ export type Review = {
   spotifyUrl?: string;
   spotifyAlbumId?: string;
   spotifyArtistId?: string;
+  // Workflow
+  createdBy?: string;
+  submittedAt?: string;
+  previewToken?: string;
 };
 
 export type Feature = {
