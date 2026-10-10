@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { useAuth } from "@/lib/auth";
+import type { Review } from "@/lib/cd-data";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -110,7 +111,7 @@ function AdminLayout() {
   );
 }
 
-type R = ReturnType<typeof useCdStore<import("@/lib/cd-data").Review[]>>[number];
+type R = Review;
 
 function Dashboard({ reviews, userId, canPublish }: { reviews: R[]; userId: string; canPublish: boolean }) {
   const mine = reviews.filter((r) => r.createdBy === userId && r.status === "draft");
