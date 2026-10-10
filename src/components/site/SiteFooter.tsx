@@ -103,7 +103,10 @@ export function SiteFooter() {
           <div className="mt-16 pt-6 border-t border-rule flex flex-wrap items-center justify-between gap-4 font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
             <span>© 1995 — 2026 cdreviews</span>
             <span>Est. 1995 · Vol. 31</span>
-            <Link to="/admin" className="hover:text-vermil">Admin</Link>
+            <span className="flex items-center gap-5">
+              <a href="/api/public/rss.xml" className="hover:text-vermil">RSS</a>
+              <Link to="/admin" className="hover:text-vermil">Admin</Link>
+            </span>
           </div>
           <div
             aria-hidden="true"
