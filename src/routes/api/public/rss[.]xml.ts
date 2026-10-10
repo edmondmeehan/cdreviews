@@ -9,7 +9,7 @@ const SITE_DESC = "Album criticism, scores, and listening from the cdreviews arc
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 
-export const Route = createFileRoute("/api/public/rss/xml")({
+export const Route = createFileRoute("/api/public/rss.xml")({
   server: {
     handlers: {
       GET: async () => {

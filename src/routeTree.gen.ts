@@ -31,9 +31,9 @@ import { Route as AdminListsRouteImport } from './routes/admin.lists'
 import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
 import { Route as AdminReviewsIndexRouteImport } from './routes/admin.reviews.index'
+import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
 import { Route as AdminReviewsImportRouteImport } from './routes/admin.reviews.import'
 import { Route as AdminReviewsIdRouteImport } from './routes/admin.reviews.$id'
-import { Route as ApiPublicRssXmlRouteImport } from './routes/api/public/rss.xml'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -145,6 +145,11 @@ const AdminReviewsIndexRoute = AdminReviewsIndexRouteImport.update({
   path: '/reviews/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicRssDotxmlRoute = ApiPublicRssDotxmlRouteImport.update({
+  id: '/api/public/rss.xml',
+  path: '/api/public/rss.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminReviewsImportRoute = AdminReviewsImportRouteImport.update({
   id: '/reviews/import',
   path: '/reviews/import',
@@ -154,11 +159,6 @@ const AdminReviewsIdRoute = AdminReviewsIdRouteImport.update({
   id: '/reviews/$id',
   path: '/reviews/$id',
   getParentRoute: () => AdminRoute,
-} as any)
-const ApiPublicRssXmlRoute = ApiPublicRssXmlRouteImport.update({
-  id: '/api/public/rss/xml',
-  path: '/api/public/rss/xml',
-  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -185,8 +185,8 @@ export interface FileRoutesByFullPath {
   '/reviews/': typeof ReviewsIndexRoute
   '/admin/reviews/$id': typeof AdminReviewsIdRoute
   '/admin/reviews/import': typeof AdminReviewsImportRoute
+  '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
   '/admin/reviews/': typeof AdminReviewsIndexRoute
-  '/api/public/rss/xml': typeof ApiPublicRssXmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -212,8 +212,8 @@ export interface FileRoutesByTo {
   '/reviews': typeof ReviewsIndexRoute
   '/admin/reviews/$id': typeof AdminReviewsIdRoute
   '/admin/reviews/import': typeof AdminReviewsImportRoute
+  '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
   '/admin/reviews': typeof AdminReviewsIndexRoute
-  '/api/public/rss/xml': typeof ApiPublicRssXmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -240,8 +240,8 @@ export interface FileRoutesById {
   '/reviews/': typeof ReviewsIndexRoute
   '/admin/reviews/$id': typeof AdminReviewsIdRoute
   '/admin/reviews/import': typeof AdminReviewsImportRoute
+  '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
   '/admin/reviews/': typeof AdminReviewsIndexRoute
-  '/api/public/rss/xml': typeof ApiPublicRssXmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -269,8 +269,8 @@ export interface FileRouteTypes {
     | '/reviews/'
     | '/admin/reviews/$id'
     | '/admin/reviews/import'
+    | '/api/public/rss.xml'
     | '/admin/reviews/'
-    | '/api/public/rss/xml'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -296,8 +296,8 @@ export interface FileRouteTypes {
     | '/reviews'
     | '/admin/reviews/$id'
     | '/admin/reviews/import'
+    | '/api/public/rss.xml'
     | '/admin/reviews'
-    | '/api/public/rss/xml'
   id:
     | '__root__'
     | '/'
@@ -323,8 +323,8 @@ export interface FileRouteTypes {
     | '/reviews/'
     | '/admin/reviews/$id'
     | '/admin/reviews/import'
+    | '/api/public/rss.xml'
     | '/admin/reviews/'
-    | '/api/public/rss/xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -344,7 +344,7 @@ export interface RootRouteChildren {
   FeaturesIndexRoute: typeof FeaturesIndexRoute
   ListsIndexRoute: typeof ListsIndexRoute
   ReviewsIndexRoute: typeof ReviewsIndexRoute
-  ApiPublicRssXmlRoute: typeof ApiPublicRssXmlRoute
+  ApiPublicRssDotxmlRoute: typeof ApiPublicRssDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -503,6 +503,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReviewsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/rss.xml': {
+      id: '/api/public/rss.xml'
+      path: '/api/public/rss.xml'
+      fullPath: '/api/public/rss.xml'
+      preLoaderRoute: typeof ApiPublicRssDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/reviews/import': {
       id: '/admin/reviews/import'
       path: '/reviews/import'
@@ -516,13 +523,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/reviews/$id'
       preLoaderRoute: typeof AdminReviewsIdRouteImport
       parentRoute: typeof AdminRoute
-    }
-    '/api/public/rss/xml': {
-      id: '/api/public/rss/xml'
-      path: '/api/public/rss/xml'
-      fullPath: '/api/public/rss/xml'
-      preLoaderRoute: typeof ApiPublicRssXmlRouteImport
-      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -568,7 +568,7 @@ const rootRouteChildren: RootRouteChildren = {
   FeaturesIndexRoute: FeaturesIndexRoute,
   ListsIndexRoute: ListsIndexRoute,
   ReviewsIndexRoute: ReviewsIndexRoute,
-  ApiPublicRssXmlRoute: ApiPublicRssXmlRoute,
+  ApiPublicRssDotxmlRoute: ApiPublicRssDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
