@@ -7,7 +7,7 @@ import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/roles")({ component: RolesAdmin });
 
-type RoleOpt = "admin" | "editor" | "contributor";
+type RoleOpt = "admin" | "editor" | "senior_writer" | "writer" | "contributor";
 
 function RolesAdmin() {
   const { isAdmin, loading } = useAuth();
@@ -60,9 +60,11 @@ function RolesAdmin() {
         </Field>
         <Field label="Role">
           <select className={inputCls} value={role} onChange={(e) => setRole(e.target.value as RoleOpt)}>
-            <option value="admin">admin</option>
-            <option value="editor">editor</option>
-            <option value="contributor">contributor</option>
+            <option value="admin">Admin — full access</option>
+            <option value="editor">Editor — everything but roles</option>
+            <option value="senior_writer">Senior writer — write &amp; publish</option>
+            <option value="writer">Writer — drafts only</option>
+            <option value="contributor">Contributor — no admin access</option>
           </select>
         </Field>
         <AdminButton type="submit">{grant.isPending ? "Granting…" : "Grant role"}</AdminButton>

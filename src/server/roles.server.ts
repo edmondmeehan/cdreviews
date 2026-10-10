@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-export const ROLES = ["admin", "editor", "contributor"] as const;
+export const ROLES = ["admin", "editor", "senior_writer", "writer", "contributor"] as const;
 export type Role = (typeof ROLES)[number];
 
 export async function assertAdmin(userId: string) {
