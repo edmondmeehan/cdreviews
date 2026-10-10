@@ -48,6 +48,41 @@ function Radio() {
       </section>
 
       <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pb-12">
+        <div className="bg-night text-bone border border-rule flex flex-col lg:flex-row">
+          <div className="flex-[1_1_420px] min-w-0 p-8 md:p-12 space-y-6">
+            <Kicker>Now spinning · Full program</Kicker>
+            <h2 className="fr-display text-[clamp(40px,4.4vw,64px)] text-bone">
+              Fuck It, <span className="serif-it">It's Fall.</span>
+            </h2>
+            <p className="fr-dek text-[17px] text-bone/70 max-w-[48ch]">
+              The standing CDR Radio playlist — the same records we argue about in the reviews, sequenced back to back. It updates as the editors rotate the stacks.
+            </p>
+            <a
+              href="https://open.spotify.com/playlist/0Lxt9bg9qMX4He0UDkxRL8?si=UWtWoMY_TC2kBjBHnOZ0rA"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 border border-bone/40 px-5 py-3 font-mono text-[12px] tracking-[0.12em] uppercase text-bone hover:bg-bone hover:text-ink transition-colors"
+            >
+              Open in Spotify ↗
+            </a>
+          </div>
+          <div className="flex-[1_1_560px] min-w-0 p-6 md:p-8 border-t lg:border-t-0 lg:border-l border-bone/20">
+            <iframe
+              title="CDR Radio playlist on Spotify"
+              src="https://open.spotify.com/embed/playlist/0Lxt9bg9qMX4He0UDkxRL8?utm_source=cdreviews&theme=0"
+              width="100%"
+              height="480"
+              frameBorder={0}
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              className="rounded-xl"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pb-12">
+
         <div className="bg-bone-warm border border-rule flex flex-wrap">
           <div className="flex-[1_1_520px] min-w-0 p-8 md:p-12 space-y-6">
             <Kicker>Now rotating</Kicker>
