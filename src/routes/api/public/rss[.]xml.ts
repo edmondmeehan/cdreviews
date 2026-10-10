@@ -29,16 +29,16 @@ export const Route = createFileRoute("/api/public/rss.xml")({
 
         const { data: reviews, error } = await supabase
           .from("reviews")
-          .select("slug, title, artist, label, genre, score, byline, date, published_at")
+          .select("slug, title, artist, label, genre, score, byline, date, updated_at")
           .eq("status", "published")
-          .order("published_at", { ascending: false })
+          .order("updated_at", { ascending: false })
           .limit(50);
         if (error) console.error("[rss] reviews query failed:", error.message);
 
         const items = (reviews ?? [])
           .map((r) => {
             const link = `${SITE_URL}/reviews/${r.slug}`;
-            const pubDate = r.published_at ? new Date(r.published_at).toUTCString() : "";
+            const pubDate = r.updated_at ? new Date(r.updated_at).toUTCString() : "";
             const desc = `${r.artist} — ${r.title} (${r.label}). Scored ${Number(r.score).toFixed(1)}/10 by ${r.byline}.`;
             return `    <item>
       <title>${esc(`${r.artist} — ${r.title}`)}</title>
