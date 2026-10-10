@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RadioRouteImport } from './routes/radio'
 import { Route as MastheadRouteImport } from './routes/masthead'
@@ -36,6 +37,11 @@ import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[
 import { Route as AdminReviewsImportRouteImport } from './routes/admin.reviews.import'
 import { Route as AdminReviewsIdRouteImport } from './routes/admin.reviews.$id'
 
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search': typeof SearchRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByTo {
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search': typeof SearchRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
@@ -235,6 +243,7 @@ export interface FileRoutesById {
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search': typeof SearchRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
@@ -265,6 +274,7 @@ export interface FileRouteTypes {
     | '/masthead'
     | '/radio'
     | '/reset-password'
+    | '/search'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
@@ -293,6 +303,7 @@ export interface FileRouteTypes {
     | '/masthead'
     | '/radio'
     | '/reset-password'
+    | '/search'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
@@ -321,6 +332,7 @@ export interface FileRouteTypes {
     | '/masthead'
     | '/radio'
     | '/reset-password'
+    | '/search'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
@@ -350,6 +362,7 @@ export interface RootRouteChildren {
   MastheadRoute: typeof MastheadRoute
   RadioRoute: typeof RadioRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SearchRoute: typeof SearchRoute
   FeaturesSlugRoute: typeof FeaturesSlugRoute
   ListsSlugRoute: typeof ListsSlugRoute
   PreviewTokenRoute: typeof PreviewTokenRoute
@@ -362,6 +375,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -582,6 +602,7 @@ const rootRouteChildren: RootRouteChildren = {
   MastheadRoute: MastheadRoute,
   RadioRoute: RadioRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SearchRoute: SearchRoute,
   FeaturesSlugRoute: FeaturesSlugRoute,
   ListsSlugRoute: ListsSlugRoute,
   PreviewTokenRoute: PreviewTokenRoute,
