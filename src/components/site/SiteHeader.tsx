@@ -64,7 +64,7 @@ function Masthead() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-8 md:pt-10">
         <div className="flex flex-wrap justify-between gap-3 font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
           <span>Independent music criticism</span>
-          <span className="hidden sm:inline">Est. 1995 · New York</span>
+          <span className="hidden sm:inline">Est. 1995</span>
           <span>Vol. 31</span>
         </div>
         <div className="flex items-end gap-4 md:gap-6 mt-1">
@@ -92,7 +92,7 @@ function Masthead() {
         </div>
         <nav
           aria-label="Sections"
-          className="mt-7 md:mt-8 border-t-2 border-ink border-b border-b-rule flex items-center gap-x-8 gap-y-2 py-4 overflow-x-auto"
+          className="mt-7 md:mt-8 border-t-2 border-ink border-b border-b-rule flex flex-wrap items-center gap-x-5 sm:gap-x-8 gap-y-3 py-4"
         >
           {NAV_LINKS.map((l) => {
             const active = l.to === "/" ? pathname === "/" : pathname.startsWith(l.to);
@@ -127,7 +127,7 @@ function RandomLink() {
         const pick = slugs[Math.floor(Math.random() * slugs.length)];
         navigate({ to: "/reviews/$slug", params: { slug: pick } });
       }}
-      className="ml-auto font-mono text-[12px] tracking-[0.12em] uppercase whitespace-nowrap text-mute hover:text-vermil cursor-pointer"
+      className="sm:ml-auto font-mono text-[12px] tracking-[0.12em] uppercase whitespace-nowrap text-mute hover:text-vermil cursor-pointer"
     >
       Random from the vault ↻
     </button>
