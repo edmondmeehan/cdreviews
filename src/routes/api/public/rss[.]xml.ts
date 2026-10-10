@@ -33,6 +33,7 @@ export const Route = createFileRoute("/api/public/rss.xml")({
           .eq("status", "published")
           .order("published_at", { ascending: false })
           .limit(50);
+        if (error) console.error("[rss] reviews query failed:", error.message);
 
         const items = (reviews ?? [])
           .map((r) => {
