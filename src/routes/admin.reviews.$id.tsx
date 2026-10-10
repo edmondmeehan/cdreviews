@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth";
 import { useState, type FormEvent } from "react";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
@@ -265,7 +266,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
         <Field label="Status">
           <select className={inputCls} value={r.status} onChange={(e) => patch("status", e.target.value as Review["status"])}>
             <option value="draft">Draft</option>
-            <option value="published">Published</option>
+            <option value="published" disabled={!canPublish}>Published{canPublish ? "" : " (senior writer+)"}</option>
           </select>
         </Field>
         <div className="lg:col-span-2">
