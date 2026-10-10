@@ -31,7 +31,7 @@ const EMPTY: Snapshot = {
 type Decade = Review["decade"];
 type Kind = Review["kind"];
 
-function rowToReview(row: Record<string, unknown>): Review {
+export function rowToReview(row: Record<string, unknown>): Review {
   return {
     id: String(row.id),
     slug: String(row.slug),
@@ -58,6 +58,9 @@ function rowToReview(row: Record<string, unknown>): Review {
     spotifyUrl: (row.spotify_url as string | undefined) ?? undefined,
     spotifyAlbumId: (row.spotify_album_id as string | undefined) ?? undefined,
     spotifyArtistId: (row.spotify_artist_id as string | undefined) ?? undefined,
+    createdBy: (row.created_by as string | undefined) ?? undefined,
+    submittedAt: (row.submitted_at as string | undefined) ?? undefined,
+    previewToken: (row.preview_token as string | undefined) ?? undefined,
   };
 }
 
@@ -87,6 +90,8 @@ function reviewToRow(r: Review): Record<string, unknown> {
     spotify_url: r.spotifyUrl ?? null,
     spotify_album_id: r.spotifyAlbumId ?? null,
     spotify_artist_id: r.spotifyArtistId ?? null,
+    submitted_at: r.status === "published" ? null : (r.submittedAt ?? null),
+    preview_token: r.previewToken ?? null,
   };
 }
 
@@ -227,6 +232,33 @@ export const cdActions = {
     const { error } = await supabase.from("reviews").delete().eq(col, id);
     if (error) console.error("deleteReview", error);
     invalidate();
+  },
+  async setReviewsStatus(ids: string[], status: Review["status"]) {
+    if (ids.length === 0) return { error: undefined as string | undefined };
+    const patch: Record<string, unknown> = { status };
+    if (status === "published") patch.submitted_at = null;
+    const { error } = await supabase.from("reviews").update(patch as never).in("id", ids);
+    invalidate();
+    return { error: error?.message };
+  },
+  async deleteReviews(ids: string[]) {
+    if (ids.length === 0) return { error: undefined as string | undefined };
+    const { error } = await supabase.from("reviews").delete().in("id", ids);
+    invalidate();
+    return { error: error?.message };
+  },
+  async setReviewSubmitted(id: string, submitted: boolean) {
+    const { error } = await supabase.from("reviews").update({ submitted_at: submitted ? new Date().toISOString() : null } as never).eq("id", id);
+    invalidate();
+    return { error: error?.message };
+  },
+  async ensurePreviewToken(id: string, existing?: string) {
+    if (existing) return existing;
+    const token = crypto.randomUUID();
+    const { error } = await supabase.from("reviews").update({ preview_token: token } as never).eq("id", id);
+    invalidate();
+    if (error) throw new Error(error.message);
+    return token;
   },
   async bulkUpsertReviews(rows: Review[]) {
     if (rows.length === 0) return;
