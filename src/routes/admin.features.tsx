@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth";
 import { useState } from "react";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
@@ -11,6 +12,7 @@ function blankFeature(): Feature {
 }
 
 function FeaturesAdmin() {
+  const { canPublish } = useAuth();
   const features = useCdStore((s) => s.features);
   const [editing, setEditing] = useState<Feature | null>(null);
 
@@ -52,7 +54,7 @@ function FeaturesAdmin() {
             </div>
             <Field label="Status">
               <select className={inputCls} value={editing.status} onChange={(e) => setEditing({ ...editing, status: e.target.value as Feature["status"] })}>
-                <option value="draft">Draft</option><option value="published">Published</option>
+                <option value="draft">Draft</option><option value="published" disabled={!canPublish}>Published{canPublish ? "" : " (senior writer+)"}</option>
               </select>
             </Field>
             <Field label="Body (paragraphs separated by blank lines)">

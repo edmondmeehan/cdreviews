@@ -40,7 +40,7 @@ const ERAS: Array<{ short: string; years: string; name: string; decade: ArchiveD
 ];
 
 const SLOGANS = [
-  "Independent music criticism", "Est. 1995", "New York", "Vol. 31",
+  "Independent music criticism", "Est. 1995", "Vol. 31",
   "A music review publication of record", "Reviews · Features · Lists · Archive · Radio",
 ];
 

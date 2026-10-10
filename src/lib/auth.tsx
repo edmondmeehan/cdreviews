@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { supabase } from "@/integrations/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
 
-type Role = "admin" | "editor" | "contributor";
+type Role = "admin" | "editor" | "senior_writer" | "writer" | "contributor";
 
 type AuthState = {
   user: User | null;
@@ -12,6 +12,8 @@ type AuthState = {
   loading: boolean;
   isStaff: boolean;
   isAdmin: boolean;
+  isWriter: boolean;
+  canPublish: boolean;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
   signUp: (email: string, password: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
@@ -57,6 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading,
     isStaff: roles.includes("admin") || roles.includes("editor"),
     isAdmin: roles.includes("admin"),
+    isWriter: roles.some((r) => r === "admin" || r === "editor" || r === "senior_writer" || r === "writer"),
+    canPublish: roles.some((r) => r === "admin" || r === "editor" || r === "senior_writer"),
     async signIn(email, password) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       return { error: error?.message };
