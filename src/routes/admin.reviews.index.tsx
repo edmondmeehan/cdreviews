@@ -62,7 +62,7 @@ function ReviewsAdmin() {
               <td className="text-ink/70">{r.artist}</td>
               <td className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{r.score.toFixed(1)}</td>
               <td className="uppercase text-ink/70">{r.kind}</td>
-              <td className={r.status === "published" ? "text-acid" : "text-ink/40"}>{r.status === "draft" && r.submittedAt ? "awaiting approval" : r.status}</td>
+              <td className={r.status === "published" ? "text-acid" : "text-ink/40"}>{r.status === "draft" && r.publishAt ? `scheduled ${new Date(r.publishAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}` : r.status === "draft" && r.submittedAt ? "awaiting approval" : r.status}</td>
               <td className="text-right">
                 {canPublish && <AdminButton tone="danger" onClick={() => { if (confirm(`Delete "${r.title}"?`)) cdActions.deleteReview(r.id); }}>Delete</AdminButton>}
               </td>
