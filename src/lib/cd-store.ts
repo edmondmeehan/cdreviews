@@ -61,6 +61,7 @@ export function rowToReview(row: Record<string, unknown>): Review {
     createdBy: (row.created_by as string | undefined) ?? undefined,
     submittedAt: (row.submitted_at as string | undefined) ?? undefined,
     previewToken: (row.preview_token as string | undefined) ?? undefined,
+    publishAt: (row.publish_at as string | undefined) ?? undefined,
   };
 }
 
@@ -92,6 +93,7 @@ function reviewToRow(r: Review): Record<string, unknown> {
     spotify_artist_id: r.spotifyArtistId ?? null,
     submitted_at: r.status === "published" ? null : (r.submittedAt ?? null),
     preview_token: r.previewToken ?? null,
+    publish_at: r.status === "published" ? null : (r.publishAt ?? null),
   };
 }
 

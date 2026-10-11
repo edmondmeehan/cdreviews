@@ -23,6 +23,7 @@ export type Review = {
   pull?: string;
   body: string[]; // paragraphs
   status: "draft" | "published";
+  publishAt?: string;
   // Bulk-import extras
   labelAddress?: string;
   contact?: string;

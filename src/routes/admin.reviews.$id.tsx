@@ -293,6 +293,13 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
             <option value="published" disabled={!canPublish}>Published{canPublish ? "" : " (senior writer+)"}</option>
           </select>
         </Field>
+        {r.status === "draft" && canPublish && (
+          <Field label="Schedule publish (goes live within the hour)">
+            <input type="datetime-local" className={inputCls}
+              value={r.publishAt ? toLocalInput(r.publishAt) : ""}
+              onChange={(e) => patch("publishAt", e.target.value ? new Date(e.target.value).toISOString() : undefined)} />
+          </Field>
+        )}
         <div className="lg:col-span-2">
           <Field label="Pull quote (optional)">
             <input className={inputCls} value={r.pull ?? ""} onChange={(e) => patch("pull", e.target.value)} maxLength={240} />
@@ -306,4 +313,10 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
       </form>
     </div>
   );
+}
+
+function toLocalInput(iso: string) {
+  const d = new Date(iso);
+  const off = d.getTimezoneOffset() * 60000;
+  return new Date(d.getTime() - off).toISOString().slice(0, 16);
 }
