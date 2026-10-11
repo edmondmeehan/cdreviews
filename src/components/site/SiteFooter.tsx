@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { cdActions } from "@/lib/cd-store";
+import { subscribeToBeehiiv } from "@/lib/beehiiv.functions";
 
 const FOOTER_COLS: Array<{ heading: string; links: Array<{ label: string; to: string }> }> = [
   {
@@ -37,11 +38,13 @@ export function SiteFooter() {
   const [value, setValue] = useState("");
   const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
 
-  function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const parsed = emailSchema.safeParse(value);
     if (!parsed.success) { setStatus("err"); return; }
     cdActions.addSubscriber(parsed.data);
+    const result = await subscribeToBeehiiv({ data: { email: parsed.data } });
+    if (!result.ok) { setStatus("err"); return; }
     setValue("");
     setStatus("ok");
     setTimeout(() => setStatus("idle"), 2400);
