@@ -1,33 +1,64 @@
 @import "tailwindcss" source(none);
 @source "../src";
 
-/* ─── Night Shift theme ─────────────────────────────────────────────
-   Token names are kept from the original light theme so every route and
-   admin screen picks up the redesign without class changes:
-   "bone" is now the dark ground, "ink" the light foreground. */
-@theme {
-  --color-bone: #0f0e0c;
-  --color-bone-2: #1a1916;
-  --color-bone-warm: #161512;
-  --color-ink: #ede8dc;
-  --color-ink-2: #c9c3b5;
-  --color-mute: #8f8a7e;
-  --color-rule: rgba(237,232,220,0.12);
-  --color-vermil: #ff4a1c;
+/* Shared semantic roles; artwork and paper/night badges stay unchanged. */
+@theme inline {
+  --color-bone: var(--surface);
+  --color-bone-2: var(--surface-secondary);
+  --color-bone-warm: var(--surface-warm);
+  --color-ink: var(--text);
+  --color-ink-2: var(--text-secondary);
+  --color-mute: var(--text-muted);
+  --color-rule: var(--divider);
+  --color-vermil: var(--accent);
   --color-ultra: #3355ff;
   --color-acid: #f5e663;
   --color-paper: #ede8dc;
   --color-night: #0f0e0c;
+  --color-background: var(--surface);
+  --color-foreground: var(--text);
+  --color-muted-foreground: var(--text-muted);
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--surface);
+  --color-input: var(--divider);
+  --color-ring: var(--accent);
+  --color-border: var(--divider);
 
   --font-serif: "Instrument Serif", Georgia, serif;
   --font-sans: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
+:root {
+  color-scheme: dark;
+  --surface: #0f0e0c;
+  --surface-secondary: #1a1916;
+  --surface-warm: #161512;
+  --text: #ede8dc;
+  --text-secondary: #c9c3b5;
+  --text-muted: #8f8a7e;
+  --divider: rgba(237,232,220,0.12);
+  --accent: #ff4a1c;
+  --cover-shadow: 0 24px 48px rgba(0,0,0,.5);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --surface: #faf9f6;
+  --surface-secondary: #eeede8;
+  --surface-warm: #f4f2ed;
+  --text: #181714;
+  --text-secondary: #45433d;
+  --text-muted: #6d685e;
+  --divider: rgba(24,23,20,0.18);
+  --accent: #c73512;
+  --cover-shadow: 0 16px 32px rgba(24,23,20,.18);
+}
+
 @layer base {
   html, body {
-    background: #0f0e0c;
-    color: #ede8dc;
+    background: var(--color-bone);
+    color: var(--color-ink);
     overflow-x: clip;
   }
   body {
@@ -36,7 +67,7 @@
     -webkit-font-smoothing: antialiased;
     position: relative;
   }
-  ::selection { background: #ff4a1c; color: #0f0e0c; }
+  ::selection { background: var(--color-vermil); color: var(--color-bone); }
   /* Film grain over everything */
   body::before {
     content: '';
@@ -48,7 +79,7 @@
     mix-blend-mode: overlay;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
-  input::placeholder, textarea::placeholder { color: #8f8a7e; }
+  input::placeholder, textarea::placeholder { color: var(--color-mute); }
 }
 
 @layer components {
@@ -85,7 +116,7 @@
     position: absolute; inset: 5%; z-index: 0;
     transition: transform .7s cubic-bezier(.2,.8,.2,1);
   }
-  .cover > .cover__sleeve { position: absolute; inset: 0; z-index: 1; box-shadow: 0 24px 48px rgba(0,0,0,.5); }
+  .cover > .cover__sleeve { position: absolute; inset: 0; z-index: 1; box-shadow: var(--cover-shadow); }
   .group:hover .cover--pop > .cover__disc { transform: translateY(-34%) rotate(220deg); }
 
   /* Crate-dig tilt for card grids */
@@ -104,10 +135,10 @@
 
   /* Wordmark letters thin out on hover */
   .wm-letter { display: inline-block; transition: font-weight .35s ease, transform .35s cubic-bezier(.2,.8,.2,1), color .2s ease; }
-  .wm-letter:hover { font-weight: 200; transform: translateY(-6%); color: #ff4a1c; }
+  .wm-letter:hover { font-weight: 200; transform: translateY(-6%); color: var(--color-vermil); }
 
   .btn-pop { transition: transform .2s ease, box-shadow .2s ease; }
-  .btn-pop:hover { transform: translate(-3px,-3px); box-shadow: 6px 6px 0 #ede8dc; }
+  .btn-pop:hover { transform: translate(-3px,-3px); box-shadow: 6px 6px 0 var(--color-ink); }
 
   .eq-bar { transform-origin: bottom; animation: eq-bounce 1s ease-in-out infinite; }
   .laser  { animation: laser-scan 3s ease-in-out infinite; }
@@ -116,7 +147,7 @@
   .spine:hover { transform: translateY(-28px); flex-basis: 150px; }
 
   .row-slide { transition: background .2s ease, padding .25s ease; }
-  .row-slide:hover { background: #1a1916; padding-left: 16px; }
+  .row-slide:hover { background: var(--color-bone-2); padding-left: 16px; }
 
   .marquee-rev { animation-direction: reverse; animation-duration: 70s; }
 
@@ -331,7 +362,7 @@
     float: left;
     line-height: 0.85;
     margin: 4px 10px 0 -2px;
-    color: #ff4a1c;
+    color: var(--color-vermil);
   }
 
   .manifesto-quote { position: relative; overflow: hidden; }

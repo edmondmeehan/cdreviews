@@ -14,6 +14,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { AuthProvider } from "@/lib/auth";
 import { useCdInvalidator } from "@/lib/cd-store";
+import { ThemeProvider, themeBootstrap } from "@/lib/theme";
 
 function NotFoundComponent() {
   return (
@@ -111,8 +112,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
         <HeadContent />
       </head>
       <body>
@@ -128,10 +130,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
       <AuthProvider>
         <InvalidatorMount />
         <Outlet />
       </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
