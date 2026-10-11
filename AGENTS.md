@@ -1,3 +1,4 @@
 - Load remote font stylesheets through the root route head, never CSS URL imports, so the CSS compiler resolves only local imports.
 - Keep Spotify identity matching in a browser-safe pure helper shared with tests; automatic artwork lookup must validate both artist and album before returning a result.
 - Review article fields must come from the selected database record, and editor state must reset by record identity so navigation cannot save another review's fields.
+- Review sharing metadata loads the selected published record through a session-free server function and uses its HTTPS artwork at the leaf route; crawlers need server-rendered tags and must never receive drafts.

@@ -1,4 +1,5 @@
-import { pageMeta } from "@/lib/page-meta";
+import { getReviewSharing } from "@/lib/review-sharing.functions";
+import { reviewSharingMeta } from "@/lib/review-sharing";
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -13,7 +14,8 @@ import { relatedReviews } from "@/lib/related-reviews";
 export const Route = createFileRoute("/reviews/$slug")({
   component: ReviewPage,
   notFoundComponent: NotFound,
-  head: ({ params }) => pageMeta(`${params.slug.replace(/-/g, " ")} — Review — cdreviews.`, "Album criticism, scores, and listening from the cdreviews archive.", "article"),
+  loader: ({ params }) => getReviewSharing({ data: { slug: params.slug } }),
+  head: ({ loaderData }) => reviewSharingMeta(loaderData?.review ?? null, loaderData?.origin ?? ""),
 });
 
 function NotFound() {
