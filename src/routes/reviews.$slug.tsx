@@ -98,7 +98,20 @@ function ReviewPage() {
                 </p>
               )}
               <div className="flex flex-wrap gap-x-6 gap-y-1 font-mono text-[11px] tracking-[0.1em] uppercase text-mute border-y border-rule py-3">
-                <span>By <span className="text-ink">{review.byline}</span></span>
+                <span>
+                  By{" "}
+                  {review.byline === "Staff" ? (
+                    <span className="text-ink">{review.byline}</span>
+                  ) : (
+                    <Link
+                      to="/authors/$name"
+                      params={{ name: authorSlug(review.byline) }}
+                      className="text-ink hover:text-vermil"
+                    >
+                      {review.byline}
+                    </Link>
+                  )}
+                </span>
                 <span>{review.date}</span>
                 {genre && <span className="text-vermil">{genre}</span>}
                 <span>{review.readMins} min read</span>
