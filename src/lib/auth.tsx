@@ -15,7 +15,7 @@ type AuthState = {
   isWriter: boolean;
   canPublish: boolean;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;
-  signUp: (email: string, password: string) => Promise<{ error?: string }>;
+  signUp: (email: string, password: string) => Promise<{ error?: string; needsConfirmation?: boolean }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error?: string }>;
   updatePassword: (password: string) => Promise<{ error?: string }>;
@@ -66,11 +66,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return { error: error?.message };
     },
     async signUp(email, password) {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email, password,
         options: { emailRedirectTo: `${window.location.origin}/admin` },
       });
-      return { error: error?.message };
+      // Email confirmation is on: signUp returns no session until the address
+      // is verified, so this is a "check your email" state, not a signed-in one.
+      return { error: error?.message, needsConfirmation: !error && !data.session };
     },
     async signOut() {
       await supabase.auth.signOut();
