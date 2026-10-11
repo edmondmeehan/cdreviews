@@ -27,6 +27,7 @@ import { Route as ReviewsSlugRouteImport } from './routes/reviews.$slug'
 import { Route as PreviewTokenRouteImport } from './routes/preview.$token'
 import { Route as ListsSlugRouteImport } from './routes/lists.$slug'
 import { Route as FeaturesSlugRouteImport } from './routes/features.$slug'
+import { Route as AuthorsNameRouteImport } from './routes/authors.$name'
 import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminListsRouteImport } from './routes/admin.lists'
@@ -127,6 +128,11 @@ const FeaturesSlugRoute = FeaturesSlugRouteImport.update({
   path: '/features/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthorsNameRoute = AuthorsNameRouteImport.update({
+  id: '/authors/$name',
+  path: '/authors/$name',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
   id: '/subscribers',
   path: '/subscribers',
@@ -190,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/admin/lists': typeof AdminListsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
   '/preview/$token': typeof PreviewTokenRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/admin/lists': typeof AdminListsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
   '/preview/$token': typeof PreviewTokenRoute
@@ -249,6 +257,7 @@ export interface FileRoutesById {
   '/admin/lists': typeof AdminListsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
   '/preview/$token': typeof PreviewTokenRoute
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/admin/lists'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
     | '/preview/$token'
@@ -309,6 +319,7 @@ export interface FileRouteTypes {
     | '/admin/lists'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
     | '/preview/$token'
@@ -338,6 +349,7 @@ export interface FileRouteTypes {
     | '/admin/lists'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
     | '/preview/$token'
@@ -363,6 +375,7 @@ export interface RootRouteChildren {
   RadioRoute: typeof RadioRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
+  AuthorsNameRoute: typeof AuthorsNameRoute
   FeaturesSlugRoute: typeof FeaturesSlugRoute
   ListsSlugRoute: typeof ListsSlugRoute
   PreviewTokenRoute: typeof PreviewTokenRoute
@@ -501,6 +514,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeaturesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/authors/$name': {
+      id: '/authors/$name'
+      path: '/authors/$name'
+      fullPath: '/authors/$name'
+      preLoaderRoute: typeof AuthorsNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/subscribers': {
       id: '/admin/subscribers'
       path: '/subscribers'
@@ -603,6 +623,7 @@ const rootRouteChildren: RootRouteChildren = {
   RadioRoute: RadioRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
+  AuthorsNameRoute: AuthorsNameRoute,
   FeaturesSlugRoute: FeaturesSlugRoute,
   ListsSlugRoute: ListsSlugRoute,
   PreviewTokenRoute: PreviewTokenRoute,
