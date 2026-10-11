@@ -39,7 +39,7 @@ function AuthPage() {
   async function submit(e: FormEvent) {
     e.preventDefault();
     setErr(null); setBusy(true);
-    const result = mode === "in"
+    const result: { error?: string; needsConfirmation?: boolean } = mode === "in"
       ? await signIn(email, password)
       : await signUp(email, password);
     setBusy(false);
