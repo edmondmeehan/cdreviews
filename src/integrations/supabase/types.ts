@@ -176,6 +176,7 @@ export type Database = {
           label_address: string | null
           period: string | null
           preview_token: string | null
+          publish_at: string | null
           read_mins: number
           score: number
           slug: string
@@ -207,6 +208,7 @@ export type Database = {
           label_address?: string | null
           period?: string | null
           preview_token?: string | null
+          publish_at?: string | null
           read_mins?: number
           score?: number
           slug: string
@@ -238,6 +240,7 @@ export type Database = {
           label_address?: string | null
           period?: string | null
           preview_token?: string | null
+          publish_at?: string | null
           read_mins?: number
           score?: number
           slug?: string
@@ -318,6 +321,7 @@ export type Database = {
           label_address: string | null
           period: string | null
           preview_token: string | null
+          publish_at: string | null
           read_mins: number
           score: number
           slug: string
