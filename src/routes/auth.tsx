@@ -39,10 +39,13 @@ function AuthPage() {
   async function submit(e: FormEvent) {
     e.preventDefault();
     setErr(null); setBusy(true);
-    const fn = mode === "in" ? signIn : signUp;
-    const { error } = await fn(email, password);
+    const result = mode === "in"
+      ? await signIn(email, password)
+      : await signUp(email, password);
     setBusy(false);
-    if (error) setErr(error);
+    if (result.error) setErr(result.error);
+    else if (result.needsConfirmation)
+      setInfo("Check your email — click the link we just sent to finish setting up your account.");
     else navigate({ to: redirect });
   }
 
