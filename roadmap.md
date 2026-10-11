@@ -5,4 +5,4 @@
 - [x] Remove hardcoded header timestamp, reader count, and unsupported footer locations.
 - [x] Remove duplicated card dates by separating date periods from genre data; verify browser rendering and editor loading.
 - [x] Apply required package security update; tests and latest build diagnostics pass.
-- [ ] Add server-rendered review sharing metadata with album artwork and scores; verify crawler-visible previews.
+- [x] Add server-rendered review sharing metadata with album artwork and scores; verify crawler-visible previews.
