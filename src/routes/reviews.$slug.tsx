@@ -10,6 +10,7 @@ import { CoverLightbox } from "@/components/site/CoverLightbox";
 import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 import { relatedReviews } from "@/lib/related-reviews";
+import { authorSlug } from "./authors.$name";
 
 export const Route = createFileRoute("/reviews/$slug")({
   component: ReviewPage,
