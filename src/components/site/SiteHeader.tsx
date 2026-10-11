@@ -1,6 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { NAV_LINKS } from "@/lib/cd-data";
 import { useCdStore } from "@/lib/cd-store";
+import { ThemeSwitch } from "./ThemeSwitch";
 
 const WORDMARK = "cdreviews".split("");
 
@@ -51,6 +52,7 @@ function RadioBar() {
           <a href="#mailer" className="hover:text-vermil">Subscribe</a>
           <Link to="/admin" className="hover:text-vermil">Account</Link>
         </nav>
+        <ThemeSwitch />
       </div>
     </div>
   );
