@@ -29,7 +29,7 @@ export const getReviewSharing = createServerFn({ method: "GET" })
     });
     const slug = LEGACY_REVIEW_SLUGS[data.slug] ?? data.slug;
     const { data: review, error } = await client.from("reviews")
-      .select("slug,title,artist,score,art_url,pull,byline")
+      .select("slug,title,artist,score,art_url,byline")
       .eq("slug", slug).eq("status", "published").maybeSingle();
     if (error) throw new Error("Unable to load review sharing details");
     return { review, origin };

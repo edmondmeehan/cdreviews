@@ -4,7 +4,6 @@ export type ShareReview = {
   artist: string;
   score: number;
   art_url: string | null;
-  pull: string | null;
   byline: string;
 };
 
@@ -31,7 +30,7 @@ export function reviewSharingMeta(review: ShareReview | null, origin: string) {
     { name: "robots", content: "noindex" },
   ] };
   const title = `${review.artist} — ${review.title} · ${Number(review.score).toFixed(1)}/10 — cdreviews.`;
-  const description = `${review.artist}'s ${review.title}, rated ${Number(review.score).toFixed(1)}/10 by ${review.byline}. ${review.pull || "Read the review on cdreviews."}`;
+  const description = `${review.artist}'s ${review.title}, rated ${Number(review.score).toFixed(1)}/10 by ${review.byline}. Read the review on cdreviews.`;
   const image = shareArtworkUrl(review.art_url);
   const url = `${origin}/reviews/${encodeURIComponent(review.slug)}`;
   return {
