@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
@@ -472,6 +473,7 @@ function Index() {
         <CrossingTickers />
         <BestNew />
         <RadioModule />
+        <AdSlot placement="home_break" />
         <Manifesto />
         <FromTheArchive />
         <EraRack />

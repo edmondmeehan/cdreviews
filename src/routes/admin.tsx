@@ -17,6 +17,7 @@ const NAV = [
   { to: "/admin/lists", label: "Lists", staffOnly: true },
   { to: "/admin/contributors", label: "Contributors", staffOnly: true },
   { to: "/admin/subscribers", label: "Subscribers", staffOnly: true },
+  { to: "/admin/ads", label: "Ads", staffOnly: true },
   { to: "/admin/roles", label: "Roles", adminOnly: true },
 ];
 

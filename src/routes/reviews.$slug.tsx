@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+import { AdSlot } from "@/components/site/AdSlot";
 import { getReviewSharing } from "@/lib/review-sharing.functions";
 import { reviewSharingMeta } from "@/lib/review-sharing";
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
@@ -143,9 +145,13 @@ function ReviewPage() {
 
             <div className="mt-12 space-y-6 fr-excerpt text-[19px] md:text-[20px] text-ink-2 max-w-[66ch]">
               {review.body.map((p, i) => (
-                <p key={i} className={i === 0 ? "dropcap" : ""}>{p}</p>
+                <Fragment key={i}>
+                  <p className={i === 0 ? "dropcap" : ""}>{p}</p>
+                  {i === 2 && review.body.length > 4 && <AdSlot placement="review_inline" className="my-10" />}
+                </Fragment>
               ))}
             </div>
+            <AdSlot placement="review_side" className="mt-12 max-w-[420px]" />
             <div className="mt-12 pt-6 border-t border-rule flex flex-wrap items-end gap-6">
               <div className={`fr-score text-[96px] ${hot ? "text-vermil" : "text-ink"}`}>
                 {review.score.toFixed(1)}<span className="text-ink text-[32px] align-top">/10</span>

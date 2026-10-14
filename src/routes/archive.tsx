@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
@@ -67,7 +69,7 @@ function Archive() {
           {filtered.length === 0 ? (
             <p className="fr-pull text-[30px] text-ink-2 py-16 text-center">Empty stacks. Try a wider search.</p>
           ) : (
-            filtered.map((r, i) => <IndexRow key={r.id} row={r} n={i + 1} showDecade />)
+            filtered.map((r, i) => (<Fragment key={r.id}><IndexRow row={r} n={i + 1} showDecade />{i === 4 && <AdSlot placement="list_card" />}</Fragment>))
           )}
         </div>
       </section>
