@@ -238,6 +238,30 @@ export type Database = {
         }
         Relationships: []
       }
+      radio_settings: {
+        Row: {
+          description: string
+          id: number
+          playlist_url: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          description?: string
+          id?: number
+          playlist_url?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          description?: string
+          id?: number
+          playlist_url?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           archive_url: string | null
