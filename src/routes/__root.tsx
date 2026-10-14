@@ -158,5 +158,15 @@ function MaintenanceGate({ children }: { children: React.ReactNode }) {
   if (data?.maintenanceMode && !isMaintenanceExempt(pathname) && !loading && !isWriter) {
     return <MaintenanceSplash message={data.maintenanceMessage} />;
   }
+  if (data?.maintenanceMode && isWriter) {
+    return (
+      <>
+        <div className="sticky top-0 z-50 bg-vermil text-background text-center font-mono text-[10px] tracking-[0.25em] uppercase py-2 px-3">
+          Maintenance mode is on — readers see the splash page. You're seeing the site because you're signed in as staff.
+        </div>
+        {children}
+      </>
+    );
+  }
   return <>{children}</>;
 }

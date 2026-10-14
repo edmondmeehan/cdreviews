@@ -100,7 +100,7 @@ function AdminLayout() {
               <Stat label="Contributors" n={counts.c} to="/admin/contributors" />
               <Stat label="Subscribers" n={counts.s} to="/admin/subscribers" />
             </div>
-            {roles.includes("admin") && <MaintenancePanel />}
+            {roles.includes("super_admin" as never) && <MaintenancePanel />}
             <Dashboard reviews={allReviews} userId={user.id} canPublish={canPublish} />
             <p className="fr-blurb text-[16px] text-ink/60 max-w-[60ch]">
               Edits save straight to the live site. Drafts stay hidden until you publish them.
