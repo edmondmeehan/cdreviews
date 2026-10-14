@@ -50,7 +50,13 @@ function usePublished() {
 }
 
 function Hero() {
-  const featured = useCdStore((s) => s.reviews.find((r) => r.slug === "kosmo-gardens-reentry") ?? s.reviews[0]);
+  const reviews = useCdStore((s) => s.reviews);
+  const { data: slots = [] } = useFeaturedSlots();
+  const published = reviews.filter((r) => r.status === "published");
+  const slot = currentSlot(slots, new Set(published.map((r) => r.slug)));
+  const featured = (slot && published.find((r) => r.slug === slot.review_slug))
+    ?? reviews.find((r) => r.slug === "kosmo-gardens-reentry") ?? reviews[0];
+  const defaultPick = !slot && featured?.slug === "kosmo-gardens-reentry";
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   if (!featured) return <section className="min-h-[60vh]" aria-busy="true" />;
   const score = featured.score.toFixed(1);
