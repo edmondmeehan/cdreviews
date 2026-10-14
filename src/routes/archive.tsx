@@ -14,7 +14,10 @@ const schema = z.object({
   decade: fallback(z.enum(["all", "1990s", "2000s", "2010s", "2020s"]), "all").default("all"),
   q: fallback(z.string().max(80), "").default(""),
   sort: fallback(z.enum(["newest", "oldest", "score"]), "newest").default("newest"),
+  page: fallback(z.number().int(), 1).default(1),
 });
+
+const PER_PAGE = 25;
 
 export const Route = createFileRoute("/archive")({
   validateSearch: zodValidator(schema),
@@ -23,7 +26,7 @@ export const Route = createFileRoute("/archive")({
 });
 
 function Archive() {
-  const { decade, q, sort } = Route.useSearch();
+  const { decade, q, sort, page } = Route.useSearch();
   const all = useCdStore((s) => s.reviews.filter((r) => r.status === "published"));
   const filtered = all
     .filter((r) => decade === "all" || r.decade === decade)
@@ -31,6 +34,9 @@ function Archive() {
     .sort((a, b) =>
       sort === "score" ? b.score - a.score : sort === "oldest" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date),
     );
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+  const safePage = Math.min(Math.max(1, page), pageCount);
+  const rows = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
 
   return (
     <div className="bg-bone text-ink min-h-screen">
