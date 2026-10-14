@@ -127,6 +127,33 @@ export type Database = {
         }
         Relationships: []
       }
+      featured_slots: {
+        Row: {
+          blurb: string | null
+          created_at: string
+          headline: string | null
+          id: string
+          review_slug: string
+          starts_at: string
+        }
+        Insert: {
+          blurb?: string | null
+          created_at?: string
+          headline?: string | null
+          id?: string
+          review_slug: string
+          starts_at?: string
+        }
+        Update: {
+          blurb?: string | null
+          created_at?: string
+          headline?: string | null
+          id?: string
+          review_slug?: string
+          starts_at?: string
+        }
+        Relationships: []
+      }
       features: {
         Row: {
           body: Json
