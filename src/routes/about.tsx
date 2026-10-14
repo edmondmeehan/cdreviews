@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -23,6 +24,7 @@ function About() {
         <p><span className="text-vermil font-mono">7.0–7.9</span> Good, with caveats.</p>
         <p><span className="text-vermil font-mono">Below 7</span> Read the review.</p>
       </section>
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );

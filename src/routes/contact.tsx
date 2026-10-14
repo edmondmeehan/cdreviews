@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
@@ -59,6 +60,7 @@ function Contact() {
           {status === "err" && errors.map((e, i) => <p key={i} className="font-mono text-[10px] tracking-[0.2em] uppercase text-vermil">· {e}</p>)}
         </form>
       </section>
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );

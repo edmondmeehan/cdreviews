@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -26,6 +27,7 @@ function Masthead() {
           </article>
         ))}
       </section>
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );

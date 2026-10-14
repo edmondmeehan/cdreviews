@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -151,6 +152,7 @@ function Radio() {
         </div>
       </section>
 
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );
