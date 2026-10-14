@@ -57,6 +57,13 @@
       "when": 1791983035190,
       "tag": "0007_site_settings_read_singleton",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791983773230,
+      "tag": "0008_super_admin_in_permission_helpers",
+      "breakpoints": true
     }
   ]
 }

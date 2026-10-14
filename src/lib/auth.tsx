@@ -3,7 +3,9 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { supabase } from "@/integrations/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
 
-type Role = "admin" | "editor" | "senior_writer" | "writer" | "contributor" | "super_admin";
+import { roleFlags, type Role } from "@/lib/role-flags";
+
+export type { Role };
 
 type AuthState = {
   user: User | null;
@@ -57,10 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     session,
     roles,
     loading,
-    isStaff: roles.includes("admin") || roles.includes("editor"),
-    isAdmin: roles.includes("admin"),
-    isWriter: roles.some((r) => r === "admin" || r === "editor" || r === "senior_writer" || r === "writer"),
-    canPublish: roles.some((r) => r === "admin" || r === "editor" || r === "senior_writer"),
+    ...roleFlags(roles),
     async signIn(email, password) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       return { error: error?.message };
