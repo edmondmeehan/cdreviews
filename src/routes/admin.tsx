@@ -22,7 +22,7 @@ const NAV = [
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const { user, isStaff, isWriter, canPublish, loading, signOut, roles } = useAuth();
+  const { user, isStaff, isAdmin, isWriter, canPublish, loading, signOut, roles } = useAuth();
   const allReviews = useCdStore((s) => s.reviews);
   const counts = useCdStore((s) => ({
     r: s.reviews.length, f: s.features.length, l: s.lists.length, c: s.contributors.length, s: s.subscribers.length,
