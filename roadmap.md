@@ -8,5 +8,5 @@
 - [x] Add server-rendered review sharing metadata with album artwork and scores; verify crawler-visible previews.
 - [x] Add a persistent light/dark header switch and verify both appearances.
 - Ads: own ad server with 5 spots + view/click stats (done)
-- [ ] Improve phone layouts for reader pages, admin navigation, lists, and editing forms.
-- [ ] Verify browsing, review search/paging, and admin forms at phone and desktop widths.
+- [x] Improve phone layouts for reader pages, admin navigation, lists, and editing forms.
+- [x] Verify browsing, review search/paging, and admin forms at phone and desktop widths.

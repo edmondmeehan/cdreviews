@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { useState, type FormEvent } from "react";
@@ -9,7 +10,7 @@ import { lookupSpotifyAlbum, searchSpotifyAlbums } from "@/lib/spotify.functions
 import { lookupDiscogsAlbum } from "@/lib/discogs.functions";
 import { Cover } from "@/components/site/Cover";
 
-export const Route = createFileRoute("/admin/reviews/$id")({ component: EditReview });
+export const Route = createFileRoute("/admin/reviews/$id")({ head: () => pageMeta("Review editor — Admin — cdreviews.", "Review editor on the cdreviews editorial desk."), component: EditReview });
 
 const ART_OPTS = ["art-1","art-2","art-3","art-4","art-5","art-6","art-7","art-8","art-hero","art-archive"];
 

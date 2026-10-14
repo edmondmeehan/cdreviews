@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -7,7 +8,7 @@ import { currentSlot, featuredQueryKey, useFeaturedSlots } from "@/lib/featured"
 
 export const Route = createFileRoute("/admin/featured")({
   component: AdminFeatured,
-  head: () => ({ meta: [{ title: "Featured — Admin — cdreviews." }] }),
+  head: () => pageMeta("Featured review — Admin — cdreviews.", "Featured review on the cdreviews editorial desk."),
 });
 
 function AdminFeatured() {

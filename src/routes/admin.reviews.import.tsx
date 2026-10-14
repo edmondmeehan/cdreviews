@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import * as XLSX from "xlsx";
@@ -5,7 +6,7 @@ import { AdminHeader, AdminButton, Field } from "@/components/admin/bits";
 import { cdActions } from "@/lib/cd-store";
 import { rowsToReviews, type ImportResult } from "@/lib/review-import";
 
-export const Route = createFileRoute("/admin/reviews/import")({ component: ImportPage });
+export const Route = createFileRoute("/admin/reviews/import")({ head: () => pageMeta("Review import — Admin — cdreviews.", "Review import on the cdreviews editorial desk."), component: ImportPage });
 
 const EXPECTED = [
   "Artist", "Album", "Review Date", "Period", "Hot Pick", "Label",

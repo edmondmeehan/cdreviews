@@ -428,6 +428,7 @@
   .mobile-review-table thead tr { display: block; padding-block: 8px; }
   .mobile-review-table thead th:not(:first-child) { display: none; }
   .mobile-review-table thead th:first-child { display: block; width: auto; }
+  .mobile-review-table thead th:first-child:not(:has(input)) { display: none; }
   .mobile-ad-table thead { display: none; }
   :is(.mobile-review-table, .mobile-ad-table) tbody tr { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding-block: 16px; }
   :is(.mobile-review-table, .mobile-ad-table) td { display: block; min-width: 0; padding: 0; text-align: left; overflow-wrap: anywhere; }

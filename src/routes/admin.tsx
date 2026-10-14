@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { useAuth } from "@/lib/auth";
@@ -7,7 +8,7 @@ import { useSiteSettings, useUpdateSiteSettings } from "@/lib/site-settings";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
-  head: () => ({ meta: [{ title: "Admin — cdreviews." }] }),
+  head: () => pageMeta("Editorial desk — Admin — cdreviews.", "Editorial desk on the cdreviews editorial desk."),
 });
 
 const NAV = [
@@ -77,8 +78,8 @@ function AdminLayout() {
       <header className="border-b border-ink/10">
         <div className="max-w-[1400px] mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <Link to="/" className="fr-display-bold text-[28px] text-ink leading-none">cdreviews. <span className="text-vermil text-[12px] font-mono tracking-[0.3em] align-middle ml-2">ADMIN</span></Link>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] tracking-[0.25em] uppercase">
-            <span className="text-ink/50 break-all">{user.email}</span>
+          <div className="grid grid-cols-2 items-center gap-x-4 gap-y-1 sm:flex sm:flex-wrap font-mono text-[10px] tracking-[0.25em] uppercase">
+            <span className="col-span-2 sm:col-span-1 text-ink/50 break-all">{user.email}</span>
             <ChangePasswordButton email={user.email ?? ""} />
             <button onClick={signOut} className="text-ink/70 hover:text-vermil">Sign out</button>
             <Link to="/" className="text-ink/80 hover:text-vermil">→ View site</Link>

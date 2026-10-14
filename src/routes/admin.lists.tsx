@@ -1,10 +1,11 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { slug as slugify, type CdList } from "@/lib/cd-data";
 
-export const Route = createFileRoute("/admin/lists")({ component: ListsAdmin });
+export const Route = createFileRoute("/admin/lists")({ head: () => pageMeta("Lists — Admin — cdreviews.", "Lists on the cdreviews editorial desk."), component: ListsAdmin });
 
 function blank(): CdList {
   return { id: "", slug: "", title: "", dek: "", byline: "", date: "01.01.2026", art: "art-1", items: [{ rank: 1, title: "", artist: "" }], status: "draft" };

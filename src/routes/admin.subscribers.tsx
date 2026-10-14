@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton } from "@/components/admin/bits";
@@ -7,7 +8,7 @@ import {
   uniqueSubscriberCount,
 } from "@/lib/subscriber-export";
 
-export const Route = createFileRoute("/admin/subscribers")({ component: SubsAdmin });
+export const Route = createFileRoute("/admin/subscribers")({ head: () => pageMeta("Subscribers — Admin — cdreviews.", "Subscribers on the cdreviews editorial desk."), component: SubsAdmin });
 
 function SubsAdmin() {
   const subs = useCdStore((s) => s.subscribers);

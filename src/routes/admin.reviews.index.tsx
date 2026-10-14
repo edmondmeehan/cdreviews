@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
@@ -16,6 +17,7 @@ const schema = z.object({
 
 export const Route = createFileRoute("/admin/reviews/")({
   validateSearch: zodValidator(schema),
+  head: () => pageMeta("Reviews desk — Admin — cdreviews.", "Reviews desk on the cdreviews editorial desk."),
   component: ReviewsAdmin,
 });
 
@@ -119,7 +121,7 @@ function ReviewsAdmin() {
       <table className="mobile-review-table w-full sm:min-w-[640px] font-mono text-[11px]">
         <thead>
           <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
-            {canPublish && <th className="py-3 w-8"><input type="checkbox" aria-label="Select all on this page" checked={allSelected} onChange={toggleAll} /></th>}
+            {canPublish && <th className="py-3 w-8"><label className="inline-flex items-center gap-3"><input type="checkbox" aria-label="Select all on this page" checked={allSelected} onChange={toggleAll} /><span className="sm:hidden">Select all on this page</span></label></th>}
             <th className="py-3">Title</th><th>Artist</th><th>Score</th><th>Type</th><th>Status</th><th></th>
           </tr>
         </thead>

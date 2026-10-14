@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -5,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/traffic")({
   component: AdminTraffic,
-  head: () => ({ meta: [{ title: "Top pages — Admin — cdreviews." }] }),
+  head: () => pageMeta("Top pages — Admin — cdreviews.", "Top pages on the cdreviews editorial desk."),
 });
 
 const RANGES = [
