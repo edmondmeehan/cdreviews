@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { useState, type FormEvent } from "react";
@@ -9,7 +10,7 @@ import { lookupSpotifyAlbum, searchSpotifyAlbums } from "@/lib/spotify.functions
 import { lookupDiscogsAlbum } from "@/lib/discogs.functions";
 import { Cover } from "@/components/site/Cover";
 
-export const Route = createFileRoute("/admin/reviews/$id")({ component: EditReview });
+export const Route = createFileRoute("/admin/reviews/$id")({ head: () => pageMeta("Review editor — Admin — cdreviews.", "Review editor on the cdreviews editorial desk."), component: EditReview });
 
 const ART_OPTS = ["art-1","art-2","art-3","art-4","art-5","art-6","art-7","art-8","art-hero","art-archive"];
 
@@ -162,7 +163,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
   return (
     <div>
       <AdminHeader title={isNew ? "New review" : `Edit · ${r.title}`} action={
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <AdminButton tone="ghost" onClick={() => navigate({ to: "/admin/reviews" })}>Cancel</AdminButton>
           {!isNew && r.status === "draft" && (
             <>
@@ -203,7 +204,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
           {artMsg && <div className="font-mono text-[11px] text-ink/70">{artMsg}</div>}
           <div className="border-t border-ink/10 pt-3 space-y-2">
             <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Search Spotify</div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <input
                 className={inputCls + " flex-1"}
                 value={searchQ}

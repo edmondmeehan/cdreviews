@@ -1,4 +1,5 @@
-import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { pageMeta } from "@/lib/page-meta";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { useAuth } from "@/lib/auth";
 import type { Review } from "@/lib/cd-data";
@@ -7,7 +8,7 @@ import { useSiteSettings, useUpdateSiteSettings } from "@/lib/site-settings";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
-  head: () => ({ meta: [{ title: "Admin — cdreviews." }] }),
+  head: () => pageMeta("Editorial desk — Admin — cdreviews.", "Editorial desk on the cdreviews editorial desk."),
 });
 
 const NAV = [
@@ -32,6 +33,8 @@ function AdminLayout() {
     r: s.reviews.length, f: s.features.length, l: s.lists.length, c: s.contributors.length, s: s.subscribers.length,
   }));
   const isOverview = pathname === "/admin";
+  const navigate = useNavigate();
+  const visibleNav = NAV.filter((n) => (!n.adminOnly || isAdmin) && (!n.staffOnly || isStaff));
 
   if (loading) {
     return (
@@ -71,19 +74,25 @@ function AdminLayout() {
   }
 
   return (
-    <div className="bg-bone text-ink min-h-screen">
+    <div className="admin-desk bg-bone text-ink min-h-screen">
       <header className="border-b border-ink/10">
         <div className="max-w-[1400px] mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <Link to="/" className="fr-display-bold text-[28px] text-ink leading-none">cdreviews. <span className="text-vermil text-[12px] font-mono tracking-[0.3em] align-middle ml-2">ADMIN</span></Link>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] tracking-[0.25em] uppercase">
-            <span className="text-ink/50 break-all">{user.email}</span>
+          <div className="grid grid-cols-2 items-center gap-x-4 gap-y-1 sm:flex sm:flex-wrap font-mono text-[10px] tracking-[0.25em] uppercase">
+            <span className="col-span-2 sm:col-span-1 text-ink/50 break-all">{user.email}</span>
             <ChangePasswordButton email={user.email ?? ""} />
             <button onClick={signOut} className="text-ink/70 hover:text-vermil">Sign out</button>
             <Link to="/" className="text-ink/80 hover:text-vermil">→ View site</Link>
           </div>
         </div>
-        <nav className="max-w-[1400px] mx-auto px-6 pb-3 flex flex-wrap gap-x-5 gap-y-2">
-          {NAV.filter((n) => (!n.adminOnly || isAdmin) && (!n.staffOnly || isStaff)).map((n) => {
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-4 sm:hidden">
+          <label className="sr-only" htmlFor="admin-section">Admin section</label>
+          <select id="admin-section" value={visibleNav.find((n) => n.exact ? pathname === n.to : pathname.startsWith(n.to))?.to ?? "/admin"} onChange={(e) => navigate({ to: e.target.value })} className="w-full min-h-11 bg-bone border border-rule px-3 text-base text-ink">
+            {visibleNav.map((n) => <option key={n.to} value={n.to}>{n.label}</option>)}
+          </select>
+        </div>
+        <nav aria-label="Admin sections" className="max-w-[1400px] mx-auto px-6 pb-3 hidden sm:flex flex-wrap gap-x-5 gap-y-2">
+          {visibleNav.map((n) => {
             const active = n.exact ? pathname === n.to : pathname.startsWith(n.to);
             return (
               <Link key={n.to} to={n.to} className={`font-mono text-[11px] tracking-[0.2em] uppercase ${active ? "text-vermil" : "text-ink/70 hover:text-ink"}`}>
@@ -93,10 +102,10 @@ function AdminLayout() {
           })}
         </nav>
       </header>
-      <main className="max-w-[1400px] mx-auto px-6 py-10">
+      <main className="max-w-[1400px] mx-auto min-w-0 px-4 sm:px-6 py-8 sm:py-10">
         {isOverview ? (
           <div className="space-y-10">
-            <h1 className="fr-display text-[64px] text-ink">Editorial desk.</h1>
+            <h1 className="fr-display text-[44px] sm:text-[64px] text-ink">Editorial desk.</h1>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-ink/10 border border-ink/10">
               <Stat label="Reviews" n={counts.r} to="/admin/reviews" />
               <Stat label="Features" n={counts.f} to="/admin/features" />
@@ -159,9 +168,9 @@ function ReviewQueue({ title, empty, items, action }: { title: string; empty: st
 
 function Stat({ label, n, to }: { label: string; n: number; to: string }) {
   return (
-    <Link to={to} className="bg-bone p-6 hover:bg-ink/5 block">
+    <Link to={to} className="bg-bone min-w-0 p-4 sm:p-6 hover:bg-ink/5 block">
       <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-ink/50">{label}</div>
-      <div className="fr-score-card text-[56px] text-ink mt-2">{n}</div>
+      <div className="fr-score-card text-[44px] sm:text-[56px] text-ink mt-2">{n}</div>
     </Link>
   );
 }
@@ -196,7 +205,7 @@ function MaintenancePanel() {
     if (err) alert(err);
   }
   return (
-    <section className={`border p-6 space-y-4 ${on ? "border-vermil" : "border-ink/10"}`}>
+    <section className={`border p-4 sm:p-6 space-y-4 ${on ? "border-vermil" : "border-ink/10"}`}>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Site status</div>

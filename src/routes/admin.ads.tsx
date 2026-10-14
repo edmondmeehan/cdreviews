@@ -1,10 +1,11 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { AD_PLACEMENTS, clickRate, isRunning, type AdPlacement } from "@/lib/ad-pick";
 
-export const Route = createFileRoute("/admin/ads")({ component: AdsAdmin });
+export const Route = createFileRoute("/admin/ads")({ head: () => pageMeta("Ads — Admin — cdreviews.", "Ads on the cdreviews editorial desk."), component: AdsAdmin });
 
 type Ad = {
   id: string; name: string; advertiser: string; placement: string; headline: string; body: string; cta: string;
@@ -72,14 +73,14 @@ function AdsAdmin() {
           <Field label="Button text"><input className={inputCls} value={edit.cta} onChange={(e) => setEdit({ ...edit, cta: e.target.value })} /></Field>
           <div className="md:col-span-2"><Field label="Short description"><textarea rows={2} className={inputCls} value={edit.body} onChange={(e) => setEdit({ ...edit, body: e.target.value })} /></Field></div>
           <Field label="Image">
-            <input type="file" accept="image/*" className="font-mono text-[11px]" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
+            <input type="file" accept="image/*" className="w-full min-w-0 font-mono text-[16px] sm:text-[11px]" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
             {edit.image_url && <img src={edit.image_url} alt="" className="mt-2 max-h-32" />}
           </Field>
           <Field label="Rotation weight (higher = shown more often)"><input type="number" min={1} max={100} className={inputCls} value={edit.weight} onChange={(e) => setEdit({ ...edit, weight: Math.min(100, Math.max(1, Number(e.target.value) || 1)) })} /></Field>
           <Field label="Starts (optional)"><input type="datetime-local" className={inputCls} value={toLocal(edit.starts_at)} onChange={(e) => setEdit({ ...edit, starts_at: fromLocal(e.target.value) })} /></Field>
           <Field label="Ends (optional)"><input type="datetime-local" className={inputCls} value={toLocal(edit.ends_at)} onChange={(e) => setEdit({ ...edit, ends_at: fromLocal(e.target.value) })} /></Field>
           <label className="flex items-center gap-2 font-mono text-[11px]"><input type="checkbox" checked={edit.active} onChange={(e) => setEdit({ ...edit, active: e.target.checked })} /> Active</label>
-          <div className="md:col-span-2 flex gap-3 items-center">
+          <div className="md:col-span-2 flex flex-wrap gap-3 items-center">
             <AdminButton onClick={save}>Save ad</AdminButton>
             <AdminButton tone="ghost" onClick={() => setEdit(null)}>Cancel</AdminButton>
             {err && <span className="font-mono text-[11px] text-vermil">{err}</span>}
@@ -91,7 +92,7 @@ function AdsAdmin() {
         <p className="font-mono text-[11px] text-ink/50">No ads yet. Empty spots stay hidden on the site.</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full font-mono text-[11px] min-w-[760px]">
+          <table className="mobile-ad-table w-full font-mono text-[11px] sm:min-w-[760px]">
             <thead>
               <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
                 <th className="py-3">Ad</th><th>Spot</th><th>Status</th><th>Views</th><th>Clicks</th><th>Rate</th><th></th>
@@ -104,9 +105,9 @@ function AdsAdmin() {
                 return (
                   <tr key={a.id} className="border-b border-ink/5">
                     <td className="py-3 text-ink">{a.name || a.headline}<div className="text-ink/50">{a.advertiser}</div></td>
-                    <td className="text-ink/70">{placementLabel(a.placement)}</td>
-                    <td className={status === "Running" ? "text-vermil" : "text-ink/50"}>{status}</td>
-                    <td>{s.views}</td><td>{s.clicks}</td><td>{clickRate(s.views, s.clicks)}</td>
+                    <td data-label="Spot" className="text-ink/70">{placementLabel(a.placement)}</td>
+                    <td data-label="Status" className={status === "Running" ? "text-vermil" : "text-ink/50"}>{status}</td>
+                    <td data-label="Views">{s.views}</td><td data-label="Clicks">{s.clicks}</td><td data-label="Rate">{clickRate(s.views, s.clicks)}</td>
                     <td className="text-right space-x-2 whitespace-nowrap">
                       <AdminButton tone="ghost" onClick={() => setEdit({ ...a })}>Edit</AdminButton>
                       <AdminButton tone="ghost" onClick={() => toggle(a)}>{a.active ? "Pause" : "Resume"}</AdminButton>

@@ -1,10 +1,11 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { slug as slugify, type CdList } from "@/lib/cd-data";
 
-export const Route = createFileRoute("/admin/lists")({ component: ListsAdmin });
+export const Route = createFileRoute("/admin/lists")({ head: () => pageMeta("Lists — Admin — cdreviews.", "Lists on the cdreviews editorial desk."), component: ListsAdmin });
 
 function blank(): CdList {
   return { id: "", slug: "", title: "", dek: "", byline: "", date: "01.01.2026", art: "art-1", items: [{ rank: 1, title: "", artist: "" }], status: "draft" };
@@ -27,12 +28,12 @@ function ListsAdmin() {
       <AdminHeader title="Lists" action={<AdminButton onClick={() => setE(blank())}>+ New list</AdminButton>} />
       <div className="space-y-2">
         {lists.map((l) => (
-          <div key={l.id} className="flex items-center justify-between border-b border-ink/10 py-3">
-            <div>
+          <div key={l.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-ink/10 py-3">
+            <div className="min-w-0 break-words">
               <div className="font-mono text-[12px] text-ink">{l.title}</div>
               <div className="font-mono text-[10px] text-ink/50">{l.items.length} entries · {l.status}</div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <AdminButton tone="ghost" onClick={() => setE(l)}>Edit</AdminButton>
               <AdminButton tone="danger" onClick={() => { if (confirm(`Delete "${l.title}"?`)) cdActions.deleteList(l.id); }}>Delete</AdminButton>
             </div>
@@ -41,12 +42,12 @@ function ListsAdmin() {
       </div>
 
       {e && (
-        <div className="fixed inset-0 bg-bone/90 z-50 overflow-auto p-6 flex items-start justify-center">
-          <div className="bg-bone border border-ink/20 max-w-[800px] w-full p-8 space-y-5">
+        <div className="fixed inset-0 bg-bone/90 z-50 overflow-auto p-3 sm:p-6 flex items-start justify-center">
+          <div className="bg-bone border border-ink/20 max-w-[800px] w-full p-4 sm:p-8 space-y-5">
             <h2 className="fr-display text-[32px] text-ink">{e.id ? "Edit" : "New"} list</h2>
             <Field label="Title"><input className={inputCls} maxLength={140} value={e.title} onChange={(ev) => setE({ ...e, title: ev.target.value })} /></Field>
             <Field label="Dek"><input className={inputCls} maxLength={240} value={e.dek} onChange={(ev) => setE({ ...e, dek: ev.target.value })} /></Field>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Byline"><input className={inputCls} maxLength={80} value={e.byline} onChange={(ev) => setE({ ...e, byline: ev.target.value })} /></Field>
               <Field label="Date"><input className={inputCls} maxLength={10} value={e.date} onChange={(ev) => setE({ ...e, date: ev.target.value })} /></Field>
             </div>
@@ -59,17 +60,17 @@ function ListsAdmin() {
             <div className="space-y-2">
               <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Entries</div>
               {e.items.map((it, idx) => (
-                <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                  <input type="number" className={inputCls + " col-span-2"} value={it.rank} onChange={(ev) => {
+                <div key={idx} className="grid grid-cols-2 sm:grid-cols-12 gap-2 items-center border-b border-rule pb-3">
+                  <input type="number" className={inputCls + " col-span-1 sm:col-span-2"} value={it.rank} onChange={(ev) => {
                     const items = [...e.items]; items[idx] = { ...it, rank: Number(ev.target.value) }; setE({ ...e, items });
                   }} />
-                  <input placeholder="Title" className={inputCls + " col-span-4"} maxLength={120} value={it.title} onChange={(ev) => {
+                  <input placeholder="Title" className={inputCls + " col-span-2 sm:col-span-4"} maxLength={120} value={it.title} onChange={(ev) => {
                     const items = [...e.items]; items[idx] = { ...it, title: ev.target.value }; setE({ ...e, items });
                   }} />
-                  <input placeholder="Artist" className={inputCls + " col-span-4"} maxLength={120} value={it.artist} onChange={(ev) => {
+                  <input placeholder="Artist" className={inputCls + " col-span-2 sm:col-span-4"} maxLength={120} value={it.artist} onChange={(ev) => {
                     const items = [...e.items]; items[idx] = { ...it, artist: ev.target.value }; setE({ ...e, items });
                   }} />
-                  <button type="button" className="col-span-2 font-mono text-[10px] uppercase text-vermil" onClick={() => {
+                  <button type="button" className="col-span-1 sm:col-span-2 min-h-11 font-mono text-[10px] uppercase text-vermil" onClick={() => {
                     setE({ ...e, items: e.items.filter((_, i) => i !== idx) });
                   }}>Remove</button>
                 </div>

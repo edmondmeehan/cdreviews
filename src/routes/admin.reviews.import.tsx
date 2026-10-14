@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import * as XLSX from "xlsx";
@@ -5,7 +6,7 @@ import { AdminHeader, AdminButton, Field } from "@/components/admin/bits";
 import { cdActions } from "@/lib/cd-store";
 import { rowsToReviews, type ImportResult } from "@/lib/review-import";
 
-export const Route = createFileRoute("/admin/reviews/import")({ component: ImportPage });
+export const Route = createFileRoute("/admin/reviews/import")({ head: () => pageMeta("Review import — Admin — cdreviews.", "Review import on the cdreviews editorial desk."), component: ImportPage });
 
 const EXPECTED = [
   "Artist", "Album", "Review Date", "Period", "Hot Pick", "Label",
@@ -126,8 +127,8 @@ function ImportPage() {
               </div>
 
               {result.reviews.length > 0 && (
-                <div className="border border-ink/10">
-                  <table className="w-full font-mono text-[11px]">
+                <div className="border border-ink/10 overflow-x-auto">
+                  <table className="w-full min-w-[540px] font-mono text-[11px]">
                     <thead>
                       <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
                         <th className="py-2 px-3">Artist</th><th>Album</th><th>Date</th><th>Rating</th><th>Type</th>
@@ -172,7 +173,7 @@ function ImportPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 pt-2">
+                <div className="flex flex-wrap items-center gap-3 pt-2">
                   <AdminButton onClick={commit} tone="primary">Submit {result.reviews.length} reviews</AdminButton>
                   <span className="font-mono text-[10px] text-ink/50 tracking-[0.2em] uppercase">Review the preview above before submitting</span>
                 </div>

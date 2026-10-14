@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -6,7 +7,7 @@ import { radioQueryKey, spotifyPlaylistId, useRadioSettings } from "@/lib/radio-
 
 export const Route = createFileRoute("/admin/radio")({
   component: AdminRadio,
-  head: () => ({ meta: [{ title: "Radio — Admin — cdreviews." }] }),
+  head: () => pageMeta("Radio playlist — Admin — cdreviews.", "Radio playlist on the cdreviews editorial desk."),
 });
 
 function AdminRadio() {

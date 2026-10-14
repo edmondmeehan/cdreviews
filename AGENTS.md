@@ -4,3 +4,4 @@
 - Review sharing metadata loads the selected published record through a session-free server function and uses its HTTPS artwork at the leaf route; crawlers need server-rendered tags and must never receive drafts.
 - Theme selection uses root semantic CSS variables and a shared provider with pre-paint local preference restoration; all pages inherit the selected appearance without changing artwork.
 - Editorial permissions come only from `public.user_roles`, and every check — the client `roleFlags` helper and the database `is_staff`/`is_writer`/`can_publish` functions — must treat `super_admin` as the top of the hierarchy, because a helper that forgets a role silently locks that account out of the desk.
+- Admin phone layouts use shared control sizing and labelled stacked review/ad rows; desktop tables remain unchanged so all actions stay reachable without page-level overflow.
