@@ -29,6 +29,13 @@
       "when": 1791712715966,
       "tag": "0003_review_scheduling",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791978380382,
+      "tag": "0004_site_settings",
+      "breakpoints": true
     }
   ]
 }
