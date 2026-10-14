@@ -272,7 +272,7 @@ export const cdActions = {
   // Features
   async upsertFeature(feat: Feature) {
     const { error } = await supabase.from("features").upsert(featureToRow(feat) as never, { onConflict: "slug" });
-    if (error) console.error("upsertFeature", error);
+    if (error) { console.error("upsertFeature", error); alert("Could not save feature: " + error.message); }
     invalidate();
   },
   async deleteFeature(id: string) {
@@ -285,7 +285,7 @@ export const cdActions = {
   // Lists
   async upsertList(list: CdList) {
     const { error } = await supabase.from("lists").upsert(listToRow(list) as never, { onConflict: "slug" });
-    if (error) console.error("upsertList", error);
+    if (error) { console.error("upsertList", error); alert("Could not save list: " + error.message); }
     invalidate();
   },
   async deleteList(id: string) {

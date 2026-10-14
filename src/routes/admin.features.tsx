@@ -19,7 +19,8 @@ function FeaturesAdmin() {
   function save() {
     if (!editing) return;
     const id = editing.id || slugify(editing.title);
-    cdActions.upsertFeature({ ...editing, id, slug: id });
+    const slug = editing.slug || slugify(editing.title);
+    cdActions.upsertFeature({ ...editing, id, slug });
     setEditing(null);
   }
 
