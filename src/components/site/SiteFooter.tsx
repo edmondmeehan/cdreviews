@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
@@ -52,6 +53,7 @@ export function SiteFooter() {
 
   return (
     <footer className="bg-bone text-ink">
+      <AdSlot placement="footer_strip" className="pt-10" />
       {/* The Mailer */}
       <section id="mailer" className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-16 pb-20">
         <div className="relative overflow-hidden bg-vermil text-night p-8 md:p-14 flex flex-wrap gap-10 items-center justify-between">

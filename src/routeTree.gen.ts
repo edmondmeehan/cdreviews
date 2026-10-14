@@ -33,6 +33,7 @@ import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminListsRouteImport } from './routes/admin.lists'
 import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
+import { Route as AdminAdsRouteImport } from './routes/admin.ads'
 import { Route as AdminReviewsIndexRouteImport } from './routes/admin.reviews.index'
 import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
 import { Route as AdminReviewsImportRouteImport } from './routes/admin.reviews.import'
@@ -158,6 +159,11 @@ const AdminContributorsRoute = AdminContributorsRouteImport.update({
   path: '/contributors',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAdsRoute = AdminAdsRouteImport.update({
+  id: '/ads',
+  path: '/ads',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminReviewsIndexRoute = AdminReviewsIndexRouteImport.update({
   id: '/reviews/',
   path: '/reviews/',
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
+  '/admin/ads': typeof AdminAdsRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
@@ -221,6 +228,7 @@ export interface FileRoutesByTo {
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
+  '/admin/ads': typeof AdminAdsRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
@@ -252,6 +260,7 @@ export interface FileRoutesById {
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
+  '/admin/ads': typeof AdminAdsRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
@@ -284,6 +293,7 @@ export interface FileRouteTypes {
     | '/radio'
     | '/reset-password'
     | '/search'
+    | '/admin/ads'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
     | '/radio'
     | '/reset-password'
     | '/search'
+    | '/admin/ads'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
@@ -344,6 +355,7 @@ export interface FileRouteTypes {
     | '/radio'
     | '/reset-password'
     | '/search'
+    | '/admin/ads'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
@@ -556,6 +568,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContributorsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/ads': {
+      id: '/admin/ads'
+      path: '/ads'
+      fullPath: '/admin/ads'
+      preLoaderRoute: typeof AdminAdsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/reviews/': {
       id: '/admin/reviews/'
       path: '/reviews'
@@ -588,6 +607,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAdsRoute: typeof AdminAdsRoute
   AdminContributorsRoute: typeof AdminContributorsRoute
   AdminFeaturesRoute: typeof AdminFeaturesRoute
   AdminListsRoute: typeof AdminListsRoute
@@ -599,6 +619,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdsRoute: AdminAdsRoute,
   AdminContributorsRoute: AdminContributorsRoute,
   AdminFeaturesRoute: AdminFeaturesRoute,
   AdminListsRoute: AdminListsRoute,

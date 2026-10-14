@@ -14,6 +14,89 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_events: {
+        Row: {
+          ad_id: string
+          created_at: string
+          id: number
+          kind: string
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+          id?: never
+          kind: string
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+          id?: never
+          kind?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ads: {
+        Row: {
+          active: boolean
+          advertiser: string
+          body: string
+          created_at: string
+          cta: string
+          ends_at: string | null
+          headline: string
+          id: string
+          image_url: string | null
+          link_url: string
+          name: string
+          placement: string
+          starts_at: string | null
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          active?: boolean
+          advertiser?: string
+          body?: string
+          created_at?: string
+          cta?: string
+          ends_at?: string | null
+          headline?: string
+          id?: string
+          image_url?: string | null
+          link_url: string
+          name: string
+          placement: string
+          starts_at?: string | null
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          active?: boolean
+          advertiser?: string
+          body?: string
+          created_at?: string
+          cta?: string
+          ends_at?: string | null
+          headline?: string
+          id?: string
+          image_url?: string | null
+          link_url?: string
+          name?: string
+          placement?: string
+          starts_at?: string | null
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: []
+      }
       contributors: {
         Row: {
           bio: string | null
@@ -319,6 +402,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ad_stats: {
+        Args: never
+        Returns: {
+          ad_id: string
+          clicks: number
+          views: number
+        }[]
+      }
       can_publish: { Args: { _user_id: string }; Returns: boolean }
       get_review_preview: {
         Args: { _token: string }
@@ -370,6 +461,10 @@ export type Database = {
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       is_writer: { Args: { _user_id: string }; Returns: boolean }
+      record_ad_event: {
+        Args: { _ad_id: string; _kind: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role:

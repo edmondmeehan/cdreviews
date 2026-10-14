@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
@@ -77,9 +79,7 @@ function SearchPage() {
           </div>
         ) : (
           <div className="border-t-2 border-ink">
-            {results.map((r, i) => (
-              <IndexRow key={r.id} row={r} n={i + 1} showDecade />
-            ))}
+            {results.map((r, i) => (<Fragment key={r.id}><IndexRow row={r} n={i + 1} showDecade />{i === 4 && <AdSlot placement="list_card" />}</Fragment>))}
           </div>
         )}
       </section>
