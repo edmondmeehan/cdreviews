@@ -2,6 +2,8 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { useAuth } from "@/lib/auth";
 import type { Review } from "@/lib/cd-data";
+import { useState } from "react";
+import { useSiteSettings, useUpdateSiteSettings } from "@/lib/site-settings";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
