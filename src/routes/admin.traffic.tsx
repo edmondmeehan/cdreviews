@@ -17,18 +17,16 @@ const RANGES = [
 ] as const;
 
 function bounds(range: string, from: string, to: string): [string | null, string | null] {
-  const now = new Date();
+  // Anchor to local midnight so the value (and the query key) stays stable between renders.
+  const today = new Date(); today.setHours(0, 0, 0, 0);
   if (range === "all") return [null, null];
-  if (range === "today") {
-    const d = new Date(now); d.setHours(0, 0, 0, 0);
-    return [d.toISOString(), null];
-  }
+  if (range === "today") return [today.toISOString(), null];
   if (range === "custom") {
     const f = from ? new Date(from + "T00:00:00").toISOString() : null;
     const t = to ? new Date(new Date(to + "T00:00:00").getTime() + 86400000).toISOString() : null;
     return [f, t];
   }
-  return [new Date(now.getTime() - Number(range) * 86400000).toISOString(), null];
+  return [new Date(today.getTime() - (Number(range) - 1) * 86400000).toISOString(), null];
 }
 
 function AdminTraffic() {
