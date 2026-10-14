@@ -17,7 +17,8 @@ function ListsAdmin() {
   function save() {
     if (!e) return;
     const id = e.id || slugify(e.title);
-    cdActions.upsertList({ ...e, id, slug: id });
+    const slug = e.slug || slugify(e.title);
+    cdActions.upsertList({ ...e, id, slug });
     setE(null);
   }
 
