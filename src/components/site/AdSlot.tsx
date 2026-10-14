@@ -21,6 +21,11 @@ function useRunningAds() {
 
 const seen = new Set<string>();
 
+// Query builders are lazy: .then() is what actually sends the request.
+function track(id: string, kind: "view" | "click") {
+  supabase.rpc("record_ad_event", { _ad_id: id, _kind: kind }).then(() => {}, () => {});
+}
+
 /** A house-styled sponsored spot. Renders nothing when no ad is running. */
 export function AdSlot({ placement, className = "" }: { placement: AdPlacement; className?: string }) {
   const { data } = useRunningAds();
@@ -35,7 +40,7 @@ export function AdSlot({ placement, className = "" }: { placement: AdPlacement; 
     const io = new IntersectionObserver((entries) => {
       if (entries.some((e) => e.isIntersecting) && !seen.has(key)) {
         seen.add(key);
-        void supabase.rpc("record_ad_event", { _ad_id: ad.id, _kind: "view" });
+        track(ad.id, "view");
         io.disconnect();
       }
     }, { threshold: 0.5 });
@@ -44,7 +49,7 @@ export function AdSlot({ placement, className = "" }: { placement: AdPlacement; 
   }, [ad, placement]);
 
   if (!ad) return null;
-  const click = () => { void supabase.rpc("record_ad_event", { _ad_id: ad.id, _kind: "click" }); };
+  const click = () => track(ad.id, "click");
   const linkProps = { href: ad.link_url, target: "_blank", rel: "sponsored noopener", onClick: click } as const;
   const label = (
     <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute">
@@ -84,7 +89,7 @@ export function AdSlot({ placement, className = "" }: { placement: AdPlacement; 
       <aside ref={ref} className={`max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 mt-20 ${className}`} aria-label="Sponsored">
         <a {...linkProps} className="grid md:grid-cols-12 gap-0 border border-rule bg-bone-warm group overflow-hidden">
           {ad.image_url && (
-            <div className="md:col-span-7 aspect-[16/7] md:aspect-auto overflow-hidden">
+            <div className="md:col-span-7 aspect-[16/7] md:aspect-auto md:h-[380px] overflow-hidden">
               <img src={ad.image_url} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-500" />
             </div>
           )}
@@ -104,7 +109,7 @@ export function AdSlot({ placement, className = "" }: { placement: AdPlacement; 
     <aside ref={ref} className={className} aria-label="Sponsored">
       <a {...linkProps} className="block border-y border-rule py-6 space-y-3 group not-prose">
         {label}
-        {ad.image_url && <img src={ad.image_url} alt="" loading="lazy" className="w-full object-cover" />}
+        {ad.image_url && <img src={ad.image_url} alt="" loading="lazy" className={`w-full object-cover ${placement === "review_side" ? "aspect-square max-h-[360px]" : "aspect-[1200/630]"}`} />}
         <div className="fr-display text-[24px] text-ink leading-tight">{ad.headline}</div>
         {ad.body && <p className="fr-blurb text-[15px] text-ink-2">{ad.body}</p>}
         <span className="inline-block font-mono text-[11px] tracking-[0.12em] uppercase text-vermil group-hover:underline">{ad.cta} ↗</span>
