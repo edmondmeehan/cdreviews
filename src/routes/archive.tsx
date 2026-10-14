@@ -135,6 +135,7 @@ function SearchBox({ initial }: { initial: string }) {
         const v = (new FormData(e.currentTarget).get("q") ?? "").toString();
         const url = new URL(window.location.href);
         url.searchParams.set("q", v);
+        url.searchParams.delete("page");
         window.history.replaceState(null, "", url);
         window.dispatchEvent(new PopStateEvent("popstate"));
       }}
@@ -166,7 +167,7 @@ function Chips<T extends string>({ options, current, paramKey }: {
           <Link
             key={opt.key}
             from="/archive"
-            search={(prev: Record<string, unknown>) => ({ ...prev, [paramKey]: opt.key })}
+            search={(prev: Record<string, unknown>) => ({ ...prev, [paramKey]: opt.key, page: 1 })}
             replace
             className={`inline-flex items-center h-11 px-[18px] rounded-full font-mono text-[12px] tracking-[0.08em] uppercase border transition-colors ${
               active ? "bg-paper text-night border-paper" : "text-ink border-ink/25 hover:border-ink"
