@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Cover } from "@/components/site/Cover";
 import { useCdStore } from "@/lib/cd-store";
 import { currentSlot, useFeaturedSlots } from "@/lib/featured";
+import { useMostReadReviews } from "@/lib/page-views";
 import { DECADE_LABELS, KIND_LABELS } from "@/lib/cd-data";
 
 const DECADE_KEYS = ["all", "1990s", "2000s", "2010s", "2020s"] as const;
@@ -205,6 +206,33 @@ function BestNew() {
       <CrateGrid>
         {top.map((r) => <ReviewCard key={r.id} r={r} />)}
       </CrateGrid>
+    </section>
+  );
+}
+
+function MostRead() {
+  const published = usePublished();
+  const { data } = useMostReadReviews(7, 5);
+  const rows = (data ?? [])
+    .map((d) => ({ r: published.find((p) => p.slug === d.slug), views: Number(d.views) }))
+    .filter((x): x is { r: (typeof published)[number]; views: number } => !!x.r);
+  if (rows.length < 3) return null;
+  return (
+    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pb-16">
+      <SectionHead title="Most read," italic="this week." right={<>By reader views · last 7 days</>} />
+      <ol className="border-t border-rule">
+        {rows.map(({ r }, i) => (
+          <li key={r.id} className="border-b border-rule">
+            <Link to="/reviews/$slug" params={{ slug: r.slug }} className="flex items-center gap-4 py-4 text-ink hover:text-vermil">
+              <span className="fr-display text-[34px] w-12 text-vermil">{i + 1}</span>
+              <span className="flex-1 min-w-0 truncate text-[19px] font-semibold">
+                {r.artist} <span className="serif-it font-normal text-[21px]">— {r.title}</span>
+              </span>
+              <span className="font-mono text-[11px]">{r.score.toFixed(1)}</span>
+            </Link>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }
@@ -489,6 +517,7 @@ function Index() {
         <Hero />
         <CrossingTickers />
         <BestNew />
+        <MostRead />
         <RadioModule />
         <AdSlot placement="home_break" />
         <Manifesto />

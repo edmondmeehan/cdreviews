@@ -20,6 +20,7 @@ const NAV = [
   { to: "/admin/ads", label: "Ads", staffOnly: true },
   { to: "/admin/radio", label: "Radio", staffOnly: true },
   { to: "/admin/featured", label: "Featured", staffOnly: true },
+  { to: "/admin/traffic", label: "Top pages", staffOnly: true },
   { to: "/admin/roles", label: "Roles", adminOnly: true },
 ];
 
