@@ -55,7 +55,7 @@ export function MaintenanceSplash({ message }: { message: string | null }) {
               value={value}
               onChange={(e) => { setValue(e.target.value); setStatus("idle"); }}
               placeholder="you@email.com"
-              className="flex-[1_1_240px] min-w-0 h-14 px-5 bg-night text-paper font-mono text-[14px] outline-none focus:ring-2 focus:ring-vermil"
+              className="flex-[1_1_240px] min-w-0 h-14 px-5 bg-bone-2 text-ink border-2 border-ink font-mono text-[14px] outline-none focus:ring-2 focus:ring-vermil"
             />
             <button disabled={status === "busy"} className="h-14 px-7 bg-vermil text-night font-bold text-[16px] hover:opacity-90 disabled:opacity-60">
               Notify me →
