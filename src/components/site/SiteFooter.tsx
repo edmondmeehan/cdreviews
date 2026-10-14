@@ -108,6 +108,14 @@ export function SiteFooter() {
             <span>Est. 1995 · Vol. 31</span>
             <span className="flex items-center gap-5">
               <a href="/api/public/rss.xml" className="hover:text-vermil">RSS</a>
+              <a
+                href="https://vinylvault.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-vermil"
+              >
+                Vinyl Vault ↗
+              </a>
               <Link to="/admin" className="hover:text-vermil">Admin</Link>
             </span>
           </div>
