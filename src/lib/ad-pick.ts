@@ -2,7 +2,7 @@
 export type AdPlacement = "home_break" | "review_inline" | "review_side" | "list_card" | "footer_strip";
 
 export const AD_PLACEMENTS: Array<{ key: AdPlacement; label: string; hint: string }> = [
-  { key: "home_break", label: "Homepage break", hint: "Wide band between homepage sections. Image ~1600×500." },
+  { key: "home_break", label: "Homepage break", hint: "Wide band between homepage sections. Image ~1600×800 (2:1)." },
   { key: "review_inline", label: "Inside review text", hint: "Appears after the third paragraph. Image ~1200×630." },
   { key: "review_side", label: "Review sidebar (desktop)", hint: "Beside the review on wide screens. Image ~600×600." },
   { key: "list_card", label: "Archive / search lists", hint: "A sponsored row within the list. Small square image." },
