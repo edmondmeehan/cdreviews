@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
@@ -55,6 +56,7 @@ function ReviewsIndex() {
           </CrateGrid>
         )}
       </section>
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );

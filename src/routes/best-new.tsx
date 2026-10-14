@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -48,6 +49,7 @@ function BestNew() {
           <p className="fr-pull text-[30px] text-ink-2 py-16 text-center">The shelf is being restocked.</p>
         )}
       </section>
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );
