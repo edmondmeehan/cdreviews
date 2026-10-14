@@ -177,3 +177,43 @@ function ChangePasswordButton({ email }: { email: string }) {
     </button>
   );
 }
+
+function MaintenancePanel() {
+  const { data } = useSiteSettings();
+  const update = useUpdateSiteSettings();
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const on = !!data?.maintenanceMode;
+  const message = msg ?? data?.maintenanceMessage ?? "";
+  async function save(patch: { maintenance_mode?: boolean; maintenance_message?: string | null }) {
+    setBusy(true);
+    const err = await update(patch);
+    setBusy(false);
+    if (err) alert(err);
+  }
+  return (
+    <section className={`border p-6 space-y-4 ${on ? "border-vermil" : "border-ink/10"}`}>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Site status</div>
+          <p className="fr-display text-[28px] mt-1">{on ? "Under maintenance — readers see the splash page." : "Live — readers see the full site."}</p>
+          <p className="text-[14px] text-ink/60 mt-1">Staff stay signed in and can still browse everything.</p>
+        </div>
+        <button
+          disabled={busy || !data}
+          onClick={() => { if (on || confirm("Take the site offline for readers?")) save({ maintenance_mode: !on }); }}
+          className={`font-mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 ${on ? "bg-ink text-bone" : "bg-vermil text-night"} disabled:opacity-50`}
+        >
+          {on ? "Bring site back online" : "Turn on maintenance mode"}
+        </button>
+      </div>
+      <label className="block space-y-2">
+        <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-ink/60">Splash message (optional)</span>
+        <textarea rows={2} maxLength={400} value={message} onChange={(e) => setMsg(e.target.value)}
+          placeholder="We're doing some work behind the counter. Leave your email and we'll let you know the moment we're back."
+          className="w-full bg-bone border border-ink/20 px-3 py-2 text-[14px]" />
+      </label>
+      <button disabled={busy} onClick={() => save({ maintenance_message: message.trim() || null })} className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil hover:underline">Save message</button>
+    </section>
+  );
+}
