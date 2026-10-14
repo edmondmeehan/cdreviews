@@ -9,6 +9,7 @@ import { CrateGrid, IndexRow, Kicker, ReviewCard } from "@/components/site/bits"
 import { useState } from "react";
 import { Cover } from "@/components/site/Cover";
 import { useCdStore } from "@/lib/cd-store";
+import { currentSlot, useFeaturedSlots } from "@/lib/featured";
 import { DECADE_LABELS, KIND_LABELS } from "@/lib/cd-data";
 
 const DECADE_KEYS = ["all", "1990s", "2000s", "2010s", "2020s"] as const;
@@ -66,12 +67,22 @@ function Hero() {
         <Kicker>Best New Music · Featured review</Kicker>
         <Link to="/reviews/$slug" params={{ slug: featured.slug }} className="block group">
           <h2 className="serif-it not-italic mt-6 text-[clamp(52px,7.4vw,120px)] leading-[0.9] text-ink" style={{ fontStyle: "normal" }}>
-            The patient hum of a <em className="text-vermil">second life.</em>
+            {defaultPick ? (
+              <>The patient hum of a <em className="text-vermil">second life.</em></>
+            ) : slot?.headline ? (
+              slot.headline
+            ) : (
+              <>{featured.artist} — <em className="text-vermil">{featured.title}</em></>
+            )}
           </h2>
         </Link>
         <p className="fr-dek mt-7 text-[19px] md:text-[21px] text-ink-2 max-w-[560px]">
-          Three decades after their first transmission, {featured.artist} return with{" "}
-          <em className="serif-it text-[1.1em] text-ink">{featured.title}</em> — a record that refuses the familiar comforts of the comeback, opting instead for something stranger, slower, and more luminous.
+          {defaultPick ? (
+            <>Three decades after their first transmission, {featured.artist} return with{" "}
+            <em className="serif-it text-[1.1em] text-ink">{featured.title}</em> — a record that refuses the familiar comforts of the comeback, opting instead for something stranger, slower, and more luminous.</>
+          ) : (
+            slot?.blurb || (featured.body[0] ?? "").slice(0, 240).replace(/\s+\S*$/, "") + "…"
+          )}
         </p>
         <div className="mt-9 flex flex-wrap gap-4 items-center">
           <Link
