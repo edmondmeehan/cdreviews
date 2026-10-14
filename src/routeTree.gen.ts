@@ -33,6 +33,7 @@ import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminRadioRouteImport } from './routes/admin.radio'
 import { Route as AdminListsRouteImport } from './routes/admin.lists'
 import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
+import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
 import { Route as AdminAdsRouteImport } from './routes/admin.ads'
 import { Route as AdminReviewsIndexRouteImport } from './routes/admin.reviews.index'
@@ -160,6 +161,11 @@ const AdminFeaturesRoute = AdminFeaturesRouteImport.update({
   path: '/features',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminFeaturedRoute = AdminFeaturedRouteImport.update({
+  id: '/featured',
+  path: '/featured',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminContributorsRoute = AdminContributorsRouteImport.update({
   id: '/contributors',
   path: '/contributors',
@@ -205,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/contributors': typeof AdminContributorsRoute
+  '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
   '/admin/radio': typeof AdminRadioRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/contributors': typeof AdminContributorsRoute
+  '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
   '/admin/radio': typeof AdminRadioRoute
@@ -270,6 +278,7 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/contributors': typeof AdminContributorsRoute
+  '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
   '/admin/radio': typeof AdminRadioRoute
@@ -304,6 +313,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/admin/ads'
     | '/admin/contributors'
+    | '/admin/featured'
     | '/admin/features'
     | '/admin/lists'
     | '/admin/radio'
@@ -336,6 +346,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/admin/ads'
     | '/admin/contributors'
+    | '/admin/featured'
     | '/admin/features'
     | '/admin/lists'
     | '/admin/radio'
@@ -368,6 +379,7 @@ export interface FileRouteTypes {
     | '/search'
     | '/admin/ads'
     | '/admin/contributors'
+    | '/admin/featured'
     | '/admin/features'
     | '/admin/lists'
     | '/admin/radio'
@@ -580,6 +592,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFeaturesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/featured': {
+      id: '/admin/featured'
+      path: '/featured'
+      fullPath: '/admin/featured'
+      preLoaderRoute: typeof AdminFeaturedRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/contributors': {
       id: '/admin/contributors'
       path: '/contributors'
@@ -628,6 +647,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminAdsRoute: typeof AdminAdsRoute
   AdminContributorsRoute: typeof AdminContributorsRoute
+  AdminFeaturedRoute: typeof AdminFeaturedRoute
   AdminFeaturesRoute: typeof AdminFeaturesRoute
   AdminListsRoute: typeof AdminListsRoute
   AdminRadioRoute: typeof AdminRadioRoute
@@ -641,6 +661,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdsRoute: AdminAdsRoute,
   AdminContributorsRoute: AdminContributorsRoute,
+  AdminFeaturedRoute: AdminFeaturedRoute,
   AdminFeaturesRoute: AdminFeaturesRoute,
   AdminListsRoute: AdminListsRoute,
   AdminRadioRoute: AdminRadioRoute,
