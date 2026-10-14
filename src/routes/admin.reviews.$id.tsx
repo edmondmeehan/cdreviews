@@ -162,7 +162,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
   return (
     <div>
       <AdminHeader title={isNew ? "New review" : `Edit · ${r.title}`} action={
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <AdminButton tone="ghost" onClick={() => navigate({ to: "/admin/reviews" })}>Cancel</AdminButton>
           {!isNew && r.status === "draft" && (
             <>
@@ -203,7 +203,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
           {artMsg && <div className="font-mono text-[11px] text-ink/70">{artMsg}</div>}
           <div className="border-t border-ink/10 pt-3 space-y-2">
             <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Search Spotify</div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <input
                 className={inputCls + " flex-1"}
                 value={searchQ}

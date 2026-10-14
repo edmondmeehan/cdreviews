@@ -45,7 +45,7 @@ function AdminTraffic() {
   const total = (data ?? []).reduce((s, r) => s + Number(r.views), 0);
   const max = Math.max(1, ...(data ?? []).map((r) => Number(r.views)));
   const chip = (on: boolean) =>
-    `px-3 py-1.5 border font-mono text-[11px] uppercase tracking-[0.12em] ${on ? "bg-ink text-bone border-ink" : "border-rule text-ink-2"}`;
+    `px-3 min-h-11 py-1.5 border font-mono text-[11px] uppercase tracking-[0.12em] ${on ? "bg-ink text-bone border-ink" : "border-rule text-ink-2"}`;
 
   return (
     <div className="space-y-6 max-w-[900px]">
@@ -71,7 +71,7 @@ function AdminTraffic() {
           {data?.map((r, i) => (
             <li key={r.path} className="border-b border-rule py-2.5 flex items-center gap-4">
               <span className="font-mono text-[11px] w-7 text-mute">{String(i + 1).padStart(2, "0")}</span>
-              <a href={r.path} target="_blank" rel="noreferrer" className="flex-1 min-w-0 truncate hover:text-vermil">{r.path}</a>
+              <a href={r.path} target="_blank" rel="noreferrer" className="flex-1 min-w-0 break-all hover:text-vermil">{r.path}</a>
               <span className="hidden sm:block w-40 h-1.5 bg-rule"><span className="block h-full bg-vermil" style={{ width: `${(Number(r.views) / max) * 100}%` }} /></span>
               <span className="font-mono text-[12px] w-12 text-right">{r.views}</span>
             </li>

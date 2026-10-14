@@ -415,3 +415,25 @@
   0%, 100% { opacity: 1; }
   50%      { opacity: 0.3; }
 }
+
+/* Phone editing keeps controls readable without changing editorial permissions. */
+@media (max-width: 639px) {
+  .admin-desk button, .admin-desk a:not(.fr-display-bold) { min-height: 44px; }
+  .admin-desk button { max-width: 100%; overflow-wrap: anywhere; }
+  .admin-desk input:not([type="checkbox"]):not([type="file"]),
+  .admin-desk textarea, .admin-desk select { font-size: 16px; min-height: 44px; }
+  .admin-desk input[type="checkbox"] { width: 22px; height: 22px; }
+  .admin-desk :is(.mobile-review-table, .mobile-ad-table) { display: block; min-width: 0; }
+  .admin-desk :is(.mobile-review-table, .mobile-ad-table) tbody { display: block; }
+  .mobile-review-table thead tr { display: block; padding-block: 8px; }
+  .mobile-review-table thead th:not(:first-child) { display: none; }
+  .mobile-review-table thead th:first-child { display: block; width: auto; }
+  .mobile-ad-table thead { display: none; }
+  :is(.mobile-review-table, .mobile-ad-table) tbody tr { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding-block: 16px; }
+  :is(.mobile-review-table, .mobile-ad-table) td { display: block; min-width: 0; padding: 0; text-align: left; overflow-wrap: anywhere; }
+  :is(.mobile-review-table, .mobile-ad-table) td[data-label] { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; }
+  :is(.mobile-review-table, .mobile-ad-table) td[data-label]::before { content: attr(data-label); color: var(--text-muted); }
+  .mobile-review-table td a { display: inline-flex; align-items: center; font-size: 16px; }
+  .mobile-ad-table td:last-child { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mobile-ad-table td:last-child > * { margin-left: 0; }
+}

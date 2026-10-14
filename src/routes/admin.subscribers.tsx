@@ -32,7 +32,7 @@ function SubsAdmin() {
       {subs.length === 0 ? (
         <p className="font-mono text-[11px] text-ink/50">No subscribers yet. Try the footer signup form on the public site.</p>
       ) : (
-        <table className="w-full font-mono text-[11px]">
+        <div className="overflow-x-auto"><table className="w-full min-w-[540px] font-mono text-[11px]">
           <thead>
             <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
               <th className="py-3">Email</th><th>Signed up</th><th></th>
@@ -49,7 +49,7 @@ function SubsAdmin() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       )}
     </div>
   );

@@ -123,7 +123,7 @@ export function SiteFooter() {
           </div>
           <div
             aria-hidden="true"
-            className="fr-display-bold text-[clamp(90px,21vw,320px)] text-bone-2 whitespace-nowrap mt-8 -mb-[0.12em] select-none"
+            className="fr-display-bold text-[72px] sm:text-[120px] md:text-[160px] lg:text-[220px] xl:text-[280px] text-bone-2 whitespace-nowrap mt-8 -mb-[0.12em] select-none"
           >
             cdreviews<span className="text-vermil">.</span>
           </div>

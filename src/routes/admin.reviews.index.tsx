@@ -76,7 +76,7 @@ function ReviewsAdmin() {
   return (
     <div>
       <AdminHeader title="Reviews" action={
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Link to="/admin/reviews/import" className="font-mono text-[10px] tracking-[0.25em] uppercase px-4 py-2 border bg-ink/0 text-ink/70 border-ink/20 hover:text-ink">↑ Bulk import</Link>
           <AdminLinkButton to="/admin/reviews/$id" params={{ id: "new" }}>+ New review</AdminLinkButton>
         </div>
@@ -91,7 +91,7 @@ function ReviewsAdmin() {
             maxLength={80}
             placeholder="Artist, album, label, genre, status…"
             aria-label="Search reviews"
-            className="flex-1 min-w-0 bg-bone border border-ink/20 text-ink px-3 py-2 font-mono text-[12px] outline-none focus:border-vermil"
+            className="flex-1 min-w-0 bg-bone border border-ink/20 text-ink px-3 py-2 font-mono text-[16px] sm:text-[12px] outline-none focus:border-vermil"
           />
           {q && (
             <button onClick={() => setTerm("")} className="font-mono text-[10px] tracking-[0.2em] uppercase text-ink/50 hover:text-vermil shrink-0">
@@ -115,8 +115,8 @@ function ReviewsAdmin() {
           <AdminButton tone="ghost" onClick={() => setSelected(new Set())}>Clear</AdminButton>
         </div>
       )}
-      <div className="overflow-x-auto -mx-6 px-6">
-      <table className="w-full min-w-[640px] font-mono text-[11px]">
+      <div className="overflow-x-auto sm:-mx-6 sm:px-6">
+      <table className="mobile-review-table w-full sm:min-w-[640px] font-mono text-[11px]">
         <thead>
           <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
             {canPublish && <th className="py-3 w-8"><input type="checkbox" aria-label="Select all on this page" checked={allSelected} onChange={toggleAll} /></th>}
@@ -128,10 +128,10 @@ function ReviewsAdmin() {
             <tr key={r.id} className="border-b border-ink/5 hover:bg-ink/5">
               {canPublish && <td className="py-3"><input type="checkbox" aria-label={`Select ${r.title}`} checked={selected.has(r.id)} onChange={() => toggle(r.id)} /></td>}
               <td className="py-3"><Link to="/admin/reviews/$id" params={{ id: r.id }} className="text-ink hover:text-vermil">{r.title}</Link></td>
-              <td className="text-ink/70">{r.artist}</td>
-              <td className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{r.score.toFixed(1)}</td>
-              <td className="uppercase text-ink/70">{r.kind}</td>
-              <td className={r.status === "published" ? "text-acid" : "text-ink/40"}>{r.status === "draft" && r.publishAt ? `scheduled ${new Date(r.publishAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}` : r.status === "draft" && r.submittedAt ? "awaiting approval" : r.status}</td>
+              <td data-label="Artist" className="text-ink/70">{r.artist}</td>
+              <td data-label="Score" className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{r.score.toFixed(1)}</td>
+              <td data-label="Type" className="uppercase text-ink/70">{r.kind}</td>
+              <td data-label="Status" className={r.status === "published" ? "text-acid" : "text-ink/40"}>{r.status === "draft" && r.publishAt ? `scheduled ${new Date(r.publishAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}` : r.status === "draft" && r.submittedAt ? "awaiting approval" : r.status}</td>
               <td className="text-right">
                 {canPublish && <AdminButton tone="danger" onClick={() => { if (confirm(`Delete "${r.title}"?`)) cdActions.deleteReview(r.id); }}>Delete</AdminButton>}
               </td>

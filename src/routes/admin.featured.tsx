@@ -48,7 +48,7 @@ function AdminFeatured() {
   }
 
   const label = "font-mono text-[11px] uppercase tracking-[0.12em] text-mute";
-  const field = "w-full bg-bone border border-rule px-3 py-2.5 text-ink";
+  const field = "w-full min-w-0 max-w-full bg-bone border border-rule px-3 py-2.5 text-ink";
   const now = Date.now();
   return (
     <div className="space-y-8 max-w-[760px]">
@@ -61,12 +61,12 @@ function AdminFeatured() {
           <input className={field} value={q} onChange={(e) => { setQ(e.target.value); setSlug(null); }} placeholder="Artist, album or label" />
         </label>
         {picked ? (
-          <div className="flex justify-between items-center border border-vermil px-3 py-2">
-            <span>{picked.artist} — <em>{picked.title}</em> {picked.status !== "published" && <span className="text-vermil text-sm">(draft — won't show until published)</span>}</span>
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 items-center border border-vermil px-3 py-2">
+            <span className="min-w-0 break-words">{picked.artist} — <em>{picked.title}</em> {picked.status !== "published" && <span className="text-vermil text-sm">(draft — won't show until published)</span>}</span>
             <button type="button" className="text-sm underline" onClick={() => setSlug(null)}>Change</button>
           </div>
         ) : matches.length > 0 && (
-          <ul className="border border-rule divide-y divide-rule">
+          <ul className="max-h-[300px] overflow-y-auto border border-rule divide-y divide-rule">
             {matches.map((r) => (
               <li key={r.slug}>
                 <button type="button" className="w-full text-left px-3 py-2 hover:bg-bone" onClick={() => setSlug(r.slug)}>

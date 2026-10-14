@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 
 export function AdminHeader({ title, action }: { title: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4 mb-8 pb-4 border-b border-ink/10">
-      <h1 className="fr-display text-[44px] text-ink">{title}</h1>
+    <div className="grid grid-cols-1 gap-4 sm:flex sm:flex-wrap sm:items-end sm:justify-between mb-8 pb-4 border-b border-ink/10">
+      <h1 className="min-w-0 break-words fr-display text-[36px] sm:text-[44px] text-ink">{title}</h1>
       {action}
     </div>
   );
@@ -19,7 +19,7 @@ export function AdminButton({ children, onClick, tone = "primary", type }: {
     tone === "ghost" ? "bg-ink/0 text-ink/70 border-ink/20 hover:text-ink" :
     "bg-vermil text-night border-vermil hover:bg-ink hover:text-bone";
   return (
-    <button type={type ?? "button"} onClick={onClick} className={`font-mono text-[10px] tracking-[0.25em] uppercase px-4 py-2 border ${cls}`}>
+    <button type={type ?? "button"} onClick={onClick} className={`font-mono text-[10px] tracking-[0.25em] uppercase min-h-11 inline-flex items-center justify-center px-4 py-2 border ${cls}`}>
       {children}
     </button>
   );
@@ -27,7 +27,7 @@ export function AdminButton({ children, onClick, tone = "primary", type }: {
 
 export function AdminLinkButton({ to, params, children }: { to: string; params?: Record<string, string>; children: ReactNode }) {
   return (
-    <Link to={to} params={params} className="font-mono text-[10px] tracking-[0.25em] uppercase px-4 py-2 border bg-vermil text-night border-vermil hover:bg-ink hover:text-bone">
+    <Link to={to} params={params} className="font-mono text-[10px] tracking-[0.25em] uppercase min-h-11 inline-flex items-center justify-center px-4 py-2 border bg-vermil text-night border-vermil hover:bg-ink hover:text-bone">
       {children}
     </Link>
   );
@@ -35,11 +35,11 @@ export function AdminLinkButton({ to, params, children }: { to: string; params?:
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="block space-y-2">
+    <label className="block min-w-0 space-y-2">
       <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">{label}</span>
       {children}
     </label>
   );
 }
 
-export const inputCls = "w-full bg-bone border border-ink/20 text-ink px-3 py-2 font-mono text-[12px] outline-none focus:border-vermil";
+export const inputCls = "w-full min-w-0 max-w-full bg-bone border border-ink/20 text-ink px-3 py-2 font-mono text-[16px] sm:text-[12px] outline-none focus:border-vermil";

@@ -126,8 +126,8 @@ function ImportPage() {
               </div>
 
               {result.reviews.length > 0 && (
-                <div className="border border-ink/10">
-                  <table className="w-full font-mono text-[11px]">
+                <div className="border border-ink/10 overflow-x-auto">
+                  <table className="w-full min-w-[540px] font-mono text-[11px]">
                     <thead>
                       <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
                         <th className="py-2 px-3">Artist</th><th>Album</th><th>Date</th><th>Rating</th><th>Type</th>
@@ -172,7 +172,7 @@ function ImportPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 pt-2">
+                <div className="flex flex-wrap items-center gap-3 pt-2">
                   <AdminButton onClick={commit} tone="primary">Submit {result.reviews.length} reviews</AdminButton>
                   <span className="font-mono text-[10px] text-ink/50 tracking-[0.2em] uppercase">Review the preview above before submitting</span>
                 </div>
