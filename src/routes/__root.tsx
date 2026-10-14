@@ -16,6 +16,7 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 import { useCdInvalidator } from "@/lib/cd-store";
 import { ThemeProvider, themeBootstrap } from "@/lib/theme";
 import { useRouterState } from "@tanstack/react-router";
+import { usePageViewTracker } from "@/lib/page-views";
 import { useSiteSettings, isMaintenanceExempt } from "@/lib/site-settings";
 import { MaintenanceSplash } from "@/components/site/MaintenanceSplash";
 
@@ -147,6 +148,7 @@ function RootComponent() {
 
 function InvalidatorMount() {
   useCdInvalidator();
+  usePageViewTracker();
   return null;
 }
 

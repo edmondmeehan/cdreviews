@@ -28,6 +28,7 @@ import { Route as PreviewTokenRouteImport } from './routes/preview.$token'
 import { Route as ListsSlugRouteImport } from './routes/lists.$slug'
 import { Route as FeaturesSlugRouteImport } from './routes/features.$slug'
 import { Route as AuthorsNameRouteImport } from './routes/authors.$name'
+import { Route as AdminTrafficRouteImport } from './routes/admin.traffic'
 import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminRadioRouteImport } from './routes/admin.radio'
@@ -136,6 +137,11 @@ const AuthorsNameRoute = AuthorsNameRouteImport.update({
   path: '/authors/$name',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTrafficRoute = AdminTrafficRouteImport.update({
+  id: '/traffic',
+  path: '/traffic',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
   id: '/subscribers',
   path: '/subscribers',
@@ -217,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/admin/radio': typeof AdminRadioRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/traffic': typeof AdminTrafficRoute
   '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/admin/radio': typeof AdminRadioRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/traffic': typeof AdminTrafficRoute
   '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
@@ -284,6 +292,7 @@ export interface FileRoutesById {
   '/admin/radio': typeof AdminRadioRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/traffic': typeof AdminTrafficRoute
   '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
@@ -319,6 +328,7 @@ export interface FileRouteTypes {
     | '/admin/radio'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/admin/traffic'
     | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
@@ -352,6 +362,7 @@ export interface FileRouteTypes {
     | '/admin/radio'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/admin/traffic'
     | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '/admin/radio'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/admin/traffic'
     | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
@@ -557,6 +569,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthorsNameRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/traffic': {
+      id: '/admin/traffic'
+      path: '/traffic'
+      fullPath: '/admin/traffic'
+      preLoaderRoute: typeof AdminTrafficRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/subscribers': {
       id: '/admin/subscribers'
       path: '/subscribers'
@@ -653,6 +672,7 @@ interface AdminRouteChildren {
   AdminRadioRoute: typeof AdminRadioRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminSubscribersRoute: typeof AdminSubscribersRoute
+  AdminTrafficRoute: typeof AdminTrafficRoute
   AdminReviewsIdRoute: typeof AdminReviewsIdRoute
   AdminReviewsImportRoute: typeof AdminReviewsImportRoute
   AdminReviewsIndexRoute: typeof AdminReviewsIndexRoute
@@ -667,6 +687,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminRadioRoute: AdminRadioRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminSubscribersRoute: AdminSubscribersRoute,
+  AdminTrafficRoute: AdminTrafficRoute,
   AdminReviewsIdRoute: AdminReviewsIdRoute,
   AdminReviewsImportRoute: AdminReviewsImportRoute,
   AdminReviewsIndexRoute: AdminReviewsIndexRoute,

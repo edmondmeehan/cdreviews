@@ -235,6 +235,24 @@ export type Database = {
         }
         Relationships: []
       }
+      page_views: {
+        Row: {
+          created_at: string
+          id: number
+          path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          path: string
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          path?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -512,9 +530,24 @@ export type Database = {
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       is_writer: { Args: { _user_id: string }; Returns: boolean }
+      most_read_reviews: {
+        Args: { _days?: number; _limit?: number }
+        Returns: {
+          slug: string
+          views: number
+        }[]
+      }
       record_ad_event: {
         Args: { _ad_id: string; _kind: string }
         Returns: undefined
+      }
+      record_page_view: { Args: { _path: string }; Returns: undefined }
+      top_pages: {
+        Args: { _from: string; _limit?: number; _to: string }
+        Returns: {
+          path: string
+          views: number
+        }[]
       }
     }
     Enums: {
