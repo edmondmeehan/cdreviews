@@ -216,7 +216,7 @@ function MostRead() {
   const rows = (data ?? [])
     .map((d) => ({ r: published.find((p) => p.slug === d.slug), views: Number(d.views) }))
     .filter((x): x is { r: (typeof published)[number]; views: number } => !!x.r);
-  if (rows.length < 3) return null;
+  if (rows.length < 1) return null;
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pb-16">
       <SectionHead title="Most read," italic="this week." right={<>By reader views · last 7 days</>} />
