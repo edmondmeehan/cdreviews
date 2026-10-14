@@ -79,7 +79,7 @@ function AdminLayout() {
           </div>
         </div>
         <nav className="max-w-[1400px] mx-auto px-6 pb-3 flex flex-wrap gap-x-5 gap-y-2">
-          {NAV.filter((n) => (!n.adminOnly || roles.includes("admin")) && (!n.staffOnly || isStaff)).map((n) => {
+          {NAV.filter((n) => (!n.adminOnly || isAdmin) && (!n.staffOnly || isStaff)).map((n) => {
             const active = n.exact ? pathname === n.to : pathname.startsWith(n.to);
             return (
               <Link key={n.to} to={n.to} className={`font-mono text-[11px] tracking-[0.2em] uppercase ${active ? "text-vermil" : "text-ink/70 hover:text-ink"}`}>
