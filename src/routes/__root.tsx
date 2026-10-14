@@ -12,9 +12,12 @@ import type { ErrorComponentProps } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { AuthProvider } from "@/lib/auth";
+import { AuthProvider, useAuth } from "@/lib/auth";
 import { useCdInvalidator } from "@/lib/cd-store";
 import { ThemeProvider, themeBootstrap } from "@/lib/theme";
+import { useRouterState } from "@tanstack/react-router";
+import { useSiteSettings, isMaintenanceExempt } from "@/lib/site-settings";
+import { MaintenanceSplash } from "@/components/site/MaintenanceSplash";
 
 function NotFoundComponent() {
   return (
@@ -133,7 +136,9 @@ function RootComponent() {
       <ThemeProvider>
       <AuthProvider>
         <InvalidatorMount />
-        <Outlet />
+        <MaintenanceGate>
+          <Outlet />
+        </MaintenanceGate>
       </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
@@ -143,4 +148,15 @@ function RootComponent() {
 function InvalidatorMount() {
   useCdInvalidator();
   return null;
+}
+
+/** Shows the maintenance splash to readers; staff and sign-in pages stay reachable. */
+function MaintenanceGate({ children }: { children: React.ReactNode }) {
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const { data } = useSiteSettings();
+  const { isWriter, loading } = useAuth();
+  if (data?.maintenanceMode && !isMaintenanceExempt(pathname) && !loading && !isWriter) {
+    return <MaintenanceSplash message={data.maintenanceMessage} />;
+  }
+  return <>{children}</>;
 }
