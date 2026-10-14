@@ -165,6 +165,7 @@ export type Database = {
           byline: string
           contact: string | null
           created_at: string
+          created_by: string | null
           date: string
           decade: string
           format: string
@@ -174,6 +175,8 @@ export type Database = {
           label: string
           label_address: string | null
           period: string | null
+          preview_token: string | null
+          publish_at: string | null
           read_mins: number
           score: number
           slug: string
@@ -181,6 +184,7 @@ export type Database = {
           spotify_artist_id: string | null
           spotify_url: string | null
           status: string
+          submitted_at: string | null
           title: string
           updated_at: string
         }
@@ -193,6 +197,7 @@ export type Database = {
           byline?: string
           contact?: string | null
           created_at?: string
+          created_by?: string | null
           date: string
           decade: string
           format?: string
@@ -202,6 +207,8 @@ export type Database = {
           label?: string
           label_address?: string | null
           period?: string | null
+          preview_token?: string | null
+          publish_at?: string | null
           read_mins?: number
           score?: number
           slug: string
@@ -209,6 +216,7 @@ export type Database = {
           spotify_artist_id?: string | null
           spotify_url?: string | null
           status?: string
+          submitted_at?: string | null
           title: string
           updated_at?: string
         }
@@ -221,6 +229,7 @@ export type Database = {
           byline?: string
           contact?: string | null
           created_at?: string
+          created_by?: string | null
           date?: string
           decade?: string
           format?: string
@@ -230,6 +239,8 @@ export type Database = {
           label?: string
           label_address?: string | null
           period?: string | null
+          preview_token?: string | null
+          publish_at?: string | null
           read_mins?: number
           score?: number
           slug?: string
@@ -237,6 +248,7 @@ export type Database = {
           spotify_artist_id?: string | null
           spotify_url?: string | null
           status?: string
+          submitted_at?: string | null
           title?: string
           updated_at?: string
         }
@@ -287,6 +299,47 @@ export type Database = {
     }
     Functions: {
       can_publish: { Args: { _user_id: string }; Returns: boolean }
+      get_review_preview: {
+        Args: { _token: string }
+        Returns: {
+          archive_url: string | null
+          art: string
+          art_url: string | null
+          artist: string
+          body: Json
+          byline: string
+          contact: string | null
+          created_at: string
+          created_by: string | null
+          date: string
+          decade: string
+          format: string
+          genre: string
+          id: string
+          kind: string
+          label: string
+          label_address: string | null
+          period: string | null
+          preview_token: string | null
+          publish_at: string | null
+          read_mins: number
+          score: number
+          slug: string
+          spotify_album_id: string | null
+          spotify_artist_id: string | null
+          spotify_url: string | null
+          status: string
+          submitted_at: string | null
+          title: string
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "reviews"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

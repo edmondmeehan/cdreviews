@@ -61,6 +61,23 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
     navigate({ to: "/admin/reviews" });
   }
 
+  async function copyPreview() {
+    try {
+      const token = await cdActions.ensurePreviewToken(r.id, r.previewToken);
+      patch("previewToken", token);
+      const url = `${window.location.origin}/preview/${token}`;
+      await navigator.clipboard?.writeText(url).catch(() => {});
+      prompt("Private preview link (copied):", url);
+    } catch (err) { alert(err instanceof Error ? err.message : "Couldn't create link"); }
+  }
+
+  async function toggleSubmit() {
+    const next = !r.submittedAt;
+    const { error } = await cdActions.setReviewSubmitted(r.id, next);
+    if (error) return alert(error);
+    patch("submittedAt", next ? new Date().toISOString() : undefined);
+  }
+
   function patch<K extends keyof Review>(k: K, v: Review[K]) { setR((p) => ({ ...p, [k]: v })); }
 
   async function handleUpload(file: File) {
@@ -147,6 +164,12 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
       <AdminHeader title={isNew ? "New review" : `Edit · ${r.title}`} action={
         <div className="flex gap-2">
           <AdminButton tone="ghost" onClick={() => navigate({ to: "/admin/reviews" })}>Cancel</AdminButton>
+          {!isNew && r.status === "draft" && (
+            <>
+              <AdminButton tone="ghost" onClick={copyPreview}>Copy preview link</AdminButton>
+              <AdminButton tone="ghost" onClick={toggleSubmit}>{r.submittedAt ? "Withdraw from approval" : "Submit for approval"}</AdminButton>
+            </>
+          )}
           <AdminButton type="submit" onClick={() => (document.getElementById("rf") as HTMLFormElement)?.requestSubmit()}>Save</AdminButton>
         </div>
       } />
@@ -270,6 +293,13 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
             <option value="published" disabled={!canPublish}>Published{canPublish ? "" : " (senior writer+)"}</option>
           </select>
         </Field>
+        {r.status === "draft" && canPublish && (
+          <Field label="Schedule publish (goes live within the hour)">
+            <input type="datetime-local" className={inputCls}
+              value={r.publishAt ? toLocalInput(r.publishAt) : ""}
+              onChange={(e) => patch("publishAt", e.target.value ? new Date(e.target.value).toISOString() : undefined)} />
+          </Field>
+        )}
         <div className="lg:col-span-2">
           <Field label="Pull quote (optional)">
             <input className={inputCls} value={r.pull ?? ""} onChange={(e) => patch("pull", e.target.value)} maxLength={240} />
@@ -283,4 +313,10 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
       </form>
     </div>
   );
+}
+
+function toLocalInput(iso: string) {
+  const d = new Date(iso);
+  const off = d.getTimezoneOffset() * 60000;
+  return new Date(d.getTime() - off).toISOString().slice(0, 16);
 }

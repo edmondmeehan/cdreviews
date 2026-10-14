@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RadioRouteImport } from './routes/radio'
 import { Route as MastheadRouteImport } from './routes/masthead'
@@ -23,8 +24,10 @@ import { Route as ReviewsIndexRouteImport } from './routes/reviews.index'
 import { Route as ListsIndexRouteImport } from './routes/lists.index'
 import { Route as FeaturesIndexRouteImport } from './routes/features.index'
 import { Route as ReviewsSlugRouteImport } from './routes/reviews.$slug'
+import { Route as PreviewTokenRouteImport } from './routes/preview.$token'
 import { Route as ListsSlugRouteImport } from './routes/lists.$slug'
 import { Route as FeaturesSlugRouteImport } from './routes/features.$slug'
+import { Route as AuthorsNameRouteImport } from './routes/authors.$name'
 import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminListsRouteImport } from './routes/admin.lists'
@@ -35,6 +38,11 @@ import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[
 import { Route as AdminReviewsImportRouteImport } from './routes/admin.reviews.import'
 import { Route as AdminReviewsIdRouteImport } from './routes/admin.reviews.$id'
 
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -105,6 +113,11 @@ const ReviewsSlugRoute = ReviewsSlugRouteImport.update({
   path: '/reviews/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreviewTokenRoute = PreviewTokenRouteImport.update({
+  id: '/preview/$token',
+  path: '/preview/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ListsSlugRoute = ListsSlugRouteImport.update({
   id: '/lists/$slug',
   path: '/lists/$slug',
@@ -113,6 +126,11 @@ const ListsSlugRoute = ListsSlugRouteImport.update({
 const FeaturesSlugRoute = FeaturesSlugRouteImport.update({
   id: '/features/$slug',
   path: '/features/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthorsNameRoute = AuthorsNameRouteImport.update({
+  id: '/authors/$name',
+  path: '/authors/$name',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
@@ -172,13 +190,16 @@ export interface FileRoutesByFullPath {
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search': typeof SearchRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
+  '/preview/$token': typeof PreviewTokenRoute
   '/reviews/$slug': typeof ReviewsSlugRoute
   '/features/': typeof FeaturesIndexRoute
   '/lists/': typeof ListsIndexRoute
@@ -199,13 +220,16 @@ export interface FileRoutesByTo {
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search': typeof SearchRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
+  '/preview/$token': typeof PreviewTokenRoute
   '/reviews/$slug': typeof ReviewsSlugRoute
   '/features': typeof FeaturesIndexRoute
   '/lists': typeof ListsIndexRoute
@@ -227,13 +251,16 @@ export interface FileRoutesById {
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/search': typeof SearchRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
+  '/preview/$token': typeof PreviewTokenRoute
   '/reviews/$slug': typeof ReviewsSlugRoute
   '/features/': typeof FeaturesIndexRoute
   '/lists/': typeof ListsIndexRoute
@@ -256,13 +283,16 @@ export interface FileRouteTypes {
     | '/masthead'
     | '/radio'
     | '/reset-password'
+    | '/search'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
+    | '/preview/$token'
     | '/reviews/$slug'
     | '/features/'
     | '/lists/'
@@ -283,13 +313,16 @@ export interface FileRouteTypes {
     | '/masthead'
     | '/radio'
     | '/reset-password'
+    | '/search'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
+    | '/preview/$token'
     | '/reviews/$slug'
     | '/features'
     | '/lists'
@@ -310,13 +343,16 @@ export interface FileRouteTypes {
     | '/masthead'
     | '/radio'
     | '/reset-password'
+    | '/search'
     | '/admin/contributors'
     | '/admin/features'
     | '/admin/lists'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
+    | '/preview/$token'
     | '/reviews/$slug'
     | '/features/'
     | '/lists/'
@@ -338,8 +374,11 @@ export interface RootRouteChildren {
   MastheadRoute: typeof MastheadRoute
   RadioRoute: typeof RadioRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SearchRoute: typeof SearchRoute
+  AuthorsNameRoute: typeof AuthorsNameRoute
   FeaturesSlugRoute: typeof FeaturesSlugRoute
   ListsSlugRoute: typeof ListsSlugRoute
+  PreviewTokenRoute: typeof PreviewTokenRoute
   ReviewsSlugRoute: typeof ReviewsSlugRoute
   FeaturesIndexRoute: typeof FeaturesIndexRoute
   ListsIndexRoute: typeof ListsIndexRoute
@@ -349,6 +388,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -447,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReviewsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/preview/$token': {
+      id: '/preview/$token'
+      path: '/preview/$token'
+      fullPath: '/preview/$token'
+      preLoaderRoute: typeof PreviewTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lists/$slug': {
       id: '/lists/$slug'
       path: '/lists/$slug'
@@ -459,6 +512,13 @@ declare module '@tanstack/react-router' {
       path: '/features/$slug'
       fullPath: '/features/$slug'
       preLoaderRoute: typeof FeaturesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/authors/$name': {
+      id: '/authors/$name'
+      path: '/authors/$name'
+      fullPath: '/authors/$name'
+      preLoaderRoute: typeof AuthorsNameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/subscribers': {
@@ -562,8 +622,11 @@ const rootRouteChildren: RootRouteChildren = {
   MastheadRoute: MastheadRoute,
   RadioRoute: RadioRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SearchRoute: SearchRoute,
+  AuthorsNameRoute: AuthorsNameRoute,
   FeaturesSlugRoute: FeaturesSlugRoute,
   ListsSlugRoute: ListsSlugRoute,
+  PreviewTokenRoute: PreviewTokenRoute,
   ReviewsSlugRoute: ReviewsSlugRoute,
   FeaturesIndexRoute: FeaturesIndexRoute,
   ListsIndexRoute: ListsIndexRoute,

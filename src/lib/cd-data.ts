@@ -23,6 +23,7 @@ export type Review = {
   pull?: string;
   body: string[]; // paragraphs
   status: "draft" | "published";
+  publishAt?: string;
   // Bulk-import extras
   labelAddress?: string;
   contact?: string;
@@ -33,6 +34,10 @@ export type Review = {
   spotifyUrl?: string;
   spotifyAlbumId?: string;
   spotifyArtistId?: string;
+  // Workflow
+  createdBy?: string;
+  submittedAt?: string;
+  previewToken?: string;
 };
 
 export type Feature = {

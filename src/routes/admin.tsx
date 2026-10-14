@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { useAuth } from "@/lib/auth";
+import type { Review } from "@/lib/cd-data";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -19,7 +20,8 @@ const NAV = [
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const { user, isStaff, isWriter, loading, signOut, roles } = useAuth();
+  const { user, isStaff, isWriter, canPublish, loading, signOut, roles } = useAuth();
+  const allReviews = useCdStore((s) => s.reviews);
   const counts = useCdStore((s) => ({
     r: s.reviews.length, f: s.features.length, l: s.lists.length, c: s.contributors.length, s: s.subscribers.length,
   }));
@@ -96,6 +98,7 @@ function AdminLayout() {
               <Stat label="Contributors" n={counts.c} to="/admin/contributors" />
               <Stat label="Subscribers" n={counts.s} to="/admin/subscribers" />
             </div>
+            <Dashboard reviews={allReviews} userId={user.id} canPublish={canPublish} />
             <p className="fr-blurb text-[16px] text-ink/60 max-w-[60ch]">
               Edits save straight to the live site. Drafts stay hidden until you publish them.
             </p>
@@ -105,6 +108,45 @@ function AdminLayout() {
         )}
       </main>
     </div>
+  );
+}
+
+type R = Review;
+
+function Dashboard({ reviews, userId, canPublish }: { reviews: R[]; userId: string; canPublish: boolean }) {
+  const mine = reviews.filter((r) => r.createdBy === userId && r.status === "draft");
+  const waiting = reviews.filter((r) => r.status === "draft" && r.submittedAt)
+    .sort((a, b) => (a.submittedAt ?? "").localeCompare(b.submittedAt ?? ""));
+  return (
+    <div className="grid md:grid-cols-2 gap-8">
+      <ReviewQueue title="My drafts" empty="No drafts of yours yet." items={mine} />
+      <ReviewQueue
+        title="Awaiting approval"
+        empty="Nothing waiting for approval."
+        items={waiting}
+        action={canPublish ? (r) => (
+          <button onClick={() => cdActions.setReviewsStatus([r.id], "published")} className="text-vermil hover:underline">Publish</button>
+        ) : undefined}
+      />
+    </div>
+  );
+}
+
+function ReviewQueue({ title, empty, items, action }: { title: string; empty: string; items: R[]; action?: (r: R) => React.ReactNode }) {
+  return (
+    <section>
+      <h2 className="font-mono text-[11px] tracking-[0.25em] uppercase text-vermil mb-3">{title} · {items.length}</h2>
+      {items.length === 0 ? <p className="font-mono text-[11px] text-ink/50">{empty}</p> : (
+        <ul className="divide-y divide-ink/10 border-y border-ink/10">
+          {items.slice(0, 12).map((r) => (
+            <li key={r.id} className="py-2 flex items-center justify-between gap-3 font-mono text-[11px]">
+              <Link to="/admin/reviews/$id" params={{ id: r.id }} className="text-ink hover:text-vermil truncate">{r.artist} — {r.title}</Link>
+              <span className="uppercase tracking-[0.2em] shrink-0">{action ? action(r) : (r.submittedAt ? <span className="text-ink/50">Submitted</span> : null)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 
