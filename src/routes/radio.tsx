@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Kicker } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
+import { RADIO_DEFAULTS, spotifyPlaylistId, useRadioSettings } from "@/lib/radio-settings";
 
 export const Route = createFileRoute("/radio")({
   component: Radio,
@@ -13,6 +14,8 @@ export const Route = createFileRoute("/radio")({
 });
 
 function Radio() {
+  const radio = useRadioSettings().data ?? RADIO_DEFAULTS;
+  const playlistId = spotifyPlaylistId(radio.playlist_url) ?? spotifyPlaylistId(RADIO_DEFAULTS.playlist_url)!;
   const published = useCdStore((s) => s.reviews.filter((r) => r.status === "published"));
   const mix = [...published].sort((a, b) => b.score - a.score).slice(0, 10);
   const playable = mix.filter((r) => r.spotifyAlbumId);
@@ -52,14 +55,10 @@ function Radio() {
         <div className="bg-bone-2 border border-rule flex flex-col lg:flex-row">
           <div className="flex-[1_1_420px] min-w-0 p-8 md:p-12 space-y-6">
             <Kicker>Now spinning · Full program</Kicker>
-            <h2 className="fr-display text-[clamp(40px,4.4vw,64px)] text-ink">
-              Fuck It, <span className="serif-it">It's Fall.</span>
-            </h2>
-            <p className="fr-dek text-[17px] text-ink-2 max-w-[48ch]">
-              The standing CDR Radio playlist — the same records we argue about in the reviews, sequenced back to back. It updates as the editors rotate the stacks.
-            </p>
+            <h2 className="fr-display text-[clamp(40px,4.4vw,64px)] text-ink">{radio.title}</h2>
+            <p className="fr-dek text-[17px] text-ink-2 max-w-[48ch]">{radio.description}</p>
             <a
-              href="https://open.spotify.com/playlist/0Lxt9bg9qMX4He0UDkxRL8?si=UWtWoMY_TC2kBjBHnOZ0rA"
+              href={radio.playlist_url}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 border border-ink/40 px-5 py-3 font-mono text-[12px] tracking-[0.12em] uppercase text-ink hover:bg-ink hover:text-bone transition-colors"
@@ -69,8 +68,9 @@ function Radio() {
           </div>
           <div className="flex-[1_1_560px] min-w-0 p-6 md:p-8 border-t lg:border-t-0 lg:border-l border-rule">
             <iframe
+              key={playlistId}
               title="CDR Radio playlist on Spotify"
-              src="https://open.spotify.com/embed/playlist/0Lxt9bg9qMX4He0UDkxRL8?utm_source=cdreviews&theme=0"
+              src={`https://open.spotify.com/embed/playlist/${playlistId}?utm_source=cdreviews&theme=0`}
               width="100%"
               height="480"
               frameBorder={0}
