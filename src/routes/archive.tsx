@@ -102,6 +102,30 @@ function Archive() {
   );
 }
 
+function PageLink({ page, active = false, disabled = false, children }: {
+  page: number; active?: boolean; disabled?: boolean; children: React.ReactNode;
+}) {
+  if (disabled) {
+    return (
+      <span className="inline-flex items-center h-10 px-4 rounded-full font-mono text-[12px] tracking-[0.08em] uppercase border border-ink/10 text-mute/50 cursor-default">
+        {children}
+      </span>
+    );
+  }
+  return (
+    <Link
+      from="/archive"
+      search={(prev: Record<string, unknown>) => ({ ...prev, page })}
+      replace
+      className={`inline-flex items-center h-10 px-4 rounded-full font-mono text-[12px] tracking-[0.08em] uppercase border transition-colors ${
+        active ? "bg-paper text-night border-paper" : "text-ink border-ink/25 hover:border-ink"
+      }`}
+    >
+      {children}
+    </Link>
+  );
+}
+
 function SearchBox({ initial }: { initial: string }) {
   return (
     <form
