@@ -3,3 +3,4 @@
 - Review article fields must come from the selected database record, and editor state must reset by record identity so navigation cannot save another review's fields.
 - Review sharing metadata loads the selected published record through a session-free server function and uses its HTTPS artwork at the leaf route; crawlers need server-rendered tags and must never receive drafts.
 - Theme selection uses root semantic CSS variables and a shared provider with pre-paint local preference restoration; all pages inherit the selected appearance without changing artwork.
+- Editorial permissions come only from `public.user_roles`, and every check — the client `roleFlags` helper and the database `is_staff`/`is_writer`/`can_publish` functions — must treat `super_admin` as the top of the hierarchy, because a helper that forgets a role silently locks that account out of the desk.
