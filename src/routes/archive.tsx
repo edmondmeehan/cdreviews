@@ -72,12 +72,30 @@ function Archive() {
         </div>
 
         <div className="border-t-2 border-ink">
-          {filtered.length === 0 ? (
+          {rows.length === 0 ? (
             <p className="fr-pull text-[30px] text-ink-2 py-16 text-center">Empty stacks. Try a wider search.</p>
           ) : (
-            filtered.map((r, i) => (<Fragment key={r.id}><IndexRow row={r} n={i + 1} showDecade />{i === 4 && <AdSlot placement="list_card" />}</Fragment>))
+            rows.map((r, i) => (
+              <Fragment key={r.id}>
+                <IndexRow row={r} n={(safePage - 1) * PER_PAGE + i + 1} showDecade />
+                {(i + 1) % 8 === 0 && <AdSlot placement="list_card" />}
+              </Fragment>
+            ))
           )}
         </div>
+
+        {pageCount > 1 && (
+          <div className="flex flex-wrap items-center gap-2 pt-4">
+            <PageLink page={safePage - 1} disabled={safePage <= 1}>← Prev</PageLink>
+            {Array.from({ length: pageCount }, (_, i) => i + 1).map((p) => (
+              <PageLink key={p} page={p} active={p === safePage}>{p}</PageLink>
+            ))}
+            <PageLink page={safePage + 1} disabled={safePage >= pageCount}>Next →</PageLink>
+            <span className="ml-auto font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
+              Showing {(safePage - 1) * PER_PAGE + 1}–{Math.min(safePage * PER_PAGE, filtered.length)} of {filtered.length}
+            </span>
+          </div>
+        )}
       </section>
       <SiteFooter />
     </div>
