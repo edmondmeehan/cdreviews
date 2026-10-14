@@ -71,6 +71,13 @@
       "when": 1791984491147,
       "tag": "0009_ads",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791987414323,
+      "tag": "0010_radio_settings",
+      "breakpoints": true
     }
   ]
 }
