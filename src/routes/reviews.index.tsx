@@ -48,7 +48,7 @@ function ReviewsIndex() {
         num="§ 01"
         title="Reviews."
         dek="Every record we've graded since 1995. Filter by decade, type, or sort by score."
-        right={<><div>{sorted.length} results</div></>}
+        right={<><div>{sorted.length} results · page {safePage} of {pageCount}</div></>}
       />
       <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-12 space-y-8">
         <div className="flex flex-wrap gap-x-10 gap-y-6 pb-8 border-b border-rule">
@@ -60,8 +60,17 @@ function ReviewsIndex() {
           <p className="fr-pull text-[30px] text-ink-2 py-16 text-center">Nothing in the stacks.</p>
         ) : (
           <CrateGrid>
-            {sorted.map((r) => <ReviewCard key={r.id} r={r} />)}
+            {pageRows.map((r) => <ReviewCard key={r.id} r={r} />)}
           </CrateGrid>
+        )}
+        {pageCount > 1 && (
+          <nav aria-label="Reviews pages" className="flex flex-wrap items-center justify-center gap-2 pt-4">
+            <PageLink page={safePage - 1} disabled={safePage <= 1}>← Prev</PageLink>
+            {Array.from({ length: pageCount }, (_, i) => i + 1).map((p) => (
+              <PageLink key={p} page={p} active={p === safePage}>{p}</PageLink>
+            ))}
+            <PageLink page={safePage + 1} disabled={safePage >= pageCount}>Next →</PageLink>
+          </nav>
         )}
       </section>
       <AdSlot placement="home_break" className="pb-16" />
