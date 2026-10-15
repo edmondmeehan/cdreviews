@@ -176,9 +176,27 @@ function isUuid(s: string) {
 
 const KEY = ["cdreviews", "snapshot"] as const;
 
+// The database returns at most 1000 rows per request, so page through all reviews.
+async function fetchAllReviews() {
+  const PAGE = 1000;
+  const data: unknown[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const res = await supabase
+      .from("reviews")
+      .select("*")
+      .order("date", { ascending: false })
+      .order("id", { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (res.error) return { data: null, error: res.error };
+    data.push(...(res.data ?? []));
+    if (!res.data || res.data.length < PAGE) break;
+  }
+  return { data: data as never[], error: null };
+}
+
 async function fetchSnapshot(): Promise<Snapshot> {
   const [reviews, features, lists, contributors, subscribers] = await Promise.all([
-    supabase.from("reviews").select("*").order("date", { ascending: false }),
+    fetchAllReviews(),
     supabase.from("features").select("*").order("created_at", { ascending: false }),
     supabase.from("lists").select("*").order("created_at", { ascending: false }),
     supabase.from("contributors").select("*").order("created_at", { ascending: true }),
