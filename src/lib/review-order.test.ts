@@ -1,9 +1,10 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { byNewest, byOldest, dateKey, mostRecent } from "./review-order";
+import type { Review } from "./cd-data";
 
-const mk = (date: string, title = "Album") =>
-  ({ id: title + date, slug: title, title, artist: "A", date }) as never;
+const mk = (date: string, title = "Album"): Review =>
+  ({ id: title + date, slug: title, title, artist: "A", date }) as unknown as Review;
 
 describe("dateKey", () => {
   it("reorders MM.DD.YYYY into a chronologically comparable key", () => {
