@@ -100,6 +100,33 @@ export type Database = {
         }
         Relationships: []
       }
+      contributor_applications: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          note: string | null
+          samples: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          note?: string | null
+          samples: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          note?: string | null
+          samples?: string
+        }
+        Relationships: []
+      }
       contributors: {
         Row: {
           bio: string | null
