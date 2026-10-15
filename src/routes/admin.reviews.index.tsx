@@ -113,6 +113,7 @@ function ReviewsAdmin() {
         </div>
       } />
 
+      {artStatus && <p className="font-mono text-[11px] text-ink/70 mb-3" role="status">{artStatus}</p>}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2 w-full max-w-[420px]">
           <input
