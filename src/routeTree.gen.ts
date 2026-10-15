@@ -16,6 +16,7 @@ import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BestNewRouteImport } from './routes/best-new'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ContributeRouteImport } from './routes/contribute'
 import { Route as MastheadRouteImport } from './routes/masthead'
 import { Route as RadioRouteImport } from './routes/radio'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -75,6 +76,11 @@ const BestNewRoute = BestNewRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContributeRoute = ContributeRouteImport.update({
+  id: '/contribute',
+  path: '/contribute',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MastheadRoute = MastheadRouteImport.update({
@@ -211,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
+  '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -245,6 +252,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
+  '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -280,6 +288,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
+  '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -316,6 +325,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-new'
     | '/contact'
+    | '/contribute'
     | '/masthead'
     | '/radio'
     | '/reset-password'
@@ -350,6 +360,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-new'
     | '/contact'
+    | '/contribute'
     | '/masthead'
     | '/radio'
     | '/reset-password'
@@ -384,6 +395,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-new'
     | '/contact'
+    | '/contribute'
     | '/masthead'
     | '/radio'
     | '/reset-password'
@@ -419,6 +431,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BestNewRoute: typeof BestNewRoute
   ContactRoute: typeof ContactRoute
+  ContributeRoute: typeof ContributeRoute
   MastheadRoute: typeof MastheadRoute
   RadioRoute: typeof RadioRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -483,6 +496,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contribute': {
+      id: '/contribute'
+      path: '/contribute'
+      fullPath: '/contribute'
+      preLoaderRoute: typeof ContributeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/masthead': {
@@ -703,6 +723,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BestNewRoute: BestNewRoute,
   ContactRoute: ContactRoute,
+  ContributeRoute: ContributeRoute,
   MastheadRoute: MastheadRoute,
   RadioRoute: RadioRoute,
   ResetPasswordRoute: ResetPasswordRoute,
