@@ -6,13 +6,14 @@ import { pickAd, type AdPlacement } from "@/lib/ad-pick";
 type Ad = {
   id: string; placement: string; active: boolean; weight: number; starts_at: string | null; ends_at: string | null;
   advertiser: string; headline: string; body: string; cta: string; image_url: string | null; link_url: string;
+  code_snippet: string | null;
 };
 
 function useRunningAds() {
   return useQuery({
     queryKey: ["ads", "running"],
     queryFn: async (): Promise<Ad[]> => {
-      const { data } = await supabase.from("ads").select("id, placement, active, weight, starts_at, ends_at, advertiser, headline, body, cta, image_url, link_url");
+      const { data } = await supabase.from("ads").select("id, placement, active, weight, starts_at, ends_at, advertiser, headline, body, cta, image_url, link_url, code_snippet");
       return (data ?? []) as Ad[];
     },
     staleTime: 60_000,
