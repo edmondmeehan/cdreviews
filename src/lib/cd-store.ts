@@ -265,8 +265,11 @@ export const cdActions = {
     if (error) throw new Error(error.message);
     return token;
   },
-  async bulkUpsertReviews(rows: Review[]): Promise<{ error?: string }> {
-    if (rows.length === 0) return {};
+  async bulkUpsertReviews(
+    rows: Review[],
+    onProgress?: (saved: number, total: number) => void,
+  ): Promise<{ error?: string; saved: number }> {
+    if (rows.length === 0) return { saved: 0 };
     // The same album twice in one sheet would make the database reject the whole batch.
     const bySlug = new Map<string, Record<string, unknown>>();
     for (const r of rows) {
@@ -274,10 +277,23 @@ export const cdActions = {
       delete row.id;
       bySlug.set(r.slug, row);
     }
-    const { error } = await supabase.from("reviews").upsert([...bySlug.values()] as never, { onConflict: "slug" });
-    if (error) console.error("bulkUpsertReviews", error);
+    const all = [...bySlug.values()];
+    // Save in chunks so a 500-row sheet doesn't fail as one giant request.
+    const CHUNK = 100;
+    let saved = 0;
+    for (let i = 0; i < all.length; i += CHUNK) {
+      const chunk = all.slice(i, i + CHUNK);
+      const { error } = await supabase.from("reviews").upsert(chunk as never, { onConflict: "slug" });
+      if (error) {
+        console.error("bulkUpsertReviews", error);
+        invalidate();
+        return { error: error.message, saved };
+      }
+      saved += chunk.length;
+      onProgress?.(saved, all.length);
+    }
     invalidate();
-    return { error: error?.message };
+    return { saved };
   },
 
   // Features
