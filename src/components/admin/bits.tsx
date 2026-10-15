@@ -11,15 +11,15 @@ export function AdminHeader({ title, action }: { title: string; action?: ReactNo
   );
 }
 
-export function AdminButton({ children, onClick, tone = "primary", type }: {
-  children: ReactNode; onClick?: () => void; tone?: "primary" | "danger" | "ghost"; type?: "button" | "submit";
+export function AdminButton({ children, onClick, tone = "primary", type, disabled }: {
+  children: ReactNode; onClick?: () => void; tone?: "primary" | "danger" | "ghost"; type?: "button" | "submit"; disabled?: boolean;
 }) {
   const cls =
     tone === "danger" ? "bg-ink/0 text-vermil border-vermil/40 hover:bg-vermil hover:text-ink" :
     tone === "ghost" ? "bg-ink/0 text-ink/70 border-ink/20 hover:text-ink" :
     "bg-vermil text-night border-vermil hover:bg-ink hover:text-bone";
   return (
-    <button type={type ?? "button"} onClick={onClick} className={`font-mono text-[10px] tracking-[0.25em] uppercase min-h-11 inline-flex items-center justify-center px-4 py-2 border ${cls}`}>
+    <button type={type ?? "button"} onClick={onClick} disabled={disabled} className={`font-mono text-[10px] tracking-[0.25em] uppercase min-h-11 inline-flex items-center justify-center px-4 py-2 border disabled:opacity-50 disabled:pointer-events-none ${cls}`}>
       {children}
     </button>
   );
