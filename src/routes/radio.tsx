@@ -103,7 +103,7 @@ function Radio() {
                     >
                       {m.artist} <span className="block serif-it font-normal text-[20px]">— {m.title}</span>
                     </Link>
-                    <span className="font-mono text-[11px] text-mute">{m.score.toFixed(1)}</span>
+                    <span className="font-mono text-[11px] text-mute">{formatScore(m.score)}</span>
                     {m.spotifyAlbumId ? (
                       <button
                         type="button"

@@ -48,7 +48,7 @@ function PreviewPage() {
           <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-ink/60">{r.artist}</div>
           <h1 className="fr-display text-[48px] leading-none">{r.title}</h1>
           <div className="font-mono text-[11px] tracking-[0.2em] uppercase text-ink/60">{r.label} · {r.date} · By {r.byline}</div>
-          <div className="fr-score-card text-[56px] text-vermil">{r.score.toFixed(1)}</div>
+          <div className="fr-score-card text-[56px] text-vermil">{formatScore(r.score)}</div>
         </div>
       </div>
       <div className="space-y-5 max-w-[68ch]">

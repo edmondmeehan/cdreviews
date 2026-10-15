@@ -56,7 +56,7 @@ function tiltFor(id: string) {
 export function ScoreSticker({ score }: { score: number }) {
   return (
     <span className={`score-sticker ${score >= 9 ? "score-sticker--hot" : ""}`}>
-      {score.toFixed(1)}
+      {formatScore(score)}
     </span>
   );
 }
@@ -122,7 +122,7 @@ export function IndexRow({ row, n, showDecade = false }: { row: Review; n: numbe
       {showDecade && <span className="hidden md:block w-16 font-mono text-[11px] tracking-[0.1em] uppercase text-mute">{row.decade}</span>}
       <span className="w-28 font-mono text-[11px] tracking-[0.1em] uppercase text-mute">{row.date}</span>
       <span className={`ml-auto w-24 text-right fr-score-card text-[40px] md:text-[44px] ${row.score >= 8.5 ? "text-vermil" : row.score < 7 ? "text-mute" : "text-ink"}`}>
-        {row.score.toFixed(1)}
+        {formatScore(row.score)}
       </span>
     </Link>
   );

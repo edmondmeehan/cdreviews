@@ -76,7 +76,7 @@ function ReviewPage() {
             >
               <Cover r={review} pop />
               <span className={`absolute z-[3] -bottom-6 right-2 sm:-right-4 w-[112px] h-[112px] rounded-full flex items-center justify-center fr-display-bold text-[44px] -rotate-12 text-night shadow-[0_10px_24px_rgba(0,0,0,.4)] ${hot ? "bg-vermil" : "bg-paper"}`}>
-                {review.score.toFixed(1)}
+                {formatScore(review.score)}
               </span>
             </button>
             <dl className="mt-12 font-mono text-[11px] tracking-[0.1em] uppercase text-mute grid grid-cols-[90px_1fr] gap-y-2.5 border-t border-rule pt-5">
@@ -154,7 +154,7 @@ function ReviewPage() {
             <AdSlot placement="review_side" className="mt-12 max-w-[420px]" />
             <div className="mt-12 pt-6 border-t border-rule flex flex-wrap items-end gap-6">
               <div className={`fr-score text-[96px] ${hot ? "text-vermil" : "text-ink"}`}>
-                {review.score.toFixed(1)}<span className="text-ink text-[32px] align-top">/10</span>
+                {formatScore(review.score)}<span className="text-ink text-[32px] align-top">/10</span>
               </div>
               <Link to="/reviews" className="ml-auto font-mono text-[12px] tracking-[0.12em] uppercase text-vermil hover:underline">
                 ← All reviews

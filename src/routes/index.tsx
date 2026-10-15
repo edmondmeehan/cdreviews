@@ -61,7 +61,7 @@ function Hero() {
   const defaultPick = !slot && featured?.slug === "kosmo-gardens-reentry";
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   if (!featured) return <section className="min-h-[60vh]" aria-busy="true" />;
-  const score = featured.score.toFixed(1);
+  const score = formatScore(featured.score);
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-14 pb-24 md:pt-16 md:pb-32 flex flex-wrap gap-16 items-center">
       <div className="flex-[1_1_520px] min-w-0 relative z-[2]">
@@ -165,7 +165,7 @@ function CrossingTickers() {
             >
               <span>{it.artist}</span>
               <span className="serif-it text-[22px]">{it.title}</span>
-              <span className="font-mono text-[13px] bg-night text-vermil px-2 py-0.5">{it.score.toFixed(1)}</span>
+              <span className="font-mono text-[13px] bg-night text-vermil px-2 py-0.5">{formatScore(it.score)}</span>
               <span aria-hidden="true" className="ml-4">✺</span>
             </Link>
           ))}
@@ -228,7 +228,7 @@ function MostRead() {
               <span className="flex-1 min-w-0 truncate text-[19px] font-semibold">
                 {r.artist} <span className="serif-it font-normal text-[21px]">— {r.title}</span>
               </span>
-              <span className="font-mono text-[11px]">{r.score.toFixed(1)}</span>
+              <span className="font-mono text-[11px]">{formatScore(r.score)}</span>
             </Link>
           </li>
         ))}
@@ -273,7 +273,7 @@ function RadioModule() {
                   <span className="flex-1 min-w-0 truncate text-[18px] font-semibold">
                     {m.artist} <span className="serif-it font-normal text-[20px]">— {m.title}</span>
                   </span>
-                  <span className="font-mono text-[11px]">{m.score.toFixed(1)}</span>
+                  <span className="font-mono text-[11px]">{formatScore(m.score)}</span>
                 </Link>
               </li>
             ))}
@@ -352,7 +352,7 @@ function FromTheArchive() {
               {archived.body[1] && <p>{archived.body[1]}</p>}
             </div>
             <div className="flex flex-wrap items-end gap-8 pt-6 border-t border-rule">
-              <div className="fr-score text-[88px] text-vermil leading-none">{archived.score.toFixed(1)}<span className="text-ink text-[28px] align-top">/10</span></div>
+              <div className="fr-score text-[88px] text-vermil leading-none">{formatScore(archived.score)}<span className="text-ink text-[28px] align-top">/10</span></div>
               <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute leading-relaxed">
                 <div>Originally rated</div>
                 <div>Score system unchanged</div>
@@ -382,7 +382,7 @@ function FromTheArchive() {
                     {m.artist} · {m.label}
                   </div>
                 </div>
-                <div className="fr-score-card text-[28px] text-ink">{m.score.toFixed(1)}</div>
+                <div className="fr-score-card text-[28px] text-ink">{formatScore(m.score)}</div>
               </Link>
             ))}
           </div>
