@@ -262,11 +262,19 @@ export const cdActions = {
     if (error) throw new Error(error.message);
     return token;
   },
-  async bulkUpsertReviews(rows: Review[]) {
-    if (rows.length === 0) return;
-    const { error } = await supabase.from("reviews").upsert(rows.map(reviewToRow) as never, { onConflict: "slug" });
+  async bulkUpsertReviews(rows: Review[]): Promise<{ error?: string }> {
+    if (rows.length === 0) return {};
+    // The same album twice in one sheet would make the database reject the whole batch.
+    const bySlug = new Map<string, Record<string, unknown>>();
+    for (const r of rows) {
+      const row = reviewToRow(r);
+      delete row.id;
+      bySlug.set(r.slug, row);
+    }
+    const { error } = await supabase.from("reviews").upsert([...bySlug.values()] as never, { onConflict: "slug" });
     if (error) console.error("bulkUpsertReviews", error);
     invalidate();
+    return { error: error?.message };
   },
 
   // Features
