@@ -111,11 +111,10 @@ export function rowsToReviews(rows: RawRow[]): ImportResult {
     }
 
     const ratingRaw = pick(row, "rating");
-    const score = parseRating(ratingRaw);
+    let score = parseRating(ratingRaw);
     if (score == null) {
-      skipped++;
-      issues.push({ row: idx, field: "rating", message: `Invalid rating "${ratingRaw}" — row skipped` });
-      return;
+      score = 0; // shown as "NA" on the site
+      issues.push({ row: idx, field: "rating", message: ratingRaw ? `Invalid rating "${ratingRaw}" — set to NA` : "No rating — set to NA" });
     }
 
     const hotPick = parseHotPick(pick(row, "hotPick"));
