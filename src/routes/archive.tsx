@@ -9,6 +9,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { IndexRow, PageHead } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 import { DECADE_LABELS } from "@/lib/cd-data";
+import { byNewest, byOldest } from "@/lib/review-order";
 
 const schema = z.object({
   decade: fallback(z.enum(["all", "1990s", "2000s", "2010s", "2020s"]), "all").default("all"),
@@ -32,7 +33,7 @@ function Archive() {
     .filter((r) => decade === "all" || r.decade === decade)
     .filter((r) => !q || (r.title + r.artist + r.label).toLowerCase().includes(q.toLowerCase()))
     .sort((a, b) =>
-      sort === "score" ? b.score - a.score : sort === "oldest" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date),
+      sort === "score" ? b.score - a.score : sort === "oldest" ? byOldest(a, b) : byNewest(a, b),
     );
   const pageCount = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const safePage = Math.min(Math.max(1, page), pageCount);

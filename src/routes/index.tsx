@@ -12,6 +12,7 @@ import { useCdStore } from "@/lib/cd-store";
 import { currentSlot, useFeaturedSlots } from "@/lib/featured";
 import { useMostReadReviews } from "@/lib/page-views";
 import { DECADE_LABELS, KIND_LABELS, formatScore } from "@/lib/cd-data";
+import { mostRecent } from "@/lib/review-order";
 
 const DECADE_KEYS = ["all", "1990s", "2000s", "2010s", "2020s"] as const;
 const KIND_KEYS = ["all", "bnm", "bnr", "review"] as const;
@@ -456,22 +457,26 @@ function FilterChips<T extends string>({
   );
 }
 
+/** How many of the newest reviews the homepage lists before pointing to /reviews. */
+const RECENT_REVIEW_COUNT = 12;
+
 function LatestList() {
   const { decade, kind } = Route.useSearch();
   const all = usePublished();
   const filtered = all.filter(
     (r) => (decade === "all" || r.decade === decade) && (kind === "all" || r.kind === kind),
   );
+  const rows = mostRecent(filtered, RECENT_REVIEW_COUNT);
   const isFiltered = decade !== "all" || kind !== "all";
 
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-28 pb-16">
       <div className="flex flex-wrap justify-between items-end gap-6 pb-8">
         <h2 className="fr-display text-[clamp(44px,5.4vw,84px)] text-ink">
-          Latest reviews, <span className="serif-it">all of them.</span>
+          Latest reviews, <span className="serif-it">just landed.</span>
         </h2>
         <div className="font-mono text-[12px] tracking-[0.12em] uppercase text-mute">
-          Showing <span className="text-ink">{filtered.length}</span> of {all.length}
+          The newest <span className="text-ink">{rows.length}</span> of {all.length.toLocaleString()}
           {isFiltered && (
             <>
               {" · "}
@@ -493,7 +498,7 @@ function LatestList() {
       </div>
 
       <div className="border-t-2 border-ink">
-        {filtered.length === 0 ? (
+        {rows.length === 0 ? (
           <div className="py-16 text-center">
             <p className="fr-pull text-[30px] text-ink-2">Nothing in the stacks for that combination.</p>
             <Link from="/" search={{ decade: "all", kind: "all" }} replace resetScroll={false}
@@ -502,9 +507,28 @@ function LatestList() {
             </Link>
           </div>
         ) : (
-          filtered.map((row, i) => <IndexRow key={row.id} row={row} n={i + 1} />)
+          rows.map((row, i) => <IndexRow key={row.id} row={row} n={i + 1} />)
         )}
       </div>
+
+      {filtered.length > rows.length && (
+        <div className="pt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+          <Link
+            to="/reviews"
+            search={{ decade, kind, sort: "newest" }}
+            className="btn-pop inline-flex items-center h-[54px] px-7 bg-vermil text-night font-bold text-[16px] hover:text-night"
+          >
+            All {filtered.length.toLocaleString()} reviews →
+          </Link>
+          <Link
+            to="/archive"
+            search={{ decade, q: "", sort: "newest" }}
+            className="font-mono text-[11px] tracking-[0.12em] uppercase text-mute hover:text-vermil"
+          >
+            Browse the archive by decade →
+          </Link>
+        </div>
+      )}
     </section>
   );
 }

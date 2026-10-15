@@ -12,3 +12,4 @@
 - [x] Verify browsing, review search/paging, and admin forms at phone and desktop widths.
 - [x] Add optional YouTube videos to the review editor, saved reviews and draft previews; verify saving and removal.
 - [x] Verify desk Traffic figures and fix loading, failure states, and phone layout.
+- [x] Homepage lists only the twelve newest reviews, with links to the full list and archive; dates sort chronologically.
