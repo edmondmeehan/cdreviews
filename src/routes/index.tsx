@@ -476,7 +476,7 @@ function LatestList() {
           Latest reviews, <span className="serif-it">just landed.</span>
         </h2>
         <div className="font-mono text-[12px] tracking-[0.12em] uppercase text-mute">
-          The newest <span className="text-ink">{rows.length}</span> of {all.length}
+          The newest <span className="text-ink">{rows.length}</span> of {all.length.toLocaleString()}
           {isFiltered && (
             <>
               {" · "}
@@ -518,7 +518,7 @@ function LatestList() {
             search={{ decade, kind, sort: "newest" }}
             className="btn-pop inline-flex items-center h-[54px] px-7 bg-vermil text-night font-bold text-[16px] hover:text-night"
           >
-            All {filtered.length} reviews →
+            All {filtered.length.toLocaleString()} reviews →
           </Link>
           <Link
             to="/archive"
