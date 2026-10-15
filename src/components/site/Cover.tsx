@@ -19,6 +19,11 @@ export function Cover({
   pop?: boolean;
   mini?: boolean;
 }) {
+  // Stable print treatments stay attached to the record across pages and renders.
+  const variant = Array.from(`${r.artist}\u0000${r.title}`).reduce(
+    (hash, character) => (Math.imul(hash, 31) + character.charCodeAt(0)) >>> 0,
+    0,
+  ) % 4;
   const sleeve = r.artUrl ? (
     <img
       src={r.artUrl}
@@ -27,7 +32,8 @@ export function Cover({
       className="cover__sleeve w-full h-full object-cover"
     />
   ) : (
-    <div className={`cover__sleeve art ${r.art} cover-fallback`} role="img" aria-label={`${r.title} by ${r.artist}`}>
+    <div className={`cover__sleeve art cover-fallback cover-fallback--${variant}`} role="img" aria-label={`Artwork unavailable: ${r.title} by ${r.artist}. Typographic placeholder.`}>
+      <div className="cover-fallback__notice" aria-hidden="true"><span>cdreviews / archive</span><span>No cover on file</span></div>
       <div className="cover-fallback__sleeve">
         <div className="cover-fallback__title">{r.title}</div>
         <div className="cover-fallback__artist">{r.artist}</div>
