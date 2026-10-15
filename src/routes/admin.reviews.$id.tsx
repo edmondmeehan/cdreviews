@@ -11,6 +11,45 @@ import { lookupDiscogsAlbum } from "@/lib/discogs.functions";
 import { Cover } from "@/components/site/Cover";
 import { YouTubeVideo } from "@/components/site/YouTubeVideo";
 import { normalizeYoutubeUrl, youtubeVideoId } from "@/lib/youtube";
+import { cleanupReviewBody } from "@/lib/body-cleanup.functions";
+
+function BodyCleanup({ body, onApply }: { body: string[]; onApply: (p: string[]) => void }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [result, setResult] = useState<{ paragraphs: string[]; changes: string[] } | null>(null);
+  const run = async () => {
+    const paragraphs = body.map((p) => p.trim()).filter(Boolean);
+    if (!paragraphs.length) return setErr("Add some review text first.");
+    setBusy(true); setErr(null); setResult(null);
+    try { setResult(await cleanupReviewBody({ data: { paragraphs } })); }
+    catch (e) { setErr(e instanceof Error ? e.message : "AI cleanup failed."); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="mt-3 space-y-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <AdminButton tone="ghost" onClick={run} disabled={busy}>{busy ? "Checking…" : "✦ Spell check & clean up with AI"}</AdminButton>
+        <span className="text-xs text-muted-foreground">Fixes typos and stray junk; keeps the writer's voice. Nothing changes until you click Apply.</span>
+      </div>
+      {err && <p className="text-sm text-destructive">{err}</p>}
+      {result && (
+        <div className="border border-border p-4 space-y-3">
+          <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Suggested changes</p>
+          {result.changes.length ? (
+            <ul className="list-disc pl-5 text-sm space-y-1">{result.changes.map((c, i) => <li key={i}>{c}</li>)}</ul>
+          ) : <p className="text-sm">No changes needed.</p>}
+          <details className="text-sm"><summary className="cursor-pointer">Preview cleaned text</summary>
+            <div className="mt-2 space-y-2 max-h-80 overflow-auto">{result.paragraphs.map((p, i) => <p key={i}>{p}</p>)}</div>
+          </details>
+          <div className="flex gap-2">
+            <AdminButton onClick={() => { onApply(result.paragraphs); setResult(null); }}>Apply</AdminButton>
+            <AdminButton tone="ghost" onClick={() => setResult(null)}>Discard</AdminButton>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/admin/reviews/$id")({ head: () => pageMeta("Review editor — Admin — cdreviews.", "Review editor on the cdreviews editorial desk."), component: EditReview });
 
@@ -334,8 +373,9 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
         </div>
         <div className="lg:col-span-2">
           <Field label="Body (one paragraph per line, blank line between)">
-            <textarea className={inputCls + " min-h-[300px]"} value={r.body.join("\n\n")} onChange={(e) => patch("body", e.target.value.split(/\n\s*\n/))} maxLength={20000} />
+            <textarea spellCheck lang="en" className={inputCls + " min-h-[300px]"} value={r.body.join("\n\n")} onChange={(e) => patch("body", e.target.value.split(/\n\s*\n/))} maxLength={20000} />
           </Field>
+          <BodyCleanup body={r.body} onApply={(p) => patch("body", p)} />
         </div>
       </form>
     </div>
