@@ -229,6 +229,22 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
     } finally { setArtBusy(null); }
   }
 
+  async function handleDiscogsPull() {
+    if (!r.artist || !r.title) { setArtMsg("Add artist and title first"); return; }
+    setArtBusy("discogs"); setArtMsg(null);
+    try {
+      const dg = await lookupDiscogsAlbum({ data: { artist: r.artist, album: r.title } });
+      if (dg.ok) {
+        setR((p) => ({ ...p, artUrl: dg.imageUrl }));
+        setArtMsg(`✓ Cover from Discogs: ${dg.title}`);
+      } else {
+        setArtMsg(`Discogs: ${dg.error}`);
+      }
+    } catch (e) {
+      setArtMsg(e instanceof Error ? e.message : "Discogs lookup failed");
+    } finally { setArtBusy(null); }
+  }
+
   async function handleSpotifySearch() {
     const q = searchQ.trim() || `${r.artist} ${r.title}`.trim();
     if (!q) { setArtMsg("Enter a search term, or add artist/title"); return; }
@@ -292,6 +308,9 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
             </label>
             <AdminButton onClick={handleSpotifyPull}>
               {artBusy === "spotify" ? "Searching…" : "↻ Pull from Spotify"}
+            </AdminButton>
+            <AdminButton onClick={handleDiscogsPull}>
+              {artBusy === "discogs" ? "Searching…" : "↻ Pull from Discogs"}
             </AdminButton>
             {(r.artUrl || r.spotifyUrl || r.spotifyArtistId) && (
               <AdminButton tone="ghost" onClick={() => { patch("artUrl", undefined); patch("spotifyUrl", undefined); patch("spotifyAlbumId", undefined); patch("spotifyArtistId", undefined); setArtMsg("Cleared"); }}>
