@@ -187,8 +187,12 @@ function ImportPage() {
                 </div>
               ) : (
                 <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <AdminButton onClick={commit} tone="primary">Submit {result.reviews.length} reviews</AdminButton>
-                  <span className="font-mono text-[10px] text-ink/50 tracking-[0.2em] uppercase">Review the preview above before submitting</span>
+                  <AdminButton onClick={commit} tone="primary" disabled={!!saving}>
+                    {saving ? `Saving ${saving.saved} / ${saving.total}…` : `Submit ${result.reviews.length} reviews`}
+                  </AdminButton>
+                  <span className="font-mono text-[10px] text-ink/50 tracking-[0.2em] uppercase">
+                    {saving ? "Keep this page open until it finishes" : "Review the preview above before submitting"}
+                  </span>
                 </div>
               )}
             </div>
