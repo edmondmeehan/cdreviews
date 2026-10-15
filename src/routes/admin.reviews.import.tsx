@@ -1,3 +1,4 @@
+import { formatScore } from "@/lib/cd-data";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -140,7 +141,7 @@ function ImportPage() {
                           <td className="py-2 px-3 text-ink/80">{r.artist}</td>
                           <td className="text-ink">{r.title}</td>
                           <td className="text-ink/60">{r.date}</td>
-                          <td className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{r.score.toFixed(1)}</td>
+                          <td className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{formatScore(r.score)}</td>
                           <td className="uppercase text-ink/60">{r.kind}</td>
                         </tr>
                       ))}
@@ -198,7 +199,7 @@ function ImportPage() {
             </ul>
             <div className="pt-2 border-t border-ink/10 text-ink/50 leading-relaxed">
               Header row required. Column order doesn't matter. Headers are matched case- and space-insensitively.
-              Rating accepts 0–10, 0.0–1.0, or percentages. Hot Pick of "Y/Yes/True/X" marks the row as Best New Music.
+              Rating accepts 0–10, 0.0–1.0, or percentages; missing ratings import as NA and missing reviewers as Staff. Hot Pick of "Y/Yes/True/X" marks the row as Best New Music.
               Paragraph breaks in Review Text use blank lines.
             </div>
           </div>

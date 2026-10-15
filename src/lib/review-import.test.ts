@@ -21,4 +21,13 @@ describe("review-specific imported fields", () => {
     assert.equal(reviews[0]?.decade, "1990s");
     assert.equal(reviews[0]?.genre, "Rock");
   });
+  it("imports rows with no rating or reviewer instead of skipping them", () => {
+    const { reviews, skipped, issues } = rowsToReviews([
+      { Artist: "Entity", Album: "Ghost Train", "Review Date": "June 1995", "Review Text": "No rating here." },
+    ]);
+    assert.equal(skipped, 0);
+    assert.equal(reviews[0]?.score, 0);
+    assert.equal(reviews[0]?.byline, "Staff");
+    assert.equal(issues.some((i) => i.field === "rating"), true);
+  });
 });

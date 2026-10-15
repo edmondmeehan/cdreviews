@@ -1,3 +1,4 @@
+import { formatScore } from "@/lib/cd-data";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
@@ -71,7 +72,7 @@ function AdminFeatured() {
             {matches.map((r) => (
               <li key={r.slug}>
                 <button type="button" className="w-full text-left px-3 py-2 hover:bg-bone" onClick={() => setSlug(r.slug)}>
-                  {r.artist} — <em>{r.title}</em> <span className="text-mute text-sm">· {r.score.toFixed(1)} · {r.status}</span>
+                  {r.artist} — <em>{r.title}</em> <span className="text-mute text-sm">· {formatScore(r.score)} · {r.status}</span>
                 </button>
               </li>
             ))}

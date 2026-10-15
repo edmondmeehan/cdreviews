@@ -39,7 +39,7 @@ export const Route = createFileRoute("/api/public/rss.xml")({
           .map((r) => {
             const link = `${SITE_URL}/reviews/${r.slug}`;
             const pubDate = r.updated_at ? new Date(r.updated_at).toUTCString() : "";
-            const desc = `${r.artist} — ${r.title} (${r.label}). Scored ${Number(r.score).toFixed(1)}/10 by ${r.byline}.`;
+            const desc = `${r.artist} — ${r.title} (${r.label}). ${Number(r.score) > 0 ? `Scored ${Number(r.score).toFixed(1)}/10` : "Not scored"} by ${r.byline}.`;
             return `    <item>
       <title>${esc(`${r.artist} — ${r.title}`)}</title>
       <link>${esc(link)}</link>
