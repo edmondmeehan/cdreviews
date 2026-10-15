@@ -224,8 +224,21 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
       } else {
         setArtMsg(`Spotify: ${res.ok ? "no image" : res.error} · Discogs: ${dg.error}`);
       }
+  }
+
+  async function handleDiscogsPull() {
+    if (!r.artist || !r.title) { setArtMsg("Add artist and title first"); return; }
+    setArtBusy("discogs"); setArtMsg(null);
+    try {
+      const dg = await lookupDiscogsAlbum({ data: { artist: r.artist, album: r.title } });
+      if (dg.ok) {
+        setR((p) => ({ ...p, artUrl: dg.imageUrl }));
+        setArtMsg(`✓ Cover from Discogs: ${dg.title}`);
+      } else {
+        setArtMsg(`Discogs: ${dg.error}`);
+      }
     } catch (e) {
-      setArtMsg(e instanceof Error ? e.message : "Spotify lookup failed");
+      setArtMsg(e instanceof Error ? e.message : "Discogs lookup failed");
     } finally { setArtBusy(null); }
   }
 
