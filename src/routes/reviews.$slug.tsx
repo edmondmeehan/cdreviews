@@ -1,3 +1,4 @@
+import { amazonSearchUrl } from "@/lib/amazon";
 import { formatScore } from "@/lib/cd-data";
 import { Fragment } from "react";
 import { AdSlot } from "@/components/site/AdSlot";
@@ -87,6 +88,7 @@ function ReviewPage() {
               {genre && (<><dt>Genre</dt><dd className="text-ink-2">{genre}</dd></>)}
               <dt>Decade</dt><dd className="text-ink-2">{review.decade}</dd>
             </dl>
+            <a href={amazonSearchUrl(review.artist, review.title)} target="_blank" rel="sponsored noopener noreferrer" className="mt-5 mr-5 inline-block font-mono text-[11px] tracking-[0.1em] uppercase text-vermil hover:text-ink">↗ Buy on Amazon</a>
             {review.spotifyUrl && (
               <a href={review.spotifyUrl} target="_blank" rel="noopener noreferrer" className="mt-5 inline-block font-mono text-[11px] tracking-[0.1em] uppercase text-vermil hover:text-ink">↗ Open on Spotify</a>
             )}

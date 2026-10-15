@@ -7,11 +7,57 @@ import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bi
 import { slug as slugify, type Review, type ReviewKind, type Decade } from "@/lib/cd-data";
 import { supabase } from "@/integrations/supabase/client";
 import { lookupSpotifyAlbum, searchSpotifyAlbums } from "@/lib/spotify.functions";
-import { lookupDiscogsAlbum } from "@/lib/discogs.functions";
+import { lookupDiscogsAlbum, searchDiscogsReleases, type DiscogsSearchItem } from "@/lib/discogs.functions";
 import { Cover } from "@/components/site/Cover";
 import { YouTubeVideo } from "@/components/site/YouTubeVideo";
 import { normalizeYoutubeUrl, youtubeVideoId } from "@/lib/youtube";
 import { cleanupReviewBody } from "@/lib/body-cleanup.functions";
+
+function DiscogsSearch({ defaultQuery, onApply }: { defaultQuery: string; onApply: (it: DiscogsSearchItem) => void }) {
+  const [q, setQ] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [items, setItems] = useState<DiscogsSearchItem[]>([]);
+  const run = async () => {
+    const query = q.trim() || defaultQuery;
+    if (!query) return setMsg("Enter a search term, or add artist/title");
+    setBusy(true); setMsg(null); setItems([]);
+    try {
+      const res = await searchDiscogsReleases({ data: { query } });
+      if (!res.ok) return setMsg(res.error);
+      setItems(res.results);
+      setMsg(res.results.length ? `Found ${res.results.length}` : "No results");
+    } catch (e) { setMsg(e instanceof Error ? e.message : "Search failed"); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="border-t border-ink/10 pt-3 space-y-2">
+      <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Search Discogs for album info</div>
+      <div className="flex flex-wrap gap-2">
+        <input className={inputCls + " flex-1"} value={q} placeholder={defaultQuery || "artist album"} onChange={(e) => setQ(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); run(); } }} />
+        <AdminButton onClick={run} disabled={busy}>{busy ? "Searching…" : "Search"}</AdminButton>
+      </div>
+      {msg && <div className="font-mono text-[11px] text-ink/70">{msg}</div>}
+      {items.length > 0 && (
+        <div className="max-h-[280px] overflow-y-auto border border-ink/10 divide-y divide-ink/10">
+          {items.map((it) => (
+            <div key={it.id} className="flex gap-3 p-2 items-center">
+              {it.imageUrl ? <img src={it.imageUrl} alt="" className="w-12 h-12 object-cover border border-ink/20 flex-shrink-0" /> : <div className="w-12 h-12 bg-ink/10 flex-shrink-0" />}
+              <div className="min-w-0 flex-1">
+                <div className="text-ink text-sm truncate">{it.title}</div>
+                <div className="font-mono text-[10px] text-ink/60 truncate">{[it.year, it.label, it.genre].filter(Boolean).join(" · ")}</div>
+                <div className="font-mono text-[10px] text-ink/40 truncate">{[it.format, it.country].filter(Boolean).join(" · ")} · <a href={it.discogsUrl} target="_blank" rel="noopener noreferrer" className="underline">view</a></div>
+              </div>
+              <AdminButton tone="ghost" onClick={() => { onApply(it); setItems([]); }}>Use</AdminButton>
+            </div>
+          ))}
+        </div>
+      )}
+      <p className="font-mono text-[10px] text-ink/50">Fills in label and genre (and the cover if none is set). Check before saving.</p>
+    </div>
+  );
+}
 
 function BodyCleanup({ body, onApply }: { body: string[]; onApply: (p: string[]) => void }) {
   const [busy, setBusy] = useState(false);
@@ -292,6 +338,18 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
               </div>
             )}
           </div>
+          <DiscogsSearch defaultQuery={`${r.artist} ${r.title}`.trim()} onApply={(it) => {
+            const parts = it.title.split(" - ");
+            setR((p) => ({
+              ...p,
+              artist: p.artist || parts[0]?.replace(/\s*\(\d+\)$/, "") || p.artist,
+              title: p.title || parts.slice(1).join(" - ") || p.title,
+              label: it.label || p.label,
+              genre: it.genre || p.genre,
+              artUrl: p.artUrl || it.imageUrl,
+            }));
+            setArtMsg(`✓ Applied Discogs info: ${it.title}${it.year ? ` (${it.year})` : ""}`);
+          }} />
           <Field label="Image URL">
             <input className={inputCls} value={r.artUrl ?? ""} onChange={(e) => patch("artUrl", e.target.value || undefined)} placeholder="https://…" />
           </Field>
