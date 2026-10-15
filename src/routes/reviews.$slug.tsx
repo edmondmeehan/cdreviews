@@ -10,6 +10,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { CrateGrid, Kicker, ReviewCard } from "@/components/site/bits";
 import { Cover } from "@/components/site/Cover";
 import { CoverLightbox } from "@/components/site/CoverLightbox";
+import { YouTubeVideo } from "@/components/site/YouTubeVideo";
 import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 import { relatedReviews } from "@/lib/related-reviews";
@@ -152,6 +153,7 @@ function ReviewPage() {
                 </Fragment>
               ))}
             </div>
+            {review.youtubeUrl && <div className="mt-10"><YouTubeVideo url={review.youtubeUrl} title={`${review.artist} — ${review.title}`} /></div>}
             <AdSlot placement="review_side" className="mt-12 max-w-[420px]" />
             <div className="mt-12 pt-6 border-t border-rule flex flex-wrap items-end gap-6">
               <div className={`fr-score text-[96px] ${hot ? "text-vermil" : "text-ink"}`}>

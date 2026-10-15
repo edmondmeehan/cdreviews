@@ -58,6 +58,7 @@ export function rowToReview(row: Record<string, unknown>): Review {
     spotifyUrl: (row.spotify_url as string | undefined) ?? undefined,
     spotifyAlbumId: (row.spotify_album_id as string | undefined) ?? undefined,
     spotifyArtistId: (row.spotify_artist_id as string | undefined) ?? undefined,
+    youtubeUrl: (row.youtube_url as string | undefined) ?? undefined,
     createdBy: (row.created_by as string | undefined) ?? undefined,
     submittedAt: (row.submitted_at as string | undefined) ?? undefined,
     previewToken: (row.preview_token as string | undefined) ?? undefined,
@@ -91,6 +92,7 @@ function reviewToRow(r: Review): Record<string, unknown> {
     spotify_url: r.spotifyUrl ?? null,
     spotify_album_id: r.spotifyAlbumId ?? null,
     spotify_artist_id: r.spotifyArtistId ?? null,
+    youtube_url: r.youtubeUrl ?? null,
     submitted_at: r.status === "published" ? null : (r.submittedAt ?? null),
     preview_token: r.previewToken ?? null,
     publish_at: r.status === "published" ? null : (r.publishAt ?? null),
@@ -228,6 +230,7 @@ export const cdActions = {
     const { error } = await supabase.from("reviews").upsert(row as never, { onConflict });
     if (error) console.error("upsertReview", error);
     invalidate();
+    return { error: error?.message };
   },
   async deleteReview(id: string) {
     const col = isUuid(id) ? "id" : "slug";
