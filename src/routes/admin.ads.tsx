@@ -10,10 +10,11 @@ export const Route = createFileRoute("/admin/ads")({ head: () => pageMeta("Ads �
 type Ad = {
   id: string; name: string; advertiser: string; placement: string; headline: string; body: string; cta: string;
   image_url: string | null; link_url: string; active: boolean; weight: number; starts_at: string | null; ends_at: string | null;
+  code_snippet: string | null;
 };
 const blank = (): Omit<Ad, "id"> => ({
   name: "", advertiser: "", placement: "home_break", headline: "", body: "", cta: "Learn more",
-  image_url: null, link_url: "https://", active: true, weight: 1, starts_at: null, ends_at: null,
+  image_url: null, link_url: "https://", active: true, weight: 1, starts_at: null, ends_at: null, code_snippet: null,
 });
 const toLocal = (s: string | null) => (s ? new Date(s).toISOString().slice(0, 16) : "");
 const fromLocal = (s: string) => (s ? new Date(s).toISOString() : null);
@@ -72,6 +73,12 @@ function AdsAdmin() {
           <Field label="Headline"><input className={inputCls} value={edit.headline} onChange={(e) => setEdit({ ...edit, headline: e.target.value })} /></Field>
           <Field label="Button text"><input className={inputCls} value={edit.cta} onChange={(e) => setEdit({ ...edit, cta: e.target.value })} /></Field>
           <div className="md:col-span-2"><Field label="Short description"><textarea rows={2} className={inputCls} value={edit.body} onChange={(e) => setEdit({ ...edit, body: e.target.value })} /></Field></div>
+          <div className="md:col-span-2">
+            <Field label="Ad code (optional — Google AdSense, etc.)">
+              <textarea rows={4} className={inputCls} placeholder='<script async src="..."></script>…' value={edit.code_snippet ?? ""} onChange={(e) => setEdit({ ...edit, code_snippet: e.target.value || null })} />
+              <span className="block font-mono text-[10px] text-ink/50">Paste the full embed code from your ad network. When set, it replaces the headline/image card above. Only paste code from networks you trust.</span>
+            </Field>
+          </div>
           <Field label="Image">
             <input type="file" accept="image/*" className="w-full min-w-0 font-mono text-[16px] sm:text-[11px]" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
             {edit.image_url && <img src={edit.image_url} alt="" className="mt-2 max-h-32" />}

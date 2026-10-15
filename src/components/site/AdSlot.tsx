@@ -6,13 +6,14 @@ import { pickAd, type AdPlacement } from "@/lib/ad-pick";
 type Ad = {
   id: string; placement: string; active: boolean; weight: number; starts_at: string | null; ends_at: string | null;
   advertiser: string; headline: string; body: string; cta: string; image_url: string | null; link_url: string;
+  code_snippet: string | null;
 };
 
 function useRunningAds() {
   return useQuery({
     queryKey: ["ads", "running"],
     queryFn: async (): Promise<Ad[]> => {
-      const { data } = await supabase.from("ads").select("id, placement, active, weight, starts_at, ends_at, advertiser, headline, body, cta, image_url, link_url");
+      const { data } = await supabase.from("ads").select("id, placement, active, weight, starts_at, ends_at, advertiser, headline, body, cta, image_url, link_url, code_snippet");
       return (data ?? []) as Ad[];
     },
     staleTime: 60_000,
@@ -24,6 +25,24 @@ const seen = new Set<string>();
 // Query builders are lazy: .then() is what actually sends the request.
 function track(id: string, kind: "view" | "click") {
   supabase.rpc("record_ad_event", { _ad_id: id, _kind: kind }).then(() => {}, () => {});
+}
+
+/** Renders third-party ad code (AdSense etc.). Scripts are re-created so they execute. */
+function RawAdCode({ html }: { html: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.innerHTML = html;
+    el.querySelectorAll("script").forEach((old) => {
+      const s = document.createElement("script");
+      for (const attr of Array.from(old.attributes)) s.setAttribute(attr.name, attr.value);
+      s.text = old.textContent ?? "";
+      old.replaceWith(s);
+    });
+    return () => { el.innerHTML = ""; };
+  }, [html]);
+  return <div ref={ref} />;
 }
 
 /** A house-styled sponsored spot. Renders nothing when no ad is running. */
@@ -49,6 +68,21 @@ export function AdSlot({ placement, className = "" }: { placement: AdPlacement; 
   }, [ad, placement]);
 
   if (!ad) return null;
+
+  // Third-party code (AdSense etc.) replaces the house-styled card entirely.
+  if (ad.code_snippet?.trim()) {
+    return (
+      <aside ref={ref} className={className} aria-label="Sponsored">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-6">
+          <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute mb-2">
+            Sponsored{ad.advertiser ? ` · ${ad.advertiser}` : ""}
+          </div>
+          <RawAdCode html={ad.code_snippet} />
+        </div>
+      </aside>
+    );
+  }
+
   const click = () => track(ad.id, "click");
   const linkProps = { href: ad.link_url, target: "_blank", rel: "sponsored noopener", onClick: click } as const;
   const label = (
