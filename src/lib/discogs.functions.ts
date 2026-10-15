@@ -2,6 +2,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { matchesDiscogsTitle } from "./discogs-match";
 
+function discogsAuth(): string | null {
+  const key = process.env.DISCOGS_CONSUMER_KEY;
+  const secret = process.env.DISCOGS_CONSUMER_SECRET;
+  if (key && secret) return `Discogs key=${key}, secret=${secret}`;
+  const token = process.env.DISCOGS_TOKEN;
+  return token ? `Discogs token=${token}` : null;
+}
+
 const Input = z.object({
   artist: z.string().min(1).max(200),
   album: z.string().min(1).max(200),
@@ -17,8 +25,8 @@ export const lookupDiscogsAlbum = createServerFn({ method: "POST" })
     const hit = cache.get(key);
     if (hit && hit.expiresAt > Date.now()) return hit.value as { ok: true; imageUrl: string; discogsUrl: string; title: string };
 
-    const token = process.env.DISCOGS_TOKEN;
-    if (!token) return { ok: false as const, error: "Discogs token not configured" };
+    const auth = discogsAuth();
+    if (!auth) return { ok: false as const, error: "Discogs is not configured" };
     try {
       const params = new URLSearchParams({
         artist: data.artist,
@@ -27,7 +35,7 @@ export const lookupDiscogsAlbum = createServerFn({ method: "POST" })
       });
       const res = await fetch(`https://api.discogs.com/database/search?${params}`, {
         headers: {
-          Authorization: `Discogs token=${token}`,
+          Authorization: auth,
           "User-Agent": "cdreviews/1.0 +https://cdreviews.lovable.app",
         },
       });
@@ -65,12 +73,12 @@ export type DiscogsSearchItem = {
 export const searchDiscogsReleases = createServerFn({ method: "POST" })
   .inputValidator((d) => SearchInput.parse(d))
   .handler(async ({ data }) => {
-    const token = process.env.DISCOGS_TOKEN;
-    if (!token) return { ok: false as const, error: "Discogs token not configured" };
+    const auth = discogsAuth();
+    if (!auth) return { ok: false as const, error: "Discogs is not configured" };
     try {
       const params = new URLSearchParams({ q: data.query, per_page: "15" });
       const res = await fetch(`https://api.discogs.com/database/search?${params}`, {
-        headers: { Authorization: `Discogs token=${token}`, "User-Agent": "cdreviews/1.0 +https://www.cdreviews.com" },
+        headers: { Authorization: auth, "User-Agent": "cdreviews/1.0 +https://www.cdreviews.com" },
       });
       if (!res.ok) return { ok: false as const, error: `Discogs search failed (${res.status})` };
       const json = (await res.json()) as { results?: Array<{
