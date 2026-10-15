@@ -92,7 +92,7 @@ function FilterRow<T extends string>({ label, options, current, paramKey }: {
             <Link
               key={opt.key}
               from="/reviews/"
-              search={(prev) => ({ ...prev, [paramKey]: opt.key })}
+              search={(prev) => ({ ...prev, [paramKey]: opt.key, page: 1 })}
               replace
               className={`inline-flex items-center h-11 px-[18px] rounded-full font-mono text-[12px] tracking-[0.08em] uppercase border transition-colors ${
                 active ? "bg-paper text-night border-paper" : "text-ink border-ink/25 hover:border-ink"
@@ -104,5 +104,29 @@ function FilterRow<T extends string>({ label, options, current, paramKey }: {
         })}
       </div>
     </div>
+  );
+}
+
+function PageLink({ page, active = false, disabled = false, children }: {
+  page: number; active?: boolean; disabled?: boolean; children: React.ReactNode;
+}) {
+  if (disabled) {
+    return (
+      <span aria-disabled="true" className="inline-flex items-center h-11 px-[18px] rounded-full font-mono text-[12px] tracking-[0.08em] uppercase border border-ink/10 text-ink/30">
+        {children}
+      </span>
+    );
+  }
+  return (
+    <Link
+      from="/reviews/"
+      search={(prev) => ({ ...prev, page })}
+      aria-current={active ? "page" : undefined}
+      className={`inline-flex items-center h-11 px-[18px] rounded-full font-mono text-[12px] tracking-[0.08em] uppercase border transition-colors ${
+        active ? "bg-paper text-night border-paper" : "text-ink border-ink/25 hover:border-ink"
+      }`}
+    >
+      {children}
+    </Link>
   );
 }
