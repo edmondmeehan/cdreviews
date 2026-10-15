@@ -1,3 +1,4 @@
+import { formatScore } from "@/lib/cd-data";
 import { Fragment } from "react";
 import { AdSlot } from "@/components/site/AdSlot";
 import { getReviewSharing } from "@/lib/review-sharing.functions";

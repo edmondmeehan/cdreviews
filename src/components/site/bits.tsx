@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import type { Review } from "@/lib/cd-data";
+import { formatScore, type Review } from "@/lib/cd-data";
 import { Cover } from "./Cover";
 
 export function Kicker({ children, color = "vermil" }: { children: React.ReactNode; color?: "vermil" | "acid" }) {

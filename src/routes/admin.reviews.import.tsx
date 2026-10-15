@@ -1,3 +1,4 @@
+import { formatScore } from "@/lib/cd-data";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";

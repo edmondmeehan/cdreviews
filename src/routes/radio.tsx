@@ -1,3 +1,4 @@
+import { formatScore } from "@/lib/cd-data";
 import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";

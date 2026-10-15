@@ -11,7 +11,7 @@ import { Cover } from "@/components/site/Cover";
 import { useCdStore } from "@/lib/cd-store";
 import { currentSlot, useFeaturedSlots } from "@/lib/featured";
 import { useMostReadReviews } from "@/lib/page-views";
-import { DECADE_LABELS, KIND_LABELS } from "@/lib/cd-data";
+import { DECADE_LABELS, KIND_LABELS, formatScore } from "@/lib/cd-data";
 
 const DECADE_KEYS = ["all", "1990s", "2000s", "2010s", "2020s"] as const;
 const KIND_KEYS = ["all", "bnm", "bnr", "review"] as const;
