@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { CrateGrid, PageHead, ReviewCard } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 import { DECADE_LABELS, KIND_LABELS } from "@/lib/cd-data";
+import { byNewest } from "@/lib/review-order";
 
 const schema = z.object({
   decade: fallback(z.enum(["all", "1990s", "2000s", "2010s", "2020s"]), "all").default("all"),
@@ -30,7 +31,7 @@ function ReviewsIndex() {
       .filter((r) => kind === "all" || r.kind === kind),
   );
   const sorted = [...reviews].sort((a, b) =>
-    sort === "score" ? b.score - a.score : b.date.localeCompare(a.date),
+    sort === "score" ? b.score - a.score : byNewest(a, b),
   );
 
   return (
