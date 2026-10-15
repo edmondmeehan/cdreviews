@@ -27,6 +27,24 @@ function track(id: string, kind: "view" | "click") {
   supabase.rpc("record_ad_event", { _ad_id: id, _kind: kind }).then(() => {}, () => {});
 }
 
+/** Renders third-party ad code (AdSense etc.). Scripts are re-created so they execute. */
+function RawAdCode({ html }: { html: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.innerHTML = html;
+    el.querySelectorAll("script").forEach((old) => {
+      const s = document.createElement("script");
+      for (const attr of Array.from(old.attributes)) s.setAttribute(attr.name, attr.value);
+      s.text = old.textContent ?? "";
+      old.replaceWith(s);
+    });
+    return () => { el.innerHTML = ""; };
+  }, [html]);
+  return <div ref={ref} />;
+}
+
 /** A house-styled sponsored spot. Renders nothing when no ad is running. */
 export function AdSlot({ placement, className = "" }: { placement: AdPlacement; className?: string }) {
   const { data } = useRunningAds();
