@@ -29,6 +29,7 @@ const FOOTER_COLS: Array<{ heading: string; links: Array<{ label: string; to: st
       { label: "Masthead", to: "/masthead" },
       { label: "About", to: "/about" },
       { label: "Contact", to: "/contact" },
+      { label: "Write for us", to: "/contribute" },
     ],
   },
 ];

@@ -1,0 +1,1 @@
+CREATE POLICY "Signed-in users can apply" ON public.contributor_applications FOR INSERT TO authenticated WITH CHECK (true);

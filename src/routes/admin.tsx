@@ -31,6 +31,7 @@ const NAV_GROUPS: { label: string; items: AdminNavItem[] }[] = [
   ] },
   { label: "Team", items: [
     { to: "/admin/contributors", label: "Contributors", staffOnly: true },
+    { to: "/admin/applications", label: "Writer applications", staffOnly: true },
     { to: "/admin/roles", label: "Roles & access", adminOnly: true },
   ] },
 ];

@@ -16,11 +16,13 @@ import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BestNewRouteImport } from './routes/best-new'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ContributeRouteImport } from './routes/contribute'
 import { Route as MastheadRouteImport } from './routes/masthead'
 import { Route as RadioRouteImport } from './routes/radio'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as AdminAdsRouteImport } from './routes/admin.ads'
+import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
@@ -77,6 +79,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContributeRoute = ContributeRouteImport.update({
+  id: '/contribute',
+  path: '/contribute',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MastheadRoute = MastheadRouteImport.update({
   id: '/masthead',
   path: '/masthead',
@@ -100,6 +107,11 @@ const SearchRoute = SearchRouteImport.update({
 const AdminAdsRoute = AdminAdsRouteImport.update({
   id: '/ads',
   path: '/ads',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminApplicationsRoute = AdminApplicationsRouteImport.update({
+  id: '/applications',
+  path: '/applications',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminContributorsRoute = AdminContributorsRouteImport.update({
@@ -211,11 +223,13 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
+  '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/admin/ads': typeof AdminAdsRoute
+  '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
@@ -245,11 +259,13 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
+  '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/admin/ads': typeof AdminAdsRoute
+  '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
@@ -280,11 +296,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
+  '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/admin/ads': typeof AdminAdsRoute
+  '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
@@ -316,11 +334,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-new'
     | '/contact'
+    | '/contribute'
     | '/masthead'
     | '/radio'
     | '/reset-password'
     | '/search'
     | '/admin/ads'
+    | '/admin/applications'
     | '/admin/contributors'
     | '/admin/featured'
     | '/admin/features'
@@ -350,11 +370,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-new'
     | '/contact'
+    | '/contribute'
     | '/masthead'
     | '/radio'
     | '/reset-password'
     | '/search'
     | '/admin/ads'
+    | '/admin/applications'
     | '/admin/contributors'
     | '/admin/featured'
     | '/admin/features'
@@ -384,11 +406,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-new'
     | '/contact'
+    | '/contribute'
     | '/masthead'
     | '/radio'
     | '/reset-password'
     | '/search'
     | '/admin/ads'
+    | '/admin/applications'
     | '/admin/contributors'
     | '/admin/featured'
     | '/admin/features'
@@ -419,6 +443,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BestNewRoute: typeof BestNewRoute
   ContactRoute: typeof ContactRoute
+  ContributeRoute: typeof ContributeRoute
   MastheadRoute: typeof MastheadRoute
   RadioRoute: typeof RadioRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -485,6 +510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contribute': {
+      id: '/contribute'
+      path: '/contribute'
+      fullPath: '/contribute'
+      preLoaderRoute: typeof ContributeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/masthead': {
       id: '/masthead'
       path: '/masthead'
@@ -518,6 +550,13 @@ declare module '@tanstack/react-router' {
       path: '/ads'
       fullPath: '/admin/ads'
       preLoaderRoute: typeof AdminAdsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/applications': {
+      id: '/admin/applications'
+      path: '/applications'
+      fullPath: '/admin/applications'
+      preLoaderRoute: typeof AdminApplicationsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/contributors': {
@@ -665,6 +704,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAdsRoute: typeof AdminAdsRoute
+  AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminContributorsRoute: typeof AdminContributorsRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
   AdminFeaturesRoute: typeof AdminFeaturesRoute
@@ -680,6 +720,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAdsRoute: AdminAdsRoute,
+  AdminApplicationsRoute: AdminApplicationsRoute,
   AdminContributorsRoute: AdminContributorsRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
   AdminFeaturesRoute: AdminFeaturesRoute,
@@ -703,6 +744,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BestNewRoute: BestNewRoute,
   ContactRoute: ContactRoute,
+  ContributeRoute: ContributeRoute,
   MastheadRoute: MastheadRoute,
   RadioRoute: RadioRoute,
   ResetPasswordRoute: ResetPasswordRoute,
