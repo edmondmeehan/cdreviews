@@ -48,6 +48,7 @@ export type Database = {
           active: boolean
           advertiser: string
           body: string
+          code_snippet: string | null
           created_at: string
           cta: string
           ends_at: string | null
@@ -65,6 +66,7 @@ export type Database = {
           active?: boolean
           advertiser?: string
           body?: string
+          code_snippet?: string | null
           created_at?: string
           cta?: string
           ends_at?: string | null
@@ -82,6 +84,7 @@ export type Database = {
           active?: boolean
           advertiser?: string
           body?: string
+          code_snippet?: string | null
           created_at?: string
           cta?: string
           ends_at?: string | null
