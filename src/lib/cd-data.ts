@@ -34,6 +34,7 @@ export type Review = {
   spotifyUrl?: string;
   spotifyAlbumId?: string;
   spotifyArtistId?: string;
+  youtubeUrl?: string;
   // Workflow
   createdBy?: string;
   submittedAt?: string;

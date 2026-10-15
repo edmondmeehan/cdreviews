@@ -10,3 +10,4 @@
 - Ads: own ad server with 5 spots + view/click stats (done)
 - [x] Improve phone layouts for reader pages, admin navigation, lists, and editing forms.
 - [x] Verify browsing, review search/paging, and admin forms at phone and desktop widths.
+- [ ] Add optional YouTube videos to the review editor, saved reviews and draft previews; verify saving and removal.

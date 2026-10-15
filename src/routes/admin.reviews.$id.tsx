@@ -9,6 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { lookupSpotifyAlbum, searchSpotifyAlbums } from "@/lib/spotify.functions";
 import { lookupDiscogsAlbum } from "@/lib/discogs.functions";
 import { Cover } from "@/components/site/Cover";
+import { YouTubeVideo } from "@/components/site/YouTubeVideo";
+import { normalizeYoutubeUrl, youtubeVideoId } from "@/lib/youtube";
 
 export const Route = createFileRoute("/admin/reviews/$id")({ head: () => pageMeta("Review editor — Admin — cdreviews.", "Review editor on the cdreviews editorial desk."), component: EditReview });
 
@@ -48,6 +50,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
   });
   const [artBusy, setArtBusy] = useState<string | null>(null);
   const [artMsg, setArtMsg] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [searchQ, setSearchQ] = useState("");
   const [searchResults, setSearchResults] = useState<Array<{
     albumId: string; albumName: string; artistId: string | null; artistName: string;
@@ -56,10 +59,20 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
 
   async function save(e: FormEvent) {
     e.preventDefault();
+    setSaveError(null);
+    if (r.youtubeUrl?.trim() && !youtubeVideoId(r.youtubeUrl)) {
+      setSaveError("Enter a valid YouTube video link, or leave it blank.");
+      return;
+    }
     const newId = r.id || slugify(`${r.artist}-${r.title}`);
     const newSlug = r.slug || slugify(`${r.artist}-${r.title}`);
-    await cdActions.upsertReview({ ...r, id: newId, slug: newSlug });
-    navigate({ to: "/admin/reviews" });
+    try {
+      const { error } = await cdActions.upsertReview({ ...r, id: newId, slug: newSlug, youtubeUrl: normalizeYoutubeUrl(r.youtubeUrl) });
+      if (error) { setSaveError(`Review wasn’t saved: ${error}`); return; }
+      navigate({ to: "/admin/reviews" });
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Review wasn’t saved. Please try again.");
+    }
   }
 
   async function copyPreview() {
@@ -262,6 +275,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
       </div>
 
       <form id="rf" onSubmit={save} className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-[1100px]">
+        {saveError && <p role="alert" className="lg:col-span-2 text-vermil">{saveError}</p>}
         <Field label="Title"><input className={inputCls} value={r.title} onChange={(e) => patch("title", e.target.value)} required maxLength={120} /></Field>
         <Field label="Artist"><input className={inputCls} value={r.artist} onChange={(e) => patch("artist", e.target.value)} required maxLength={120} /></Field>
         <Field label="Label"><input className={inputCls} value={r.label} onChange={(e) => patch("label", e.target.value)} maxLength={80} /></Field>
@@ -301,6 +315,18 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
               onChange={(e) => patch("publishAt", e.target.value ? new Date(e.target.value).toISOString() : undefined)} />
           </Field>
         )}
+        <div className="lg:col-span-2">
+          <Field label="YouTube video URL (optional)">
+            <input type="url" className={inputCls} value={r.youtubeUrl ?? ""} onChange={(e) => patch("youtubeUrl", e.target.value || undefined)} placeholder="https://www.youtube.com/watch?v=…" maxLength={2048} />
+          </Field>
+          {r.youtubeUrl?.trim() && !youtubeVideoId(r.youtubeUrl) && <p className="mt-2 text-sm text-vermil">Enter a valid YouTube video link.</p>}
+          {youtubeVideoId(r.youtubeUrl) && (
+            <div className="mt-4 max-w-[640px]">
+              <YouTubeVideo url={r.youtubeUrl} title={`${r.artist} — ${r.title}`} />
+              <div className="mt-3"><AdminButton tone="ghost" onClick={() => patch("youtubeUrl", undefined)}>Remove video</AdminButton></div>
+            </div>
+          )}
+        </div>
         <div className="lg:col-span-2">
           <Field label="Pull quote (optional)">
             <input className={inputCls} value={r.pull ?? ""} onChange={(e) => patch("pull", e.target.value)} maxLength={240} />
