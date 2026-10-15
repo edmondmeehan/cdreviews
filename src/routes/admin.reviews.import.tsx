@@ -92,9 +92,10 @@ function ImportPage() {
     }
   }
 
-  function commit() {
+  async function commit() {
     if (!result) return;
-    cdActions.bulkUpsertReviews(result.reviews);
+    const res = await cdActions.bulkUpsertReviews(result.reviews);
+    if (res.error) { setError(`Nothing was saved: ${res.error}`); return; }
     setCommitted(true);
   }
 
