@@ -12,18 +12,27 @@ export const Route = createFileRoute("/admin")({
   head: () => pageMeta("Editorial desk — Admin — cdreviews.", "Editorial desk on the cdreviews editorial desk."),
 });
 
-const NAV = [
-  { to: "/admin", label: "Overview", exact: true },
-  { to: "/admin/reviews", label: "Reviews" },
-  { to: "/admin/features", label: "Features" },
-  { to: "/admin/lists", label: "Lists", staffOnly: true },
-  { to: "/admin/contributors", label: "Contributors", staffOnly: true },
-  { to: "/admin/subscribers", label: "Subscribers", staffOnly: true },
-  { to: "/admin/ads", label: "Ads", staffOnly: true },
-  { to: "/admin/radio", label: "Radio", staffOnly: true },
-  { to: "/admin/featured", label: "Featured", staffOnly: true },
-  { to: "/admin/traffic", label: "Top pages", staffOnly: true },
-  { to: "/admin/roles", label: "Roles", adminOnly: true },
+type AdminNavItem = { to: string; label: string; exact?: boolean; staffOnly?: boolean; adminOnly?: boolean };
+const NAV_GROUPS: { label: string; items: AdminNavItem[] }[] = [
+  { label: "Desk", items: [
+    { to: "/admin", label: "Overview", exact: true },
+  ] },
+  { label: "Content", items: [
+    { to: "/admin/reviews", label: "Reviews" },
+    { to: "/admin/features", label: "Features" },
+    { to: "/admin/lists", label: "Lists", staffOnly: true },
+    { to: "/admin/featured", label: "Homepage feature", staffOnly: true },
+    { to: "/admin/radio", label: "Radio", staffOnly: true },
+  ] },
+  { label: "Audience & business", items: [
+    { to: "/admin/traffic", label: "Top pages", staffOnly: true },
+    { to: "/admin/subscribers", label: "Subscribers", staffOnly: true },
+    { to: "/admin/ads", label: "Ads", staffOnly: true },
+  ] },
+  { label: "Team", items: [
+    { to: "/admin/contributors", label: "Contributors", staffOnly: true },
+    { to: "/admin/roles", label: "Roles & access", adminOnly: true },
+  ] },
 ];
 
 function AdminLayout() {
@@ -35,7 +44,11 @@ function AdminLayout() {
   }));
   const isOverview = pathname === "/admin";
   const navigate = useNavigate();
-  const visibleNav = NAV.filter((n) => (!n.adminOnly || isAdmin) && (!n.staffOnly || isStaff));
+  const visibleGroups = NAV_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter((n) => (!n.adminOnly || isAdmin) && (!n.staffOnly || isStaff)),
+  })).filter((group) => group.items.length > 0);
+  const visibleNav = visibleGroups.flatMap((group) => group.items);
 
   if (loading) {
     return (
@@ -89,18 +102,29 @@ function AdminLayout() {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-4 sm:hidden">
           <label className="sr-only" htmlFor="admin-section">Admin section</label>
           <select id="admin-section" value={visibleNav.find((n) => n.exact ? pathname === n.to : pathname.startsWith(n.to))?.to ?? "/admin"} onChange={(e) => navigate({ to: e.target.value })} className="w-full min-h-11 bg-bone border border-rule px-3 text-base text-ink">
-            {visibleNav.map((n) => <option key={n.to} value={n.to}>{n.label}</option>)}
+            {visibleGroups.map((group) => (
+              <optgroup key={group.label} label={group.label}>
+                {group.items.map((n) => <option key={n.to} value={n.to}>{n.label}</option>)}
+              </optgroup>
+            ))}
           </select>
         </div>
-        <nav aria-label="Admin sections" className="max-w-[1400px] mx-auto px-6 pb-3 hidden sm:flex flex-wrap gap-x-5 gap-y-2">
-          {visibleNav.map((n) => {
-            const active = n.exact ? pathname === n.to : pathname.startsWith(n.to);
-            return (
-              <Link key={n.to} to={n.to} className={`font-mono text-[11px] tracking-[0.2em] uppercase ${active ? "text-vermil" : "text-ink/70 hover:text-ink"}`}>
-                {n.label}
-              </Link>
-            );
-          })}
+        <nav aria-label="Admin sections" className="max-w-[1400px] mx-auto px-6 pb-5 hidden sm:grid sm:grid-cols-2 lg:grid-cols-[0.65fr_2fr_1.4fr_1fr] gap-x-6 gap-y-5">
+          {visibleGroups.map((group) => (
+            <section key={group.label} aria-label={group.label} className="min-w-0 border-t border-rule pt-3">
+              <h2 className="font-mono text-[10px] uppercase text-mute mb-2">{group.label}</h2>
+              <div className="flex flex-wrap gap-x-1 gap-y-1">
+                {group.items.map((n) => {
+                  const active = n.exact ? pathname === n.to : pathname.startsWith(`${n.to}/`) || pathname === n.to;
+                  return (
+                    <Link key={n.to} to={n.to} aria-current={active ? "page" : undefined} className={`inline-flex items-center min-h-11 px-3 py-2 border-l-2 text-[13px] font-medium transition-colors ${active ? "border-vermil bg-vermil/10 text-vermil" : "border-transparent text-ink/70 hover:bg-ink/5 hover:text-ink"}`}>
+                      {n.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
         </nav>
       </header>
       <main className="max-w-[1400px] mx-auto min-w-0 px-4 sm:px-6 py-8 sm:py-10">
