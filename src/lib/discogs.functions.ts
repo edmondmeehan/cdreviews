@@ -2,6 +2,19 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { matchesDiscogsTitle } from "./discogs-match";
 
+async function discogsFetch(url: string, auth: string): Promise<Response> {
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch(url, { headers: { Authorization: auth, "User-Agent": "cdreviews/1.0 +https://www.cdreviews.com" } });
+    if (res.status !== 429 || attempt >= 2) return res;
+    const wait = Math.min(Number(res.headers.get("Retry-After")) || 0, 10) * 1000 || 2000 * (attempt + 1);
+    await new Promise((r) => setTimeout(r, wait));
+  }
+}
+
+function discogsError(status: number) {
+  return status === 429 ? "Discogs is busy (too many lookups in a minute) — wait a minute and try again" : `Discogs search failed (${status})`;
+}
+
 function discogsAuth(): string | null {
   const key = process.env.DISCOGS_CONSUMER_KEY;
   const secret = process.env.DISCOGS_CONSUMER_SECRET;
@@ -33,13 +46,8 @@ export const lookupDiscogsAlbum = createServerFn({ method: "POST" })
         release_title: data.album,
         per_page: "25",
       });
-      const res = await fetch(`https://api.discogs.com/database/search?${params}`, {
-        headers: {
-          Authorization: auth,
-          "User-Agent": "cdreviews/1.0 +https://cdreviews.lovable.app",
-        },
-      });
-      if (!res.ok) return { ok: false as const, error: `Discogs search failed (${res.status})` };
+      const res = await discogsFetch(`https://api.discogs.com/database/search?${params}`, auth);
+      if (!res.ok) return { ok: false as const, error: discogsError(res.status) };
       const json = (await res.json()) as {
         results?: Array<{ title: string; type: string; cover_image?: string; uri?: string }>;
       };
@@ -77,10 +85,8 @@ export const searchDiscogsReleases = createServerFn({ method: "POST" })
     if (!auth) return { ok: false as const, error: "Discogs is not configured" };
     try {
       const params = new URLSearchParams({ q: data.query, per_page: "15" });
-      const res = await fetch(`https://api.discogs.com/database/search?${params}`, {
-        headers: { Authorization: auth, "User-Agent": "cdreviews/1.0 +https://www.cdreviews.com" },
-      });
-      if (!res.ok) return { ok: false as const, error: `Discogs search failed (${res.status})` };
+      const res = await discogsFetch(`https://api.discogs.com/database/search?${params}`, auth);
+      if (!res.ok) return { ok: false as const, error: discogsError(res.status) };
       const json = (await res.json()) as { results?: Array<{
         id: number; type: string; title: string; year?: string; label?: string[]; genre?: string[]; style?: string[];
         format?: string[]; country?: string; cover_image?: string; uri?: string;
