@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useCdStore, cdActions } from "@/lib/cd-store";
+import { useServerFn } from "@tanstack/react-start";
+import { lookupSpotifyAlbum } from "@/lib/spotify.functions";
 import { useAuth } from "@/lib/auth";
 import {
   REVIEWS_PAGE_SIZE, filterReviews, paginate, pageWindow,
@@ -76,10 +78,36 @@ function ReviewsAdmin() {
 
   const go = (p: number) => navigate({ search: (prev) => ({ ...prev, page: p }) });
 
+  const lookup = useServerFn(lookupSpotifyAlbum);
+  const [artStatus, setArtStatus] = useState<string | null>(null);
+  async function fillArt() {
+    const missing = reviews.filter((r) => !r.artUrl);
+    if (missing.length === 0) { setArtStatus("Every review already has a cover."); return; }
+    if (!confirm(`Check ${missing.length} review(s) without a cover on Spotify?`)) return;
+    let found = 0;
+    for (let i = 0; i < missing.length; i++) {
+      const r = missing[i];
+      setArtStatus(`Checking ${i + 1} of ${missing.length}… (${found} found)`);
+      try {
+        const res = await lookup({ data: { artist: r.artist, album: r.title } });
+        if (res.ok && res.imageUrl) {
+          await cdActions.upsertReview({
+            ...r, artUrl: res.imageUrl, spotifyUrl: r.spotifyUrl ?? res.spotifyUrl,
+            spotifyAlbumId: r.spotifyAlbumId ?? res.albumId,
+            spotifyArtistId: r.spotifyArtistId ?? res.artistId ?? undefined,
+          });
+          found++;
+        }
+      } catch { /* skip this one */ }
+    }
+    setArtStatus(`Done — added ${found} cover(s). ${missing.length - found} had no exact Spotify match.`);
+  }
+
   return (
     <div>
       <AdminHeader title="Reviews" action={
         <div className="flex flex-wrap gap-2">
+          <button type="button" onClick={fillArt} disabled={artStatus?.startsWith("Checking")} className="font-mono text-[10px] tracking-[0.25em] uppercase px-4 py-2 border text-ink/70 border-ink/20 hover:text-ink disabled:opacity-50">◎ Find missing covers</button>
           <Link to="/admin/reviews/import" className="font-mono text-[10px] tracking-[0.25em] uppercase px-4 py-2 border bg-ink/0 text-ink/70 border-ink/20 hover:text-ink">↑ Bulk import</Link>
           <AdminLinkButton to="/admin/reviews/$id" params={{ id: "new" }}>+ New review</AdminLinkButton>
         </div>
