@@ -117,7 +117,7 @@ function AdminLayout() {
                 {group.items.map((n) => {
                   const active = n.exact ? pathname === n.to : pathname.startsWith(`${n.to}/`) || pathname === n.to;
                   return (
-                    <Link key={n.to} to={n.to} aria-current={active ? "page" : undefined} className={`inline-flex items-center min-h-11 px-3 py-2 border-l-2 text-[13px] font-medium transition-colors ${active ? "border-vermil bg-vermil/10 text-vermil" : "border-transparent text-ink/70 hover:bg-ink/5 hover:text-ink"}`}>
+                    <Link key={n.to} to={n.to} activeOptions={{ exact: n.exact ?? false }} aria-current={active ? "page" : undefined} className={`inline-flex items-center min-h-11 px-3 py-2 border-l-2 text-[13px] font-medium transition-colors ${active ? "border-vermil bg-vermil/10 text-vermil" : "border-transparent text-ink/70 hover:bg-ink/5 hover:text-ink"}`}>
                       {n.label}
                     </Link>
                   );
