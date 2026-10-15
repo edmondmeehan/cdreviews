@@ -54,3 +54,40 @@ export const lookupDiscogsAlbum = createServerFn({ method: "POST" })
       return { ok: false as const, error: e instanceof Error ? e.message : "Discogs lookup failed" };
     }
   });
+
+const SearchInput = z.object({ query: z.string().min(1).max(200) });
+
+export type DiscogsSearchItem = {
+  id: number; title: string; year?: string; label?: string; genre?: string;
+  format?: string; country?: string; imageUrl?: string; discogsUrl: string;
+};
+
+export const searchDiscogsReleases = createServerFn({ method: "POST" })
+  .inputValidator((d) => SearchInput.parse(d))
+  .handler(async ({ data }) => {
+    const token = process.env.DISCOGS_TOKEN;
+    if (!token) return { ok: false as const, error: "Discogs token not configured" };
+    try {
+      const params = new URLSearchParams({ q: data.query, per_page: "15" });
+      const res = await fetch(`https://api.discogs.com/database/search?${params}`, {
+        headers: { Authorization: `Discogs token=${token}`, "User-Agent": "cdreviews/1.0 +https://www.cdreviews.com" },
+      });
+      if (!res.ok) return { ok: false as const, error: `Discogs search failed (${res.status})` };
+      const json = (await res.json()) as { results?: Array<{
+        id: number; type: string; title: string; year?: string; label?: string[]; genre?: string[]; style?: string[];
+        format?: string[]; country?: string; cover_image?: string; uri?: string;
+      }> };
+      const results: DiscogsSearchItem[] = (json.results ?? [])
+        .filter((r) => r.type === "master" || r.type === "release")
+        .map((r) => ({
+          id: r.id, title: r.title, year: r.year, label: r.label?.[0],
+          genre: (r.style?.[0] ?? r.genre?.[0]) || undefined,
+          format: r.format?.slice(0, 3).join(", "), country: r.country,
+          imageUrl: r.cover_image && !r.cover_image.includes("spacer.gif") ? r.cover_image : undefined,
+          discogsUrl: `https://www.discogs.com${r.uri ?? ""}`,
+        }));
+      return { ok: true as const, results };
+    } catch (e) {
+      return { ok: false as const, error: e instanceof Error ? e.message : "Discogs search failed" };
+    }
+  });
