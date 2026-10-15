@@ -11,3 +11,4 @@
 - [x] Improve phone layouts for reader pages, admin navigation, lists, and editing forms.
 - [x] Verify browsing, review search/paging, and admin forms at phone and desktop widths.
 - [x] Add optional YouTube videos to the review editor, saved reviews and draft previews; verify saving and removal.
+- [ ] Verify desk Traffic figures and fix loading, failure states, and phone layout.
