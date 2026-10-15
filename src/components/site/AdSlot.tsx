@@ -68,6 +68,21 @@ export function AdSlot({ placement, className = "" }: { placement: AdPlacement; 
   }, [ad, placement]);
 
   if (!ad) return null;
+
+  // Third-party code (AdSense etc.) replaces the house-styled card entirely.
+  if (ad.code_snippet?.trim()) {
+    return (
+      <aside ref={ref} className={className} aria-label="Sponsored">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-6">
+          <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute mb-2">
+            Sponsored{ad.advertiser ? ` · ${ad.advertiser}` : ""}
+          </div>
+          <RawAdCode html={ad.code_snippet} />
+        </div>
+      </aside>
+    );
+  }
+
   const click = () => track(ad.id, "click");
   const linkProps = { href: ad.link_url, target: "_blank", rel: "sponsored noopener", onClick: click } as const;
   const label = (
