@@ -1,6 +1,6 @@
 import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -24,6 +24,7 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/")({
   validateSearch: zodValidator(searchSchema),
+  search: { middlewares: [stripSearchParams({ decade: "all", kind: "all" })] },
   component: Index,
   head: () => pageMeta("cdreviews. \u2014 A music review publication of record", "Independent music criticism since 1995. Album reviews, features, and the cdreviews archive."),
 });
