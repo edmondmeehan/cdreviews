@@ -71,6 +71,7 @@ function ImportPage() {
   const [result, setResult] = useState<ImportResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [committed, setCommitted] = useState(false);
+  const [saving, setSaving] = useState<{ saved: number; total: number } | null>(null);
 
   async function handleFile(file: File) {
     setError(null);
@@ -94,8 +95,18 @@ function ImportPage() {
 
   async function commit() {
     if (!result) return;
-    const res = await cdActions.bulkUpsertReviews(result.reviews);
-    if (res.error) { setError(`Nothing was saved: ${res.error}`); return; }
+    setError(null);
+    setSaving({ saved: 0, total: result.reviews.length });
+    const res = await cdActions.bulkUpsertReviews(result.reviews, (saved, total) => setSaving({ saved, total }));
+    setSaving(null);
+    if (res.error) {
+      setError(
+        res.saved > 0
+          ? `Saved ${res.saved} of ${result.reviews.length} reviews, then hit a problem: ${res.error}`
+          : `Nothing was saved: ${res.error}`,
+      );
+      return;
+    }
     setCommitted(true);
   }
 
@@ -176,8 +187,12 @@ function ImportPage() {
                 </div>
               ) : (
                 <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <AdminButton onClick={commit} tone="primary">Submit {result.reviews.length} reviews</AdminButton>
-                  <span className="font-mono text-[10px] text-ink/50 tracking-[0.2em] uppercase">Review the preview above before submitting</span>
+                  <AdminButton onClick={commit} tone="primary" disabled={!!saving}>
+                    {saving ? `Saving ${saving.saved} / ${saving.total}…` : `Submit ${result.reviews.length} reviews`}
+                  </AdminButton>
+                  <span className="font-mono text-[10px] text-ink/50 tracking-[0.2em] uppercase">
+                    {saving ? "Keep this page open until it finishes" : "Review the preview above before submitting"}
+                  </span>
                 </div>
               )}
             </div>

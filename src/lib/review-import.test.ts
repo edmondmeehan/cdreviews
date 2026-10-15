@@ -30,4 +30,13 @@ describe("review-specific imported fields", () => {
     assert.equal(reviews[0]?.byline, "Staff");
     assert.equal(issues.some((i) => i.field === "rating"), true);
   });
+  it("maps 500 rows without dropping any", () => {
+    const rows = Array.from({ length: 500 }, (_, i) => ({
+      Artist: `Artist ${i}`, Album: `Album ${i}`, "Review Date": "June 1995", Rating: "7", "Review Text": `Review ${i}.`,
+    }));
+    const { reviews, skipped } = rowsToReviews(rows);
+    assert.equal(skipped, 0);
+    assert.equal(reviews.length, 500);
+    assert.equal(reviews[499]?.slug, "artist-499-album-499");
+  });
 });
