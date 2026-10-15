@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth";
 import type { Review } from "@/lib/cd-data";
 import { useState } from "react";
 import { useSiteSettings, useUpdateSiteSettings } from "@/lib/site-settings";
+import { DeskMetrics } from "@/components/admin/DeskMetrics";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -114,6 +115,7 @@ function AdminLayout() {
               <Stat label="Subscribers" n={counts.s} to="/admin/subscribers" />
             </div>
             {roles.includes("super_admin") && <MaintenancePanel />}
+            {isStaff && <DeskMetrics />}
             <Dashboard reviews={allReviews} userId={user.id} canPublish={canPublish} />
             <p className="fr-blurb text-[16px] text-ink/60 max-w-[60ch]">
               Edits save straight to the live site. Drafts stay hidden until you publish them.
