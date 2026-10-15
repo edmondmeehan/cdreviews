@@ -12,7 +12,7 @@ import { useCdStore } from "@/lib/cd-store";
 import { currentSlot, useFeaturedSlots } from "@/lib/featured";
 import { useMostReadReviews } from "@/lib/page-views";
 import { DECADE_LABELS, KIND_LABELS, formatScore } from "@/lib/cd-data";
-import { byNewest } from "@/lib/review-order";
+import { mostRecent } from "@/lib/review-order";
 
 const DECADE_KEYS = ["all", "1990s", "2000s", "2010s", "2020s"] as const;
 const KIND_KEYS = ["all", "bnm", "bnr", "review"] as const;
@@ -463,10 +463,10 @@ const RECENT_REVIEW_COUNT = 12;
 function LatestList() {
   const { decade, kind } = Route.useSearch();
   const all = usePublished();
-  const filtered = all
-    .filter((r) => (decade === "all" || r.decade === decade) && (kind === "all" || r.kind === kind))
-    .sort(byNewest);
-  const rows = filtered.slice(0, RECENT_REVIEW_COUNT);
+  const filtered = all.filter(
+    (r) => (decade === "all" || r.decade === decade) && (kind === "all" || r.kind === kind),
+  );
+  const rows = mostRecent(filtered, RECENT_REVIEW_COUNT);
   const isFiltered = decade !== "all" || kind !== "all";
 
   return (

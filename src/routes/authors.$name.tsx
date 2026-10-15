@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { IndexRow, PageHead } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
+import { byNewest } from "@/lib/review-order";
 
 export function authorSlug(name: string) {
   return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -30,7 +31,7 @@ function AuthorPage() {
   const reviews = useCdStore((s) =>
     s.reviews.filter((r) => r.status === "published" && r.byline === byline),
   );
-  const sorted = [...reviews].sort((a, b) => b.date.localeCompare(a.date));
+  const sorted = [...reviews].sort(byNewest);
 
   return (
     <div className="bg-bone text-ink min-h-screen">

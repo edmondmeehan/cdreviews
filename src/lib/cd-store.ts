@@ -9,6 +9,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { byNewest } from "@/lib/review-order";
 import {
   type Review, type Feature, type CdList, type Contributor, type Subscriber,
 } from "./cd-data";
@@ -204,7 +205,8 @@ async function fetchSnapshot(): Promise<Snapshot> {
     supabase.from("subscribers").select("*").order("signed_up", { ascending: false }),
   ]);
   return {
-    reviews: (reviews.data ?? []).map(rowToReview),
+    // Newest first: the database orders by the date text, which is month-major.
+    reviews: (reviews.data ?? []).map(rowToReview).sort(byNewest),
     features: (features.data ?? []).map(rowToFeature),
     lists: (lists.data ?? []).map(rowToList),
     contributors: (contributors.data ?? []).map(rowToContributor),
