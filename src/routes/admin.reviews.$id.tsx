@@ -224,6 +224,9 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
       } else {
         setArtMsg(`Spotify: ${res.ok ? "no image" : res.error} · Discogs: ${dg.error}`);
       }
+    } catch (e) {
+      setArtMsg(e instanceof Error ? e.message : "Spotify lookup failed");
+    } finally { setArtBusy(null); }
   }
 
   async function handleDiscogsPull() {
