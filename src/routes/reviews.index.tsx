@@ -1,6 +1,6 @@
 import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -14,10 +14,14 @@ const schema = z.object({
   decade: fallback(z.enum(["all", "1990s", "2000s", "2010s", "2020s"]), "all").default("all"),
   kind: fallback(z.enum(["all", "bnm", "bnr", "review"]), "all").default("all"),
   sort: fallback(z.enum(["newest", "score"]), "newest").default("newest"),
+  page: fallback(z.number().int(), 1).default(1),
 });
+
+const PER_PAGE = 25;
 
 export const Route = createFileRoute("/reviews/")({
   validateSearch: zodValidator(schema),
+  search: { middlewares: [stripSearchParams({ decade: "all", kind: "all", sort: "newest", page: 1 })] },
   component: ReviewsIndex,
   head: () => pageMeta("Reviews \u2014 cdreviews.", "Every published review, filterable by decade, type, and score."),
 });
