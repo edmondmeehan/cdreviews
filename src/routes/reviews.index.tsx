@@ -27,7 +27,7 @@ export const Route = createFileRoute("/reviews/")({
 });
 
 function ReviewsIndex() {
-  const { decade, kind, sort } = Route.useSearch();
+  const { decade, kind, sort, page } = Route.useSearch();
   const reviews = useCdStore((s) =>
     s.reviews
       .filter((r) => r.status === "published")
@@ -37,6 +37,9 @@ function ReviewsIndex() {
   const sorted = [...reviews].sort((a, b) =>
     sort === "score" ? b.score - a.score : byNewest(a, b),
   );
+  const pageCount = Math.max(1, Math.ceil(sorted.length / PER_PAGE));
+  const safePage = Math.min(Math.max(1, page), pageCount);
+  const pageRows = sorted.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
 
   return (
     <div className="bg-bone text-ink min-h-screen">
