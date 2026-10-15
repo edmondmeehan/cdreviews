@@ -6,3 +6,4 @@
 - Editorial permissions come only from `public.user_roles`, and every check — the client `roleFlags` helper and the database `is_staff`/`is_writer`/`can_publish` functions — must treat `super_admin` as the top of the hierarchy, because a helper that forgets a role silently locks that account out of the desk.
 - Admin phone layouts use shared control sizing and labelled stacked review/ad rows; desktop tables remain unchanged so all actions stay reachable without page-level overflow.
 - Optional review videos persist separately from article text; a shared browser-safe YouTube URL validator and privacy-enhanced player serve the editor, article and preview so arbitrary links never become iframe sources.
+- Desk traffic calculations live in a browser-safe tested helper; each query renders its own loading/error state so failed requests cannot masquerade as zero traffic.
