@@ -306,6 +306,9 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
             <AdminButton onClick={handleSpotifyPull}>
               {artBusy === "spotify" ? "Searching…" : "↻ Pull from Spotify"}
             </AdminButton>
+            <AdminButton onClick={handleDiscogsPull}>
+              {artBusy === "discogs" ? "Searching…" : "↻ Pull from Discogs"}
+            </AdminButton>
             {(r.artUrl || r.spotifyUrl || r.spotifyArtistId) && (
               <AdminButton tone="ghost" onClick={() => { patch("artUrl", undefined); patch("spotifyUrl", undefined); patch("spotifyAlbumId", undefined); patch("spotifyArtistId", undefined); setArtMsg("Cleared"); }}>
                 Clear
