@@ -339,6 +339,7 @@ export type Database = {
           submitted_at: string | null
           title: string
           updated_at: string
+          youtube_url: string | null
         }
         Insert: {
           archive_url?: string | null
@@ -371,6 +372,7 @@ export type Database = {
           submitted_at?: string | null
           title: string
           updated_at?: string
+          youtube_url?: string | null
         }
         Update: {
           archive_url?: string | null
@@ -403,6 +405,7 @@ export type Database = {
           submitted_at?: string | null
           title?: string
           updated_at?: string
+          youtube_url?: string | null
         }
         Relationships: []
       }
@@ -513,6 +516,7 @@ export type Database = {
           submitted_at: string | null
           title: string
           updated_at: string
+          youtube_url: string | null
         }[]
         SetofOptions: {
           from: "*"
