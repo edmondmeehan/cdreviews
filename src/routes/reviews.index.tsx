@@ -9,6 +9,7 @@ import { CrateGrid, PageHead, ReviewCard } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 import { DECADE_LABELS, KIND_LABELS } from "@/lib/cd-data";
 import { byNewest } from "@/lib/review-order";
+import type { ReactNode } from "react";
 
 const schema = z.object({
   decade: fallback(z.enum(["all", "1990s", "2000s", "2010s", "2020s"]), "all").default("all"),
@@ -108,7 +109,7 @@ function FilterRow<T extends string>({ label, options, current, paramKey }: {
 }
 
 function PageLink({ page, active = false, disabled = false, children }: {
-  page: number; active?: boolean; disabled?: boolean; children: React.ReactNode;
+  page: number; active?: boolean; disabled?: boolean; children: ReactNode;
 }) {
   if (disabled) {
     return (
