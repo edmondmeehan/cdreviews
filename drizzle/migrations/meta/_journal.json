@@ -113,6 +113,13 @@
       "when": 1792100502484,
       "tag": "0015_create_contributor_applications",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1792100656429,
+      "tag": "0016_allow_authenticated_application_inserts",
+      "breakpoints": true
     }
   ]
 }
