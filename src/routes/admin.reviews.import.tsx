@@ -199,7 +199,7 @@ function ImportPage() {
             </ul>
             <div className="pt-2 border-t border-ink/10 text-ink/50 leading-relaxed">
               Header row required. Column order doesn't matter. Headers are matched case- and space-insensitively.
-              Rating accepts 0–10, 0.0–1.0, or percentages. Hot Pick of "Y/Yes/True/X" marks the row as Best New Music.
+              Rating accepts 0–10, 0.0–1.0, or percentages; missing ratings import as NA and missing reviewers as Staff. Hot Pick of "Y/Yes/True/X" marks the row as Best New Music.
               Paragraph breaks in Review Text use blank lines.
             </div>
           </div>
