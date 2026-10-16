@@ -8,7 +8,8 @@ import {
   uniqueSubscriberCount,
 } from "@/lib/subscriber-export";
 
-export const Route = createFileRoute("/admin/subscribers")({ head: () => pageMeta("Subscribers — Admin — cdreviews.", "Subscribers on the cdreviews editorial desk."), component: SubsAdmin });
+export const Route = createFileRoute("/admin/subscribers")({
+  staticData: { sitemap: false }, head: () => pageMeta("Subscribers — Admin — cdreviews.", "Subscribers on the cdreviews editorial desk."), component: SubsAdmin });
 
 function SubsAdmin() {
   const subs = useCdStore((s) => s.subscribers);

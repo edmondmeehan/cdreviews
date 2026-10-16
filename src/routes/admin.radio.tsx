@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { radioQueryKey, spotifyPlaylistId, useRadioSettings } from "@/lib/radio-settings";
 
 export const Route = createFileRoute("/admin/radio")({
+  staticData: { sitemap: false },
   component: AdminRadio,
   head: () => pageMeta("Radio playlist — Admin — cdreviews.", "Radio playlist on the cdreviews editorial desk."),
 });

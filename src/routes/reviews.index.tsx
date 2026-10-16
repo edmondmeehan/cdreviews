@@ -21,6 +21,7 @@ const schema = z.object({
 const PER_PAGE = 25;
 
 export const Route = createFileRoute("/reviews/")({
+  staticData: { sitemap: true },
   validateSearch: zodValidator(schema),
   search: { middlewares: [stripSearchParams({ decade: "all", kind: "all", sort: "newest", page: 1 })] },
   component: ReviewsIndex,

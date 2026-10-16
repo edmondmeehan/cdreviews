@@ -10,6 +10,7 @@ const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 
 export const Route = createFileRoute("/api/public/rss.xml")({
+  staticData: { sitemap: false },
   server: {
     handlers: {
       GET: async () => {

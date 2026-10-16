@@ -12,6 +12,7 @@ export function authorSlug(name: string) {
 }
 
 export const Route = createFileRoute("/authors/$name")({
+  staticData: { sitemap: true },
   component: AuthorPage,
   head: ({ params }) => {
     const name = params.name.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());

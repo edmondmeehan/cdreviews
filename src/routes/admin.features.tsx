@@ -6,7 +6,8 @@ import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { slug as slugify, type Feature } from "@/lib/cd-data";
 
-export const Route = createFileRoute("/admin/features")({ head: () => pageMeta("Features — Admin — cdreviews.", "Features on the cdreviews editorial desk."), component: FeaturesAdmin });
+export const Route = createFileRoute("/admin/features")({
+  staticData: { sitemap: false }, head: () => pageMeta("Features — Admin — cdreviews.", "Features on the cdreviews editorial desk."), component: FeaturesAdmin });
 
 function blankFeature(): Feature {
   return { id: "", slug: "", title: "", dek: "", byline: "", date: "01.01.2026", readMins: 6, art: "art-hero", body: [""], status: "draft" };

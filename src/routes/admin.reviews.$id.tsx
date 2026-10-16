@@ -97,7 +97,8 @@ function BodyCleanup({ body, onApply }: { body: string[]; onApply: (p: string[])
   );
 }
 
-export const Route = createFileRoute("/admin/reviews/$id")({ head: () => pageMeta("Review editor — Admin — cdreviews.", "Review editor on the cdreviews editorial desk."), component: EditReview });
+export const Route = createFileRoute("/admin/reviews/$id")({
+  staticData: { sitemap: false }, head: () => pageMeta("Review editor — Admin — cdreviews.", "Review editor on the cdreviews editorial desk."), component: EditReview });
 
 const ART_OPTS = ["art-1","art-2","art-3","art-4","art-5","art-6","art-7","art-8","art-hero","art-archive"];
 

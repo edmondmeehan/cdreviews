@@ -6,7 +6,8 @@ import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bi
 import { listRoleAssignments, grantRole, revokeRole } from "@/lib/roles.functions";
 import { useAuth } from "@/lib/auth";
 
-export const Route = createFileRoute("/admin/roles")({ head: () => pageMeta("Roles and access — Admin — cdreviews.", "Roles and access on the cdreviews editorial desk."), component: RolesAdmin });
+export const Route = createFileRoute("/admin/roles")({
+  staticData: { sitemap: false }, head: () => pageMeta("Roles and access — Admin — cdreviews.", "Roles and access on the cdreviews editorial desk."), component: RolesAdmin });
 
 type RoleOpt = "admin" | "editor" | "senior_writer" | "writer" | "contributor";
 

@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { PageHead } from "@/components/site/bits";
 
 export const Route = createFileRoute("/about")({
+  staticData: { sitemap: true },
   component: About,
   head: () => pageMeta("About \u2014 cdreviews.", "What cdreviews is, what it isn't, and what the score system means."),
 });

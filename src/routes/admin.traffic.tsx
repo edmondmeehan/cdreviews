@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/traffic")({
+  staticData: { sitemap: false },
   component: AdminTraffic,
   head: () => pageMeta("Top pages — Admin — cdreviews.", "Top pages on the cdreviews editorial desk."),
 });

@@ -8,6 +8,7 @@ import { useSiteSettings, useUpdateSiteSettings } from "@/lib/site-settings";
 import { DeskMetrics } from "@/components/admin/DeskMetrics";
 
 export const Route = createFileRoute("/admin")({
+  staticData: { sitemap: "exclude-subtree" },
   component: AdminLayout,
   head: () => pageMeta("Editorial desk — Admin — cdreviews.", "Editorial desk on the cdreviews editorial desk."),
 });

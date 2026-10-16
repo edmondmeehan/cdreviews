@@ -18,6 +18,7 @@ import { relatedReviews } from "@/lib/related-reviews";
 import { authorSlug } from "./authors.$name";
 
 export const Route = createFileRoute("/reviews/$slug")({
+  staticData: { sitemap: true },
   component: ReviewPage,
   notFoundComponent: NotFound,
   loader: ({ params }) => getReviewSharing({ data: { slug: params.slug } }),

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/reset-password")({
+  staticData: { sitemap: false },
   component: ResetPasswordPage,
   head: () => pageMeta("Reset password \u2014 cdreviews.", "Set a new password for your cdreviews account."),
 });

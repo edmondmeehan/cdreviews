@@ -21,6 +21,7 @@ const schema = z.object({
 const PER_PAGE = 25;
 
 export const Route = createFileRoute("/archive")({
+  staticData: { sitemap: true },
   validateSearch: zodValidator(schema),
   component: Archive,
   head: () => pageMeta("Archive \u2014 cdreviews.", "Browse three decades of reviews. Filter by decade, search by artist, label, or title."),

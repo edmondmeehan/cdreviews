@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { AD_PLACEMENTS, clickRate, isRunning, type AdPlacement } from "@/lib/ad-pick";
 
-export const Route = createFileRoute("/admin/ads")({ head: () => pageMeta("Ads — Admin — cdreviews.", "Ads on the cdreviews editorial desk."), component: AdsAdmin });
+export const Route = createFileRoute("/admin/ads")({
+  staticData: { sitemap: false }, head: () => pageMeta("Ads — Admin — cdreviews.", "Ads on the cdreviews editorial desk."), component: AdsAdmin });
 
 type Ad = {
   id: string; name: string; advertiser: string; placement: string; headline: string; body: string; cta: string;
