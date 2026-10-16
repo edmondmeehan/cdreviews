@@ -7,6 +7,7 @@ import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_FEATURE_SLUGS } from "@/lib/legacy-redirects";
 
 export const Route = createFileRoute("/features/$slug")({
+  staticData: { sitemap: true },
   component: FeaturePage,
   notFoundComponent: NotFound,
   head: ({ params }) => pageMeta(`${params.slug.replace(/-/g, " ")} — Feature — cdreviews.`, "Long-form music criticism and interviews from cdreviews.", "article"),

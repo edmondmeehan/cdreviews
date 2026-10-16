@@ -23,6 +23,7 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   validateSearch: zodValidator(searchSchema),
   search: { middlewares: [stripSearchParams({ decade: "all", kind: "all" })] },
   component: Index,

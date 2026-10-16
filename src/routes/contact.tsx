@@ -8,6 +8,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { PageHead } from "@/components/site/bits";
 
 export const Route = createFileRoute("/contact")({
+  staticData: { sitemap: true },
   component: Contact,
   head: () => pageMeta("Contact \u2014 cdreviews.", "Submissions, advertising, corrections, letters."),
 });

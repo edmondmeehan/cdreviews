@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 const schema = z.object({ redirect: fallback(z.string(), "/admin").default("/admin") });
 
 export const Route = createFileRoute("/auth")({
+  staticData: { sitemap: false },
   validateSearch: zodValidator(schema),
   component: AuthPage,
   head: () => pageMeta("Sign in \u2014 cdreviews.", "Sign in to your cdreviews editorial account."),

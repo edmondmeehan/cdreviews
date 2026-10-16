@@ -7,6 +7,7 @@ import { Cover } from "@/components/site/Cover";
 import { YouTubeVideo } from "@/components/site/YouTubeVideo";
 
 export const Route = createFileRoute("/preview/$token")({
+  staticData: { sitemap: false },
   component: PreviewPage,
   head: () => ({
     meta: [

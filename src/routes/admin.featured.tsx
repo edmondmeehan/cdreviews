@@ -8,6 +8,7 @@ import { useCdStore } from "@/lib/cd-store";
 import { currentSlot, featuredQueryKey, useFeaturedSlots } from "@/lib/featured";
 
 export const Route = createFileRoute("/admin/featured")({
+  staticData: { sitemap: false },
   component: AdminFeatured,
   head: () => pageMeta("Featured review — Admin — cdreviews.", "Featured review on the cdreviews editorial desk."),
 });

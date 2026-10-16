@@ -7,7 +7,8 @@ import { AdminHeader, AdminButton, Field } from "@/components/admin/bits";
 import { cdActions } from "@/lib/cd-store";
 import { rowsToReviews, type ImportResult } from "@/lib/review-import";
 
-export const Route = createFileRoute("/admin/reviews/import")({ head: () => pageMeta("Review import — Admin — cdreviews.", "Review import on the cdreviews editorial desk."), component: ImportPage });
+export const Route = createFileRoute("/admin/reviews/import")({
+  staticData: { sitemap: false }, head: () => pageMeta("Review import — Admin — cdreviews.", "Review import on the cdreviews editorial desk."), component: ImportPage });
 
 const EXPECTED = [
   "Artist", "Album", "Review Date", "Period", "Hot Pick", "Label",

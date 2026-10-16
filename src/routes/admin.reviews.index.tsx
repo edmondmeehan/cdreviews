@@ -19,6 +19,7 @@ const schema = z.object({
 });
 
 export const Route = createFileRoute("/admin/reviews/")({
+  staticData: { sitemap: false },
   validateSearch: zodValidator(schema),
   head: () => pageMeta("Reviews desk — Admin — cdreviews.", "Reviews desk on the cdreviews editorial desk."),
   component: ReviewsAdmin,

@@ -9,6 +9,7 @@ import { PageHead } from "@/components/site/bits";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/contribute")({
+  staticData: { sitemap: true },
   component: Contribute,
   head: () => pageMeta("Write for us — cdreviews.", "Pitch the desk. Send us your published work."),
 });

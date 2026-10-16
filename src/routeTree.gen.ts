@@ -18,9 +18,11 @@ import { Route as BestNewRouteImport } from './routes/best-new'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ContributeRouteImport } from './routes/contribute'
 import { Route as MastheadRouteImport } from './routes/masthead'
+import { Route as NewsletterRouteImport } from './routes/newsletter'
 import { Route as RadioRouteImport } from './routes/radio'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminAdsRouteImport } from './routes/admin.ads'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
@@ -89,6 +91,11 @@ const MastheadRoute = MastheadRouteImport.update({
   path: '/masthead',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsletterRoute = NewsletterRouteImport.update({
+  id: '/newsletter',
+  path: '/newsletter',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RadioRoute = RadioRouteImport.update({
   id: '/radio',
   path: '/radio',
@@ -102,6 +109,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminAdsRoute = AdminAdsRouteImport.update({
@@ -225,9 +237,11 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
+  '/newsletter': typeof NewsletterRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
@@ -261,9 +275,11 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
+  '/newsletter': typeof NewsletterRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
@@ -298,9 +314,11 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
+  '/newsletter': typeof NewsletterRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
@@ -336,9 +354,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/contribute'
     | '/masthead'
+    | '/newsletter'
     | '/radio'
     | '/reset-password'
     | '/search'
+    | '/sitemap.xml'
     | '/admin/ads'
     | '/admin/applications'
     | '/admin/contributors'
@@ -372,9 +392,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/contribute'
     | '/masthead'
+    | '/newsletter'
     | '/radio'
     | '/reset-password'
     | '/search'
+    | '/sitemap.xml'
     | '/admin/ads'
     | '/admin/applications'
     | '/admin/contributors'
@@ -408,9 +430,11 @@ export interface FileRouteTypes {
     | '/contact'
     | '/contribute'
     | '/masthead'
+    | '/newsletter'
     | '/radio'
     | '/reset-password'
     | '/search'
+    | '/sitemap.xml'
     | '/admin/ads'
     | '/admin/applications'
     | '/admin/contributors'
@@ -445,9 +469,11 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ContributeRoute: typeof ContributeRoute
   MastheadRoute: typeof MastheadRoute
+  NewsletterRoute: typeof NewsletterRoute
   RadioRoute: typeof RadioRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AuthorsNameRoute: typeof AuthorsNameRoute
   FeaturesSlugRoute: typeof FeaturesSlugRoute
   ListsSlugRoute: typeof ListsSlugRoute
@@ -524,6 +550,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MastheadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/newsletter': {
+      id: '/newsletter'
+      path: '/newsletter'
+      fullPath: '/newsletter'
+      preLoaderRoute: typeof NewsletterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/radio': {
       id: '/radio'
       path: '/radio'
@@ -543,6 +576,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/ads': {
@@ -746,9 +786,11 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ContributeRoute: ContributeRoute,
   MastheadRoute: MastheadRoute,
+  NewsletterRoute: NewsletterRoute,
   RadioRoute: RadioRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   AuthorsNameRoute: AuthorsNameRoute,
   FeaturesSlugRoute: FeaturesSlugRoute,
   ListsSlugRoute: ListsSlugRoute,

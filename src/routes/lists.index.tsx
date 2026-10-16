@@ -7,6 +7,7 @@ import { PageHead } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/lists/")({
+  staticData: { sitemap: true },
   component: ListsIndex,
   head: () => pageMeta("Lists \u2014 cdreviews.", "Ranked lists, working documents, year-end arguments."),
 });

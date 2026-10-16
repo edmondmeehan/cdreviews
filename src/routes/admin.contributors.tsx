@@ -5,7 +5,8 @@ import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { slug as slugify, type Contributor } from "@/lib/cd-data";
 
-export const Route = createFileRoute("/admin/contributors")({ head: () => pageMeta("Contributors — Admin — cdreviews.", "Contributors on the cdreviews editorial desk."), component: ContribAdmin });
+export const Route = createFileRoute("/admin/contributors")({
+  staticData: { sitemap: false }, head: () => pageMeta("Contributors — Admin — cdreviews.", "Contributors on the cdreviews editorial desk."), component: ContribAdmin });
 
 function blank(): Contributor { return { id: "", name: "", role: "Contributor", bio: "", city: "" }; }
 

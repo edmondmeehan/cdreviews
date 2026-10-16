@@ -13,3 +13,9 @@
 - [x] Add optional YouTube videos to the review editor, saved reviews and draft previews; verify saving and removal.
 - [x] Verify desk Traffic figures and fix loading, failure states, and phone layout.
 - [x] Homepage lists only the twelve newest reviews, with links to the full list and archive; dates sort chronologically.
+- [x] Add /sitemap.xml (all 1,712 published reviews, authors, features, lists) and /robots.txt.
+- [x] Add a newsletter archive page at /newsletter listing past beehiiv issues with signup; footer link.
+- [ ] Fix RSS "Not scored by…" wording and point the feed at the canonical domain (cdreviews.com) — launch basic.
+- [ ] Connect a sending domain for site emails — blocked on user DNS setup.
+- [ ] Turn maintenance off once launch basics are done and the marketing plan is approved.
+- [ ] Execute the launch marketing plan in Files (marketing/plan.md).

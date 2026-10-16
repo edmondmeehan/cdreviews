@@ -7,6 +7,7 @@ import { PageHead } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/features/")({
+  staticData: { sitemap: true },
   component: FeaturesIndex,
   head: () => pageMeta("Features \u2014 cdreviews.", "Long-form essays, interviews and arguments."),
 });

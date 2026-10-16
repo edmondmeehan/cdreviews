@@ -10,6 +10,7 @@ import { useCdStore } from "@/lib/cd-store";
 import { RADIO_DEFAULTS, spotifyPlaylistId, useRadioSettings } from "@/lib/radio-settings";
 
 export const Route = createFileRoute("/radio")({
+  staticData: { sitemap: true },
   component: Radio,
   head: () => pageMeta("CDR Radio — cdreviews.", "A 24-hour listening room curated from three decades of reviews."),
 });

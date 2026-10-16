@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdminHeader, AdminButton } from "@/components/admin/bits";
 
 export const Route = createFileRoute("/admin/applications")({
+  staticData: { sitemap: false },
   head: () => pageMeta("Writer applications — Admin — cdreviews.", "People who want to write for cdreviews."),
   component: ApplicationsAdmin,
 });

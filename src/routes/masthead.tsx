@@ -7,6 +7,7 @@ import { PageHead } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/masthead")({
+  staticData: { sitemap: true },
   component: Masthead,
   head: () => pageMeta("Masthead \u2014 cdreviews.", "The editors and contributors of cdreviews."),
 });
