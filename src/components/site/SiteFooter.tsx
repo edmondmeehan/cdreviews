@@ -9,7 +9,7 @@ const FOOTER_COLS: Array<{ heading: string; links: Array<{ label: string; to: st
   {
     heading: "Read",
     links: [
-      { label: "Reviews", to: "/reviews" },
+      { label: "Newsletter", to: "/newsletter" },
       { label: "Best New", to: "/best-new" },
       { label: "Features", to: "/features" },
       { label: "Lists", to: "/lists" },
