@@ -18,6 +18,7 @@ import { Route as BestNewRouteImport } from './routes/best-new'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ContributeRouteImport } from './routes/contribute'
 import { Route as MastheadRouteImport } from './routes/masthead'
+import { Route as NewsletterRouteImport } from './routes/newsletter'
 import { Route as RadioRouteImport } from './routes/radio'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SearchRouteImport } from './routes/search'
@@ -88,6 +89,11 @@ const ContributeRoute = ContributeRouteImport.update({
 const MastheadRoute = MastheadRouteImport.update({
   id: '/masthead',
   path: '/masthead',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsletterRoute = NewsletterRouteImport.update({
+  id: '/newsletter',
+  path: '/newsletter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RadioRoute = RadioRouteImport.update({
@@ -231,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
+  '/newsletter': typeof NewsletterRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -268,6 +275,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
+  '/newsletter': typeof NewsletterRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -306,6 +314,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
+  '/newsletter': typeof NewsletterRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
@@ -345,6 +354,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/contribute'
     | '/masthead'
+    | '/newsletter'
     | '/radio'
     | '/reset-password'
     | '/search'
@@ -382,6 +392,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/contribute'
     | '/masthead'
+    | '/newsletter'
     | '/radio'
     | '/reset-password'
     | '/search'
@@ -419,6 +430,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/contribute'
     | '/masthead'
+    | '/newsletter'
     | '/radio'
     | '/reset-password'
     | '/search'
@@ -457,6 +469,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   ContributeRoute: typeof ContributeRoute
   MastheadRoute: typeof MastheadRoute
+  NewsletterRoute: typeof NewsletterRoute
   RadioRoute: typeof RadioRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
@@ -535,6 +548,13 @@ declare module '@tanstack/react-router' {
       path: '/masthead'
       fullPath: '/masthead'
       preLoaderRoute: typeof MastheadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsletter': {
+      id: '/newsletter'
+      path: '/newsletter'
+      fullPath: '/newsletter'
+      preLoaderRoute: typeof NewsletterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/radio': {
@@ -766,6 +786,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   ContributeRoute: ContributeRoute,
   MastheadRoute: MastheadRoute,
+  NewsletterRoute: NewsletterRoute,
   RadioRoute: RadioRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
