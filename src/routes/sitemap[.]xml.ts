@@ -1,3 +1,4 @@
+import type { AnyRoute } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { getRouterInstance } from "@tanstack/react-start";
 import {
@@ -37,12 +38,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           },
         });
 
-        const pushLocation = (
-          routeId: Parameters<typeof router.buildLocation>[0] extends never ? never : string,
-          to: string,
-          params: Record<string, string>,
-        ) => {
-          const route = (router.routesById as Record<string, typeof router.routesById[string] | undefined>)[routeId];
+        const pushLocation = (routeId: string, to: string, params: Record<string, string>) => {
+          const route = (router.routesById as Record<string, AnyRoute | undefined>)[routeId];
           if (!isSitemapRouteIncluded(route)) return;
           const location = router.buildLocation({ to, params, search: () => ({}), hash: "" });
           const path = sitemapPathForLocation(router, location, routeId);
