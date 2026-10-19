@@ -40,6 +40,15 @@
   --divider: rgba(237,232,220,0.12);
   --accent: #ff4a1c;
   --cover-shadow: 0 24px 48px rgba(0,0,0,.5);
+  /* Archive sleeve inks are fixed print colors, independent of reader theme. */
+  --sleeve-forest: #304c43;
+  --sleeve-blue: #354e62;
+  --sleeve-red: #794449;
+  --sleeve-grey: #4b4c49;
+  --sleeve-type: #f0eee5;
+  --sleeve-print: rgba(240,238,229,.065);
+  --sleeve-rule: rgba(240,238,229,.3);
+  --sleeve-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23ffffff' filter='url(%23paper)' opacity='.35' d='M0 0h160v160H0z'/%3E%3C/svg%3E");
 }
 
 :root[data-theme="light"] {
@@ -315,44 +324,56 @@
 
   .art-row { width: 48px; height: 48px; position: relative; overflow: hidden; }
 
-  /* Placeholder sleeve when no real cover image is available:
-     big type on the CSS art, with the CD tucked behind (see .cover). */
-  .cover-fallback { display: block; }
+  /* Quiet two-ink archive sleeves, never substitutes for authentic artwork. */
+  .cover-fallback { display: block; container-type: inline-size; background: var(--sleeve-forest); color: var(--sleeve-type); }
+  .cover-fallback::before { content: ''; position: absolute; inset: 0; background-image: var(--sleeve-grain); opacity: .18; pointer-events: none; }
+  .cover-fallback--0 { background-image: repeating-linear-gradient(135deg, transparent 0 13px, var(--sleeve-print) 13px 14px); }
+  .cover-fallback--1 { background-color: var(--sleeve-blue); background-image: linear-gradient(var(--sleeve-print) 1px, transparent 1px), linear-gradient(90deg, var(--sleeve-print) 1px, transparent 1px); background-size: 24px 24px; }
+  .cover-fallback--2 { background-color: var(--sleeve-red); background-image: radial-gradient(var(--sleeve-print) 1px, transparent 1px); background-size: 6px 6px; }
+  .cover-fallback--3 { background-color: var(--sleeve-grey); background-image: repeating-linear-gradient(0deg, transparent 0 5px, var(--sleeve-print) 5px 6px); }
+  .cover-fallback__notice { position: absolute; inset: 8% 8% auto; display: flex; flex-direction: column; gap: 5px; border-top: 1px solid var(--sleeve-rule); padding-top: 8px; font-family: var(--font-mono); font-size: clamp(7px, 2.8cqi, 10px); line-height: 1.5; text-transform: uppercase; }
+  .cover-fallback__notice span:first-child { opacity: .65; }
   .cover-fallback .cover-fallback__sleeve {
     position: absolute;
-    inset: 0;
+    inset: 30% 0 0;
     z-index: 2;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     padding: 8% 8% 10%;
-    background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
-    color: #ede8dc;
+    color: var(--sleeve-type);
   }
   .cover-fallback .cover-fallback__title {
     font-family: 'Bricolage Grotesque', sans-serif;
-    font-weight: 800;
-    font-size: clamp(16px, 2.6vw, 34px);
-    line-height: 0.9;
-    letter-spacing: -0.05em;
+    font-weight: 700;
+    font-size: clamp(14px, 9.5cqi, 34px);
+    line-height: 1.1;
+    letter-spacing: 0;
+    text-wrap: pretty;
+    overflow-wrap: anywhere;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
   }
   .cover-fallback .cover-fallback__artist {
-    margin-top: 8px;
+    margin-top: 12px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(8px, 0.9vw, 11px);
-    letter-spacing: 0.16em;
+    font-size: clamp(8px, 3.5cqi, 11px);
+    line-height: 1.5;
+    letter-spacing: 0;
     text-transform: uppercase;
     opacity: 0.9;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow-wrap: anywhere;
   }
   .cover--mini .cover-fallback__sleeve { padding: 8%; }
-  .cover--mini .cover-fallback__title { font-size: 11px; letter-spacing: -0.02em; }
+  .cover--mini .cover-fallback__title { font-size: 11px; letter-spacing: 0; -webkit-line-clamp: 2; }
+  .cover--mini .cover-fallback__notice { font-size: 5px; padding-top: 3px; }
+  .cover--mini .cover-fallback__notice span:first-child { display: none; }
   .cover--mini .cover-fallback__artist { display: none; }
 
   .dropcap::first-letter {
@@ -414,4 +435,27 @@
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; }
   50%      { opacity: 0.3; }
+}
+
+/* Phone editing keeps controls readable without changing editorial permissions. */
+@media (max-width: 639px) {
+  .admin-desk button, .admin-desk a:not(.fr-display-bold) { min-height: 44px; }
+  .admin-desk button { max-width: 100%; overflow-wrap: anywhere; }
+  .admin-desk input:not([type="checkbox"]):not([type="file"]),
+  .admin-desk textarea, .admin-desk select { font-size: 16px; min-height: 44px; }
+  .admin-desk input[type="checkbox"] { width: 22px; height: 22px; }
+  .admin-desk :is(.mobile-review-table, .mobile-ad-table) { display: block; min-width: 0; }
+  .admin-desk :is(.mobile-review-table, .mobile-ad-table) tbody { display: block; }
+  .mobile-review-table thead tr { display: block; padding-block: 8px; }
+  .mobile-review-table thead th:not(:first-child) { display: none; }
+  .mobile-review-table thead th:first-child { display: block; width: auto; }
+  .mobile-review-table thead th:first-child:not(:has(input)) { display: none; }
+  .mobile-ad-table thead { display: none; }
+  :is(.mobile-review-table, .mobile-ad-table) tbody tr { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding-block: 16px; }
+  :is(.mobile-review-table, .mobile-ad-table) td { display: block; min-width: 0; padding: 0; text-align: left; overflow-wrap: anywhere; }
+  :is(.mobile-review-table, .mobile-ad-table) td[data-label] { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 8px; }
+  :is(.mobile-review-table, .mobile-ad-table) td[data-label]::before { content: attr(data-label); color: var(--text-muted); }
+  .mobile-review-table td a { display: inline-flex; align-items: center; font-size: 16px; }
+  .mobile-ad-table td:last-child { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mobile-ad-table td:last-child > * { margin-left: 0; }
 }

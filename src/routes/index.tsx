@@ -1,5 +1,6 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -8,7 +9,10 @@ import { CrateGrid, IndexRow, Kicker, ReviewCard } from "@/components/site/bits"
 import { useState } from "react";
 import { Cover } from "@/components/site/Cover";
 import { useCdStore } from "@/lib/cd-store";
-import { DECADE_LABELS, KIND_LABELS } from "@/lib/cd-data";
+import { currentSlot, useFeaturedSlots } from "@/lib/featured";
+import { useMostReadReviews } from "@/lib/page-views";
+import { DECADE_LABELS, KIND_LABELS, formatScore } from "@/lib/cd-data";
+import { mostRecent } from "@/lib/review-order";
 
 const DECADE_KEYS = ["all", "1990s", "2000s", "2010s", "2020s"] as const;
 const KIND_KEYS = ["all", "bnm", "bnr", "review"] as const;
@@ -19,7 +23,9 @@ const searchSchema = z.object({
 });
 
 export const Route = createFileRoute("/")({
+  staticData: { sitemap: true },
   validateSearch: zodValidator(searchSchema),
+  search: { middlewares: [stripSearchParams({ decade: "all", kind: "all" })] },
   component: Index,
   head: () => pageMeta("cdreviews. \u2014 A music review publication of record", "Independent music criticism since 1995. Album reviews, features, and the cdreviews archive."),
 });
@@ -49,22 +55,38 @@ function usePublished() {
 }
 
 function Hero() {
-  const featured = useCdStore((s) => s.reviews.find((r) => r.slug === "kosmo-gardens-reentry") ?? s.reviews[0]);
+  const reviews = useCdStore((s) => s.reviews);
+  const { data: slots = [] } = useFeaturedSlots();
+  const published = reviews.filter((r) => r.status === "published");
+  const slot = currentSlot(slots, new Set(published.map((r) => r.slug)));
+  const featured = (slot && published.find((r) => r.slug === slot.review_slug))
+    ?? reviews.find((r) => r.slug === "kosmo-gardens-reentry") ?? reviews[0];
+  const defaultPick = !slot && featured?.slug === "kosmo-gardens-reentry";
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   if (!featured) return <section className="min-h-[60vh]" aria-busy="true" />;
-  const score = featured.score.toFixed(1);
+  const score = formatScore(featured.score);
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-14 pb-24 md:pt-16 md:pb-32 flex flex-wrap gap-16 items-center">
       <div className="flex-[1_1_520px] min-w-0 relative z-[2]">
         <Kicker>Best New Music · Featured review</Kicker>
         <Link to="/reviews/$slug" params={{ slug: featured.slug }} className="block group">
           <h2 className="serif-it not-italic mt-6 text-[clamp(52px,7.4vw,120px)] leading-[0.9] text-ink" style={{ fontStyle: "normal" }}>
-            The patient hum of a <em className="text-vermil">second life.</em>
+            {defaultPick ? (
+              <>The patient hum of a <em className="text-vermil">second life.</em></>
+            ) : slot?.headline ? (
+              slot.headline
+            ) : (
+              <>{featured.artist} — <em className="text-vermil">{featured.title}</em></>
+            )}
           </h2>
         </Link>
         <p className="fr-dek mt-7 text-[19px] md:text-[21px] text-ink-2 max-w-[560px]">
-          Three decades after their first transmission, {featured.artist} return with{" "}
-          <em className="serif-it text-[1.1em] text-ink">{featured.title}</em> — a record that refuses the familiar comforts of the comeback, opting instead for something stranger, slower, and more luminous.
+          {defaultPick ? (
+            <>Three decades after their first transmission, {featured.artist} return with{" "}
+            <em className="serif-it text-[1.1em] text-ink">{featured.title}</em> — a record that refuses the familiar comforts of the comeback, opting instead for something stranger, slower, and more luminous.</>
+          ) : (
+            slot?.blurb || (featured.body[0] ?? "").slice(0, 240).replace(/\s+\S*$/, "") + "…"
+          )}
         </p>
         <div className="mt-9 flex flex-wrap gap-4 items-center">
           <Link
@@ -146,7 +168,7 @@ function CrossingTickers() {
             >
               <span>{it.artist}</span>
               <span className="serif-it text-[22px]">{it.title}</span>
-              <span className="font-mono text-[13px] bg-night text-vermil px-2 py-0.5">{it.score.toFixed(1)}</span>
+              <span className="font-mono text-[13px] bg-night text-vermil px-2 py-0.5">{formatScore(it.score)}</span>
               <span aria-hidden="true" className="ml-4">✺</span>
             </Link>
           ))}
@@ -191,6 +213,33 @@ function BestNew() {
   );
 }
 
+function MostRead() {
+  const published = usePublished();
+  const { data } = useMostReadReviews(7, 5);
+  const rows = (data ?? [])
+    .map((d) => ({ r: published.find((p) => p.slug === d.slug), views: Number(d.views) }))
+    .filter((x): x is { r: (typeof published)[number]; views: number } => !!x.r);
+  if (rows.length < 1) return null;
+  return (
+    <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pb-16">
+      <SectionHead title="Most read," italic="this week." right={<>By reader views · last 7 days</>} />
+      <ol className="border-t border-rule">
+        {rows.map(({ r }, i) => (
+          <li key={r.id} className="border-b border-rule">
+            <Link to="/reviews/$slug" params={{ slug: r.slug }} className="flex items-center gap-4 py-4 text-ink hover:text-vermil">
+              <span className="fr-display text-[34px] w-12 text-vermil">{i + 1}</span>
+              <span className="flex-1 min-w-0 truncate text-[19px] font-semibold">
+                {r.artist} <span className="serif-it font-normal text-[21px]">— {r.title}</span>
+              </span>
+              <span className="font-mono text-[11px]">{formatScore(r.score)}</span>
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 function RadioModule() {
   const published = usePublished();
   const mix = [...published].filter((r) => r.score >= 9).sort((a, b) => b.score - a.score).slice(0, 5);
@@ -227,7 +276,7 @@ function RadioModule() {
                   <span className="flex-1 min-w-0 truncate text-[18px] font-semibold">
                     {m.artist} <span className="serif-it font-normal text-[20px]">— {m.title}</span>
                   </span>
-                  <span className="font-mono text-[11px]">{m.score.toFixed(1)}</span>
+                  <span className="font-mono text-[11px]">{formatScore(m.score)}</span>
                 </Link>
               </li>
             ))}
@@ -306,7 +355,7 @@ function FromTheArchive() {
               {archived.body[1] && <p>{archived.body[1]}</p>}
             </div>
             <div className="flex flex-wrap items-end gap-8 pt-6 border-t border-rule">
-              <div className="fr-score text-[88px] text-vermil leading-none">{archived.score.toFixed(1)}<span className="text-ink text-[28px] align-top">/10</span></div>
+              <div className="fr-score text-[88px] text-vermil leading-none">{formatScore(archived.score)}<span className="text-ink text-[28px] align-top">/10</span></div>
               <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute leading-relaxed">
                 <div>Originally rated</div>
                 <div>Score system unchanged</div>
@@ -336,7 +385,7 @@ function FromTheArchive() {
                     {m.artist} · {m.label}
                   </div>
                 </div>
-                <div className="fr-score-card text-[28px] text-ink">{m.score.toFixed(1)}</div>
+                <div className="fr-score-card text-[28px] text-ink">{formatScore(m.score)}</div>
               </Link>
             ))}
           </div>
@@ -410,22 +459,26 @@ function FilterChips<T extends string>({
   );
 }
 
+/** How many of the newest reviews the homepage lists before pointing to /reviews. */
+const RECENT_REVIEW_COUNT = 12;
+
 function LatestList() {
   const { decade, kind } = Route.useSearch();
   const all = usePublished();
   const filtered = all.filter(
     (r) => (decade === "all" || r.decade === decade) && (kind === "all" || r.kind === kind),
   );
+  const rows = mostRecent(filtered, RECENT_REVIEW_COUNT);
   const isFiltered = decade !== "all" || kind !== "all";
 
   return (
     <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-28 pb-16">
       <div className="flex flex-wrap justify-between items-end gap-6 pb-8">
         <h2 className="fr-display text-[clamp(44px,5.4vw,84px)] text-ink">
-          Latest reviews, <span className="serif-it">all of them.</span>
+          Latest reviews, <span className="serif-it">just landed.</span>
         </h2>
         <div className="font-mono text-[12px] tracking-[0.12em] uppercase text-mute">
-          Showing <span className="text-ink">{filtered.length}</span> of {all.length}
+          The newest <span className="text-ink">{rows.length}</span> of {all.length.toLocaleString()}
           {isFiltered && (
             <>
               {" · "}
@@ -447,7 +500,7 @@ function LatestList() {
       </div>
 
       <div className="border-t-2 border-ink">
-        {filtered.length === 0 ? (
+        {rows.length === 0 ? (
           <div className="py-16 text-center">
             <p className="fr-pull text-[30px] text-ink-2">Nothing in the stacks for that combination.</p>
             <Link from="/" search={{ decade: "all", kind: "all" }} replace resetScroll={false}
@@ -456,9 +509,28 @@ function LatestList() {
             </Link>
           </div>
         ) : (
-          filtered.map((row, i) => <IndexRow key={row.id} row={row} n={i + 1} />)
+          rows.map((row, i) => <IndexRow key={row.id} row={row} n={i + 1} />)
         )}
       </div>
+
+      {filtered.length > rows.length && (
+        <div className="pt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+          <Link
+            to="/reviews"
+            search={{ decade, kind, sort: "newest" }}
+            className="btn-pop inline-flex items-center h-[54px] px-7 bg-vermil text-night font-bold text-[16px] hover:text-night"
+          >
+            All {filtered.length.toLocaleString()} reviews →
+          </Link>
+          <Link
+            to="/archive"
+            search={{ decade, q: "", sort: "newest" }}
+            className="font-mono text-[11px] tracking-[0.12em] uppercase text-mute hover:text-vermil"
+          >
+            Browse the archive by decade →
+          </Link>
+        </div>
+      )}
     </section>
   );
 }
@@ -471,7 +543,9 @@ function Index() {
         <Hero />
         <CrossingTickers />
         <BestNew />
+        <MostRead />
         <RadioModule />
+        <AdSlot placement="home_break" />
         <Manifesto />
         <FromTheArchive />
         <EraRack />

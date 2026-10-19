@@ -9,78 +9,46 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SearchRouteImport } from './routes/search'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as RadioRouteImport } from './routes/radio'
-import { Route as MastheadRouteImport } from './routes/masthead'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BestNewRouteImport } from './routes/best-new'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as ArchiveRouteImport } from './routes/archive'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ReviewsIndexRouteImport } from './routes/reviews.index'
-import { Route as ListsIndexRouteImport } from './routes/lists.index'
-import { Route as FeaturesIndexRouteImport } from './routes/features.index'
-import { Route as ReviewsSlugRouteImport } from './routes/reviews.$slug'
-import { Route as PreviewTokenRouteImport } from './routes/preview.$token'
-import { Route as ListsSlugRouteImport } from './routes/lists.$slug'
-import { Route as FeaturesSlugRouteImport } from './routes/features.$slug'
-import { Route as AuthorsNameRouteImport } from './routes/authors.$name'
-import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
-import { Route as AdminRolesRouteImport } from './routes/admin.roles'
-import { Route as AdminListsRouteImport } from './routes/admin.lists'
-import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ArchiveRouteImport } from './routes/archive'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BestNewRouteImport } from './routes/best-new'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ContributeRouteImport } from './routes/contribute'
+import { Route as MastheadRouteImport } from './routes/masthead'
+import { Route as NewsletterRouteImport } from './routes/newsletter'
+import { Route as RadioRouteImport } from './routes/radio'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as AdminAdsRouteImport } from './routes/admin.ads'
+import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
+import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
+import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
+import { Route as AdminListsRouteImport } from './routes/admin.lists'
+import { Route as AdminRadioRouteImport } from './routes/admin.radio'
+import { Route as AdminRolesRouteImport } from './routes/admin.roles'
+import { Route as AdminSubscribersRouteImport } from './routes/admin.subscribers'
+import { Route as AdminTrafficRouteImport } from './routes/admin.traffic'
+import { Route as AuthorsNameRouteImport } from './routes/authors.$name'
+import { Route as FeaturesIndexRouteImport } from './routes/features.index'
+import { Route as FeaturesSlugRouteImport } from './routes/features.$slug'
+import { Route as ListsIndexRouteImport } from './routes/lists.index'
+import { Route as ListsSlugRouteImport } from './routes/lists.$slug'
+import { Route as PreviewTokenRouteImport } from './routes/preview.$token'
+import { Route as ReviewsIndexRouteImport } from './routes/reviews.index'
+import { Route as ReviewsSlugRouteImport } from './routes/reviews.$slug'
 import { Route as AdminReviewsIndexRouteImport } from './routes/admin.reviews.index'
-import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
-import { Route as AdminReviewsImportRouteImport } from './routes/admin.reviews.import'
 import { Route as AdminReviewsIdRouteImport } from './routes/admin.reviews.$id'
+import { Route as AdminReviewsImportRouteImport } from './routes/admin.reviews.import'
+import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
 
-const SearchRoute = SearchRouteImport.update({
-  id: '/search',
-  path: '/search',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RadioRoute = RadioRouteImport.update({
-  id: '/radio',
-  path: '/radio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MastheadRoute = MastheadRouteImport.update({
-  id: '/masthead',
-  path: '/masthead',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BestNewRoute = BestNewRouteImport.update({
-  id: '/best-new',
-  path: '/best-new',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArchiveRoute = ArchiveRouteImport.update({
-  id: '/archive',
-  path: '/archive',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -88,69 +56,74 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReviewsIndexRoute = ReviewsIndexRouteImport.update({
-  id: '/reviews/',
-  path: '/reviews/',
+const ArchiveRoute = ArchiveRouteImport.update({
+  id: '/archive',
+  path: '/archive',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ListsIndexRoute = ListsIndexRouteImport.update({
-  id: '/lists/',
-  path: '/lists/',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FeaturesIndexRoute = FeaturesIndexRouteImport.update({
-  id: '/features/',
-  path: '/features/',
+const BestNewRoute = BestNewRouteImport.update({
+  id: '/best-new',
+  path: '/best-new',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReviewsSlugRoute = ReviewsSlugRouteImport.update({
-  id: '/reviews/$slug',
-  path: '/reviews/$slug',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PreviewTokenRoute = PreviewTokenRouteImport.update({
-  id: '/preview/$token',
-  path: '/preview/$token',
+const ContributeRoute = ContributeRouteImport.update({
+  id: '/contribute',
+  path: '/contribute',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ListsSlugRoute = ListsSlugRouteImport.update({
-  id: '/lists/$slug',
-  path: '/lists/$slug',
+const MastheadRoute = MastheadRouteImport.update({
+  id: '/masthead',
+  path: '/masthead',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FeaturesSlugRoute = FeaturesSlugRouteImport.update({
-  id: '/features/$slug',
-  path: '/features/$slug',
+const NewsletterRoute = NewsletterRouteImport.update({
+  id: '/newsletter',
+  path: '/newsletter',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthorsNameRoute = AuthorsNameRouteImport.update({
-  id: '/authors/$name',
-  path: '/authors/$name',
+const RadioRoute = RadioRouteImport.update({
+  id: '/radio',
+  path: '/radio',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
-  id: '/subscribers',
-  path: '/subscribers',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAdsRoute = AdminAdsRouteImport.update({
+  id: '/ads',
+  path: '/ads',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminRolesRoute = AdminRolesRouteImport.update({
-  id: '/roles',
-  path: '/roles',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminListsRoute = AdminListsRouteImport.update({
-  id: '/lists',
-  path: '/lists',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFeaturesRoute = AdminFeaturesRouteImport.update({
-  id: '/features',
-  path: '/features',
+const AdminApplicationsRoute = AdminApplicationsRouteImport.update({
+  id: '/applications',
+  path: '/applications',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminContributorsRoute = AdminContributorsRouteImport.update({
@@ -158,25 +131,100 @@ const AdminContributorsRoute = AdminContributorsRouteImport.update({
   path: '/contributors',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminFeaturedRoute = AdminFeaturedRouteImport.update({
+  id: '/featured',
+  path: '/featured',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFeaturesRoute = AdminFeaturesRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminListsRoute = AdminListsRouteImport.update({
+  id: '/lists',
+  path: '/lists',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRadioRoute = AdminRadioRouteImport.update({
+  id: '/radio',
+  path: '/radio',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRolesRoute = AdminRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSubscribersRoute = AdminSubscribersRouteImport.update({
+  id: '/subscribers',
+  path: '/subscribers',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTrafficRoute = AdminTrafficRouteImport.update({
+  id: '/traffic',
+  path: '/traffic',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AuthorsNameRoute = AuthorsNameRouteImport.update({
+  id: '/authors/$name',
+  path: '/authors/$name',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesIndexRoute = FeaturesIndexRouteImport.update({
+  id: '/features/',
+  path: '/features/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeaturesSlugRoute = FeaturesSlugRouteImport.update({
+  id: '/features/$slug',
+  path: '/features/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListsIndexRoute = ListsIndexRouteImport.update({
+  id: '/lists/',
+  path: '/lists/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListsSlugRoute = ListsSlugRouteImport.update({
+  id: '/lists/$slug',
+  path: '/lists/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewTokenRoute = PreviewTokenRouteImport.update({
+  id: '/preview/$token',
+  path: '/preview/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsIndexRoute = ReviewsIndexRouteImport.update({
+  id: '/reviews/',
+  path: '/reviews/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsSlugRoute = ReviewsSlugRouteImport.update({
+  id: '/reviews/$slug',
+  path: '/reviews/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminReviewsIndexRoute = AdminReviewsIndexRouteImport.update({
   id: '/reviews/',
   path: '/reviews/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const ApiPublicRssDotxmlRoute = ApiPublicRssDotxmlRouteImport.update({
-  id: '/api/public/rss.xml',
-  path: '/api/public/rss.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminReviewsImportRoute = AdminReviewsImportRouteImport.update({
-  id: '/reviews/import',
-  path: '/reviews/import',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminReviewsIdRoute = AdminReviewsIdRouteImport.update({
   id: '/reviews/$id',
   path: '/reviews/$id',
   getParentRoute: () => AdminRoute,
+} as any)
+const AdminReviewsImportRoute = AdminReviewsImportRouteImport.update({
+  id: '/reviews/import',
+  path: '/reviews/import',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiPublicRssDotxmlRoute = ApiPublicRssDotxmlRouteImport.update({
+  id: '/api/public/rss.xml',
+  path: '/api/public/rss.xml',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -187,15 +235,23 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
+  '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
+  '/newsletter': typeof NewsletterRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/ads': typeof AdminAdsRoute
+  '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
+  '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
+  '/admin/radio': typeof AdminRadioRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/traffic': typeof AdminTrafficRoute
   '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
@@ -217,15 +273,23 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
+  '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
+  '/newsletter': typeof NewsletterRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/ads': typeof AdminAdsRoute
+  '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
+  '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
+  '/admin/radio': typeof AdminRadioRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/traffic': typeof AdminTrafficRoute
   '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
@@ -248,15 +312,23 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
   '/contact': typeof ContactRoute
+  '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
+  '/newsletter': typeof NewsletterRoute
   '/radio': typeof RadioRoute
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/ads': typeof AdminAdsRoute
+  '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
+  '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
   '/admin/lists': typeof AdminListsRoute
+  '/admin/radio': typeof AdminRadioRoute
   '/admin/roles': typeof AdminRolesRoute
   '/admin/subscribers': typeof AdminSubscribersRoute
+  '/admin/traffic': typeof AdminTrafficRoute
   '/authors/$name': typeof AuthorsNameRoute
   '/features/$slug': typeof FeaturesSlugRoute
   '/lists/$slug': typeof ListsSlugRoute
@@ -280,15 +352,23 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-new'
     | '/contact'
+    | '/contribute'
     | '/masthead'
+    | '/newsletter'
     | '/radio'
     | '/reset-password'
     | '/search'
+    | '/sitemap.xml'
+    | '/admin/ads'
+    | '/admin/applications'
     | '/admin/contributors'
+    | '/admin/featured'
     | '/admin/features'
     | '/admin/lists'
+    | '/admin/radio'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/admin/traffic'
     | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
@@ -310,15 +390,23 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-new'
     | '/contact'
+    | '/contribute'
     | '/masthead'
+    | '/newsletter'
     | '/radio'
     | '/reset-password'
     | '/search'
+    | '/sitemap.xml'
+    | '/admin/ads'
+    | '/admin/applications'
     | '/admin/contributors'
+    | '/admin/featured'
     | '/admin/features'
     | '/admin/lists'
+    | '/admin/radio'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/admin/traffic'
     | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
@@ -340,15 +428,23 @@ export interface FileRouteTypes {
     | '/auth'
     | '/best-new'
     | '/contact'
+    | '/contribute'
     | '/masthead'
+    | '/newsletter'
     | '/radio'
     | '/reset-password'
     | '/search'
+    | '/sitemap.xml'
+    | '/admin/ads'
+    | '/admin/applications'
     | '/admin/contributors'
+    | '/admin/featured'
     | '/admin/features'
     | '/admin/lists'
+    | '/admin/radio'
     | '/admin/roles'
     | '/admin/subscribers'
+    | '/admin/traffic'
     | '/authors/$name'
     | '/features/$slug'
     | '/lists/$slug'
@@ -371,10 +467,13 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BestNewRoute: typeof BestNewRoute
   ContactRoute: typeof ContactRoute
+  ContributeRoute: typeof ContributeRoute
   MastheadRoute: typeof MastheadRoute
+  NewsletterRoute: typeof NewsletterRoute
   RadioRoute: typeof RadioRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SearchRoute: typeof SearchRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AuthorsNameRoute: typeof AuthorsNameRoute
   FeaturesSlugRoute: typeof FeaturesSlugRoute
   ListsSlugRoute: typeof ListsSlugRoute
@@ -388,67 +487,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/radio': {
-      id: '/radio'
-      path: '/radio'
-      fullPath: '/radio'
-      preLoaderRoute: typeof RadioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/masthead': {
-      id: '/masthead'
-      path: '/masthead'
-      fullPath: '/masthead'
-      preLoaderRoute: typeof MastheadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/best-new': {
-      id: '/best-new'
-      path: '/best-new'
-      fullPath: '/best-new'
-      preLoaderRoute: typeof BestNewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/archive': {
-      id: '/archive'
-      path: '/archive'
-      fullPath: '/archive'
-      preLoaderRoute: typeof ArchiveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -458,95 +501,102 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reviews/': {
-      id: '/reviews/'
-      path: '/reviews'
-      fullPath: '/reviews/'
-      preLoaderRoute: typeof ReviewsIndexRouteImport
+    '/archive': {
+      id: '/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lists/': {
-      id: '/lists/'
-      path: '/lists'
-      fullPath: '/lists/'
-      preLoaderRoute: typeof ListsIndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/features/': {
-      id: '/features/'
-      path: '/features'
-      fullPath: '/features/'
-      preLoaderRoute: typeof FeaturesIndexRouteImport
+    '/best-new': {
+      id: '/best-new'
+      path: '/best-new'
+      fullPath: '/best-new'
+      preLoaderRoute: typeof BestNewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reviews/$slug': {
-      id: '/reviews/$slug'
-      path: '/reviews/$slug'
-      fullPath: '/reviews/$slug'
-      preLoaderRoute: typeof ReviewsSlugRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/preview/$token': {
-      id: '/preview/$token'
-      path: '/preview/$token'
-      fullPath: '/preview/$token'
-      preLoaderRoute: typeof PreviewTokenRouteImport
+    '/contribute': {
+      id: '/contribute'
+      path: '/contribute'
+      fullPath: '/contribute'
+      preLoaderRoute: typeof ContributeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lists/$slug': {
-      id: '/lists/$slug'
-      path: '/lists/$slug'
-      fullPath: '/lists/$slug'
-      preLoaderRoute: typeof ListsSlugRouteImport
+    '/masthead': {
+      id: '/masthead'
+      path: '/masthead'
+      fullPath: '/masthead'
+      preLoaderRoute: typeof MastheadRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/features/$slug': {
-      id: '/features/$slug'
-      path: '/features/$slug'
-      fullPath: '/features/$slug'
-      preLoaderRoute: typeof FeaturesSlugRouteImport
+    '/newsletter': {
+      id: '/newsletter'
+      path: '/newsletter'
+      fullPath: '/newsletter'
+      preLoaderRoute: typeof NewsletterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/authors/$name': {
-      id: '/authors/$name'
-      path: '/authors/$name'
-      fullPath: '/authors/$name'
-      preLoaderRoute: typeof AuthorsNameRouteImport
+    '/radio': {
+      id: '/radio'
+      path: '/radio'
+      fullPath: '/radio'
+      preLoaderRoute: typeof RadioRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/subscribers': {
-      id: '/admin/subscribers'
-      path: '/subscribers'
-      fullPath: '/admin/subscribers'
-      preLoaderRoute: typeof AdminSubscribersRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/ads': {
+      id: '/admin/ads'
+      path: '/ads'
+      fullPath: '/admin/ads'
+      preLoaderRoute: typeof AdminAdsRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/roles': {
-      id: '/admin/roles'
-      path: '/roles'
-      fullPath: '/admin/roles'
-      preLoaderRoute: typeof AdminRolesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/lists': {
-      id: '/admin/lists'
-      path: '/lists'
-      fullPath: '/admin/lists'
-      preLoaderRoute: typeof AdminListsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/features': {
-      id: '/admin/features'
-      path: '/features'
-      fullPath: '/admin/features'
-      preLoaderRoute: typeof AdminFeaturesRouteImport
+    '/admin/applications': {
+      id: '/admin/applications'
+      path: '/applications'
+      fullPath: '/admin/applications'
+      preLoaderRoute: typeof AdminApplicationsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/contributors': {
@@ -556,25 +606,116 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContributorsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/featured': {
+      id: '/admin/featured'
+      path: '/featured'
+      fullPath: '/admin/featured'
+      preLoaderRoute: typeof AdminFeaturedRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/features': {
+      id: '/admin/features'
+      path: '/features'
+      fullPath: '/admin/features'
+      preLoaderRoute: typeof AdminFeaturesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/lists': {
+      id: '/admin/lists'
+      path: '/lists'
+      fullPath: '/admin/lists'
+      preLoaderRoute: typeof AdminListsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/radio': {
+      id: '/admin/radio'
+      path: '/radio'
+      fullPath: '/admin/radio'
+      preLoaderRoute: typeof AdminRadioRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/roles': {
+      id: '/admin/roles'
+      path: '/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AdminRolesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/subscribers': {
+      id: '/admin/subscribers'
+      path: '/subscribers'
+      fullPath: '/admin/subscribers'
+      preLoaderRoute: typeof AdminSubscribersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/traffic': {
+      id: '/admin/traffic'
+      path: '/traffic'
+      fullPath: '/admin/traffic'
+      preLoaderRoute: typeof AdminTrafficRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/authors/$name': {
+      id: '/authors/$name'
+      path: '/authors/$name'
+      fullPath: '/authors/$name'
+      preLoaderRoute: typeof AuthorsNameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features/': {
+      id: '/features/'
+      path: '/features'
+      fullPath: '/features/'
+      preLoaderRoute: typeof FeaturesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features/$slug': {
+      id: '/features/$slug'
+      path: '/features/$slug'
+      fullPath: '/features/$slug'
+      preLoaderRoute: typeof FeaturesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lists/': {
+      id: '/lists/'
+      path: '/lists'
+      fullPath: '/lists/'
+      preLoaderRoute: typeof ListsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lists/$slug': {
+      id: '/lists/$slug'
+      path: '/lists/$slug'
+      fullPath: '/lists/$slug'
+      preLoaderRoute: typeof ListsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview/$token': {
+      id: '/preview/$token'
+      path: '/preview/$token'
+      fullPath: '/preview/$token'
+      preLoaderRoute: typeof PreviewTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews/': {
+      id: '/reviews/'
+      path: '/reviews'
+      fullPath: '/reviews/'
+      preLoaderRoute: typeof ReviewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews/$slug': {
+      id: '/reviews/$slug'
+      path: '/reviews/$slug'
+      fullPath: '/reviews/$slug'
+      preLoaderRoute: typeof ReviewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/reviews/': {
       id: '/admin/reviews/'
       path: '/reviews'
       fullPath: '/admin/reviews/'
       preLoaderRoute: typeof AdminReviewsIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/api/public/rss.xml': {
-      id: '/api/public/rss.xml'
-      path: '/api/public/rss.xml'
-      fullPath: '/api/public/rss.xml'
-      preLoaderRoute: typeof ApiPublicRssDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/reviews/import': {
-      id: '/admin/reviews/import'
-      path: '/reviews/import'
-      fullPath: '/admin/reviews/import'
-      preLoaderRoute: typeof AdminReviewsImportRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/reviews/$id': {
@@ -584,26 +725,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReviewsIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/reviews/import': {
+      id: '/admin/reviews/import'
+      path: '/reviews/import'
+      fullPath: '/admin/reviews/import'
+      preLoaderRoute: typeof AdminReviewsImportRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/public/rss.xml': {
+      id: '/api/public/rss.xml'
+      path: '/api/public/rss.xml'
+      fullPath: '/api/public/rss.xml'
+      preLoaderRoute: typeof ApiPublicRssDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminAdsRoute: typeof AdminAdsRoute
+  AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminContributorsRoute: typeof AdminContributorsRoute
+  AdminFeaturedRoute: typeof AdminFeaturedRoute
   AdminFeaturesRoute: typeof AdminFeaturesRoute
   AdminListsRoute: typeof AdminListsRoute
+  AdminRadioRoute: typeof AdminRadioRoute
   AdminRolesRoute: typeof AdminRolesRoute
   AdminSubscribersRoute: typeof AdminSubscribersRoute
+  AdminTrafficRoute: typeof AdminTrafficRoute
   AdminReviewsIdRoute: typeof AdminReviewsIdRoute
   AdminReviewsImportRoute: typeof AdminReviewsImportRoute
   AdminReviewsIndexRoute: typeof AdminReviewsIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdsRoute: AdminAdsRoute,
+  AdminApplicationsRoute: AdminApplicationsRoute,
   AdminContributorsRoute: AdminContributorsRoute,
+  AdminFeaturedRoute: AdminFeaturedRoute,
   AdminFeaturesRoute: AdminFeaturesRoute,
   AdminListsRoute: AdminListsRoute,
+  AdminRadioRoute: AdminRadioRoute,
   AdminRolesRoute: AdminRolesRoute,
   AdminSubscribersRoute: AdminSubscribersRoute,
+  AdminTrafficRoute: AdminTrafficRoute,
   AdminReviewsIdRoute: AdminReviewsIdRoute,
   AdminReviewsImportRoute: AdminReviewsImportRoute,
   AdminReviewsIndexRoute: AdminReviewsIndexRoute,
@@ -619,10 +784,13 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BestNewRoute: BestNewRoute,
   ContactRoute: ContactRoute,
+  ContributeRoute: ContributeRoute,
   MastheadRoute: MastheadRoute,
+  NewsletterRoute: NewsletterRoute,
   RadioRoute: RadioRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SearchRoute: SearchRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   AuthorsNameRoute: AuthorsNameRoute,
   FeaturesSlugRoute: FeaturesSlugRoute,
   ListsSlugRoute: ListsSlugRoute,

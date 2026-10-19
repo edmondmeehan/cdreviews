@@ -1,15 +1,18 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { IndexRow, PageHead } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
+import { byNewest } from "@/lib/review-order";
 
 export function authorSlug(name: string) {
   return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
 export const Route = createFileRoute("/authors/$name")({
+  staticData: { sitemap: true },
   component: AuthorPage,
   head: ({ params }) => {
     const name = params.name.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -29,7 +32,7 @@ function AuthorPage() {
   const reviews = useCdStore((s) =>
     s.reviews.filter((r) => r.status === "published" && r.byline === byline),
   );
-  const sorted = [...reviews].sort((a, b) => b.date.localeCompare(a.date));
+  const sorted = [...reviews].sort(byNewest);
 
   return (
     <div className="bg-bone text-ink min-h-screen">
@@ -59,6 +62,7 @@ function AuthorPage() {
           </Link>
         </section>
       )}
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );

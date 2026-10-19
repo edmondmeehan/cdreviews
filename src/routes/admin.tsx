@@ -1,31 +1,56 @@
-import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { pageMeta } from "@/lib/page-meta";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { useAuth } from "@/lib/auth";
 import type { Review } from "@/lib/cd-data";
+import { useState } from "react";
+import { useSiteSettings, useUpdateSiteSettings } from "@/lib/site-settings";
+import { DeskMetrics } from "@/components/admin/DeskMetrics";
 
 export const Route = createFileRoute("/admin")({
+  staticData: { sitemap: "exclude-subtree" },
   component: AdminLayout,
-  head: () => ({ meta: [{ title: "Admin — cdreviews." }] }),
+  head: () => pageMeta("Editorial desk — Admin — cdreviews.", "Editorial desk on the cdreviews editorial desk."),
 });
 
-const NAV = [
-  { to: "/admin", label: "Overview", exact: true },
-  { to: "/admin/reviews", label: "Reviews" },
-  { to: "/admin/features", label: "Features" },
-  { to: "/admin/lists", label: "Lists", staffOnly: true },
-  { to: "/admin/contributors", label: "Contributors", staffOnly: true },
-  { to: "/admin/subscribers", label: "Subscribers", staffOnly: true },
-  { to: "/admin/roles", label: "Roles", adminOnly: true },
+type AdminNavItem = { to: string; label: string; exact?: boolean; staffOnly?: boolean; adminOnly?: boolean };
+const NAV_GROUPS: { label: string; items: AdminNavItem[] }[] = [
+  { label: "Desk", items: [
+    { to: "/admin", label: "Overview", exact: true },
+  ] },
+  { label: "Content", items: [
+    { to: "/admin/reviews", label: "Reviews" },
+    { to: "/admin/features", label: "Features" },
+    { to: "/admin/lists", label: "Lists", staffOnly: true },
+    { to: "/admin/featured", label: "Homepage feature", staffOnly: true },
+    { to: "/admin/radio", label: "Radio", staffOnly: true },
+  ] },
+  { label: "Audience & business", items: [
+    { to: "/admin/traffic", label: "Top pages", staffOnly: true },
+    { to: "/admin/subscribers", label: "Subscribers", staffOnly: true },
+    { to: "/admin/ads", label: "Ads", staffOnly: true },
+  ] },
+  { label: "Team", items: [
+    { to: "/admin/contributors", label: "Contributors", staffOnly: true },
+    { to: "/admin/applications", label: "Writer applications", staffOnly: true },
+    { to: "/admin/roles", label: "Roles & access", adminOnly: true },
+  ] },
 ];
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const { user, isStaff, isWriter, canPublish, loading, signOut, roles } = useAuth();
+  const { user, isStaff, isAdmin, isWriter, canPublish, loading, signOut, roles } = useAuth();
   const allReviews = useCdStore((s) => s.reviews);
   const counts = useCdStore((s) => ({
     r: s.reviews.length, f: s.features.length, l: s.lists.length, c: s.contributors.length, s: s.subscribers.length,
   }));
   const isOverview = pathname === "/admin";
+  const navigate = useNavigate();
+  const visibleGroups = NAV_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter((n) => (!n.adminOnly || isAdmin) && (!n.staffOnly || isStaff)),
+  })).filter((group) => group.items.length > 0);
+  const visibleNav = visibleGroups.flatMap((group) => group.items);
 
   if (loading) {
     return (
@@ -65,32 +90,49 @@ function AdminLayout() {
   }
 
   return (
-    <div className="bg-bone text-ink min-h-screen">
+    <div className="admin-desk bg-bone text-ink min-h-screen">
       <header className="border-b border-ink/10">
         <div className="max-w-[1400px] mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-3">
           <Link to="/" className="fr-display-bold text-[28px] text-ink leading-none">cdreviews. <span className="text-vermil text-[12px] font-mono tracking-[0.3em] align-middle ml-2">ADMIN</span></Link>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[10px] tracking-[0.25em] uppercase">
-            <span className="text-ink/50 break-all">{user.email}</span>
+          <div className="grid grid-cols-2 items-center gap-x-4 gap-y-1 sm:flex sm:flex-wrap font-mono text-[10px] tracking-[0.25em] uppercase">
+            <span className="col-span-2 sm:col-span-1 text-ink/50 break-all">{user.email}</span>
             <ChangePasswordButton email={user.email ?? ""} />
             <button onClick={signOut} className="text-ink/70 hover:text-vermil">Sign out</button>
             <Link to="/" className="text-ink/80 hover:text-vermil">→ View site</Link>
           </div>
         </div>
-        <nav className="max-w-[1400px] mx-auto px-6 pb-3 flex flex-wrap gap-x-5 gap-y-2">
-          {NAV.filter((n) => (!n.adminOnly || roles.includes("admin")) && (!n.staffOnly || isStaff)).map((n) => {
-            const active = n.exact ? pathname === n.to : pathname.startsWith(n.to);
-            return (
-              <Link key={n.to} to={n.to} className={`font-mono text-[11px] tracking-[0.2em] uppercase ${active ? "text-vermil" : "text-ink/70 hover:text-ink"}`}>
-                {n.label}
-              </Link>
-            );
-          })}
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 pb-4 sm:hidden">
+          <label className="sr-only" htmlFor="admin-section">Admin section</label>
+          <select id="admin-section" value={visibleNav.find((n) => n.exact ? pathname === n.to : pathname.startsWith(n.to))?.to ?? "/admin"} onChange={(e) => navigate({ to: e.target.value })} className="w-full min-h-11 bg-bone border border-rule px-3 text-base text-ink">
+            {visibleGroups.map((group) => (
+              <optgroup key={group.label} label={group.label}>
+                {group.items.map((n) => <option key={n.to} value={n.to}>{n.label}</option>)}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+        <nav aria-label="Admin sections" className="max-w-[1400px] mx-auto px-6 pb-5 hidden sm:grid sm:grid-cols-2 lg:grid-cols-[0.65fr_2fr_1.4fr_1fr] gap-x-6 gap-y-5">
+          {visibleGroups.map((group) => (
+            <section key={group.label} aria-label={group.label} className="min-w-0 border-t border-rule pt-3">
+              <h2 className="font-mono text-[10px] uppercase text-mute mb-2">{group.label}</h2>
+              <div className="flex flex-wrap gap-x-1 gap-y-1">
+                {group.items.map((n) => {
+                  const active = n.exact ? pathname === n.to : pathname.startsWith(`${n.to}/`) || pathname === n.to;
+                  return (
+                    <Link key={n.to} to={n.to} activeOptions={{ exact: n.exact ?? false }} aria-current={active ? "page" : undefined} className={`inline-flex items-center min-h-11 px-3 py-2 border-l-2 text-[13px] font-medium transition-colors ${active ? "border-vermil bg-vermil/10 text-vermil" : "border-transparent text-ink/70 hover:bg-ink/5 hover:text-ink"}`}>
+                      {n.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
         </nav>
       </header>
-      <main className="max-w-[1400px] mx-auto px-6 py-10">
+      <main className="max-w-[1400px] mx-auto min-w-0 px-4 sm:px-6 py-8 sm:py-10">
         {isOverview ? (
           <div className="space-y-10">
-            <h1 className="fr-display text-[64px] text-ink">Editorial desk.</h1>
+            <h1 className="fr-display text-[44px] sm:text-[64px] text-ink">Editorial desk.</h1>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-ink/10 border border-ink/10">
               <Stat label="Reviews" n={counts.r} to="/admin/reviews" />
               <Stat label="Features" n={counts.f} to="/admin/features" />
@@ -98,6 +140,8 @@ function AdminLayout() {
               <Stat label="Contributors" n={counts.c} to="/admin/contributors" />
               <Stat label="Subscribers" n={counts.s} to="/admin/subscribers" />
             </div>
+            {roles.includes("super_admin") && <MaintenancePanel />}
+            {isStaff && <DeskMetrics />}
             <Dashboard reviews={allReviews} userId={user.id} canPublish={canPublish} />
             <p className="fr-blurb text-[16px] text-ink/60 max-w-[60ch]">
               Edits save straight to the live site. Drafts stay hidden until you publish them.
@@ -152,9 +196,9 @@ function ReviewQueue({ title, empty, items, action }: { title: string; empty: st
 
 function Stat({ label, n, to }: { label: string; n: number; to: string }) {
   return (
-    <Link to={to} className="bg-bone p-6 hover:bg-ink/5 block">
+    <Link to={to} className="bg-bone min-w-0 p-4 sm:p-6 hover:bg-ink/5 block">
       <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-ink/50">{label}</div>
-      <div className="fr-score-card text-[56px] text-ink mt-2">{n}</div>
+      <div className="fr-score-card text-[44px] sm:text-[56px] text-ink mt-2">{n}</div>
     </Link>
   );
 }
@@ -172,5 +216,45 @@ function ChangePasswordButton({ email }: { email: string }) {
     <button onClick={send} className="text-ink/70 hover:text-vermil">
       Change password
     </button>
+  );
+}
+
+function MaintenancePanel() {
+  const { data } = useSiteSettings();
+  const update = useUpdateSiteSettings();
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const on = !!data?.maintenanceMode;
+  const message = msg ?? data?.maintenanceMessage ?? "";
+  async function save(patch: { maintenance_mode?: boolean; maintenance_message?: string | null }) {
+    setBusy(true);
+    const err = await update(patch);
+    setBusy(false);
+    if (err) alert(err);
+  }
+  return (
+    <section className={`border p-4 sm:p-6 space-y-4 ${on ? "border-vermil" : "border-ink/10"}`}>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Site status</div>
+          <p className="fr-display text-[28px] mt-1">{on ? "Under maintenance — readers see the splash page." : "Live — readers see the full site."}</p>
+          <p className="text-[14px] text-ink/60 mt-1">Staff stay signed in and can still browse everything.</p>
+        </div>
+        <button
+          disabled={busy || !data}
+          onClick={() => { if (on || confirm("Take the site offline for readers?")) save({ maintenance_mode: !on }); }}
+          className={`font-mono text-[11px] tracking-[0.25em] uppercase px-5 py-3 ${on ? "bg-ink text-bone" : "bg-vermil text-night"} disabled:opacity-50`}
+        >
+          {on ? "Bring site back online" : "Turn on maintenance mode"}
+        </button>
+      </div>
+      <label className="block space-y-2">
+        <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-ink/60">Splash message (optional)</span>
+        <textarea rows={2} maxLength={400} value={message} onChange={(e) => setMsg(e.target.value)}
+          placeholder="We're doing some work behind the counter. Leave your email and we'll let you know the moment we're back."
+          className="w-full bg-bone border border-ink/20 px-3 py-2 text-[14px]" />
+      </label>
+      <button disabled={busy} onClick={() => save({ maintenance_message: message.trim() || null })} className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil hover:underline">Save message</button>
+    </section>
   );
 }

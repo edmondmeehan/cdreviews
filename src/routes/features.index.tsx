@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -6,6 +7,7 @@ import { PageHead } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/features/")({
+  staticData: { sitemap: true },
   component: FeaturesIndex,
   head: () => pageMeta("Features \u2014 cdreviews.", "Long-form essays, interviews and arguments."),
 });
@@ -29,6 +31,7 @@ function FeaturesIndex() {
           </Link>
         ))}
       </section>
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );

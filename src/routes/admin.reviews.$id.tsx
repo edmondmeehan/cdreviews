@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { useState, type FormEvent } from "react";
@@ -6,10 +7,98 @@ import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bi
 import { slug as slugify, type Review, type ReviewKind, type Decade } from "@/lib/cd-data";
 import { supabase } from "@/integrations/supabase/client";
 import { lookupSpotifyAlbum, searchSpotifyAlbums } from "@/lib/spotify.functions";
-import { lookupDiscogsAlbum } from "@/lib/discogs.functions";
+import { lookupDiscogsAlbum, searchDiscogsReleases, type DiscogsSearchItem } from "@/lib/discogs.functions";
 import { Cover } from "@/components/site/Cover";
+import { YouTubeVideo } from "@/components/site/YouTubeVideo";
+import { normalizeYoutubeUrl, youtubeVideoId } from "@/lib/youtube";
+import { cleanupReviewBody } from "@/lib/body-cleanup.functions";
 
-export const Route = createFileRoute("/admin/reviews/$id")({ component: EditReview });
+function DiscogsSearch({ defaultQuery, onApply }: { defaultQuery: string; onApply: (it: DiscogsSearchItem) => void }) {
+  const [q, setQ] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [items, setItems] = useState<DiscogsSearchItem[]>([]);
+  const run = async () => {
+    const query = q.trim() || defaultQuery;
+    if (!query) return setMsg("Enter a search term, or add artist/title");
+    setBusy(true); setMsg(null); setItems([]);
+    try {
+      const res = await searchDiscogsReleases({ data: { query } });
+      if (!res.ok) return setMsg(res.error);
+      setItems(res.results);
+      setMsg(res.results.length ? `Found ${res.results.length}` : "No results");
+    } catch (e) { setMsg(e instanceof Error ? e.message : "Search failed"); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="border-t border-ink/10 pt-3 space-y-2">
+      <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Search Discogs for album info</div>
+      <div className="flex flex-wrap gap-2">
+        <input className={inputCls + " flex-1"} value={q} placeholder={defaultQuery || "artist album"} onChange={(e) => setQ(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); run(); } }} />
+        <AdminButton onClick={run} disabled={busy}>{busy ? "Searching…" : "Search"}</AdminButton>
+      </div>
+      {msg && <div className="font-mono text-[11px] text-ink/70">{msg}</div>}
+      {items.length > 0 && (
+        <div className="max-h-[280px] overflow-y-auto border border-ink/10 divide-y divide-ink/10">
+          {items.map((it) => (
+            <div key={it.id} className="flex gap-3 p-2 items-center">
+              {it.imageUrl ? <img src={it.imageUrl} alt="" className="w-12 h-12 object-cover border border-ink/20 flex-shrink-0" /> : <div className="w-12 h-12 bg-ink/10 flex-shrink-0" />}
+              <div className="min-w-0 flex-1">
+                <div className="text-ink text-sm truncate">{it.title}</div>
+                <div className="font-mono text-[10px] text-ink/60 truncate">{[it.year, it.label, it.genre].filter(Boolean).join(" · ")}</div>
+                <div className="font-mono text-[10px] text-ink/40 truncate">{[it.format, it.country].filter(Boolean).join(" · ")} · <a href={it.discogsUrl} target="_blank" rel="noopener noreferrer" className="underline">view</a></div>
+              </div>
+              <AdminButton tone="ghost" onClick={() => { onApply(it); setItems([]); }}>Use</AdminButton>
+            </div>
+          ))}
+        </div>
+      )}
+      <p className="font-mono text-[10px] text-ink/50">Fills in label and genre (and the cover if none is set). Check before saving.</p>
+    </div>
+  );
+}
+
+function BodyCleanup({ body, onApply }: { body: string[]; onApply: (p: string[]) => void }) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [result, setResult] = useState<{ paragraphs: string[]; changes: string[] } | null>(null);
+  const run = async () => {
+    const paragraphs = body.map((p) => p.trim()).filter(Boolean);
+    if (!paragraphs.length) return setErr("Add some review text first.");
+    setBusy(true); setErr(null); setResult(null);
+    try { setResult(await cleanupReviewBody({ data: { paragraphs } })); }
+    catch (e) { setErr(e instanceof Error ? e.message : "AI cleanup failed."); }
+    finally { setBusy(false); }
+  };
+  return (
+    <div className="mt-3 space-y-3">
+      <div className="flex flex-wrap items-center gap-3">
+        <AdminButton tone="ghost" onClick={run} disabled={busy}>{busy ? "Checking…" : "✦ Spell check & clean up with AI"}</AdminButton>
+        <span className="text-xs text-muted-foreground">Fixes typos and stray junk; keeps the writer's voice. Nothing changes until you click Apply.</span>
+      </div>
+      {err && <p className="text-sm text-destructive">{err}</p>}
+      {result && (
+        <div className="border border-border p-4 space-y-3">
+          <p className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Suggested changes</p>
+          {result.changes.length ? (
+            <ul className="list-disc pl-5 text-sm space-y-1">{result.changes.map((c, i) => <li key={i}>{c}</li>)}</ul>
+          ) : <p className="text-sm">No changes needed.</p>}
+          <details className="text-sm"><summary className="cursor-pointer">Preview cleaned text</summary>
+            <div className="mt-2 space-y-2 max-h-80 overflow-auto">{result.paragraphs.map((p, i) => <p key={i}>{p}</p>)}</div>
+          </details>
+          <div className="flex gap-2">
+            <AdminButton onClick={() => { onApply(result.paragraphs); setResult(null); }}>Apply</AdminButton>
+            <AdminButton tone="ghost" onClick={() => setResult(null)}>Discard</AdminButton>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export const Route = createFileRoute("/admin/reviews/$id")({
+  staticData: { sitemap: false }, head: () => pageMeta("Review editor — Admin — cdreviews.", "Review editor on the cdreviews editorial desk."), component: EditReview });
 
 const ART_OPTS = ["art-1","art-2","art-3","art-4","art-5","art-6","art-7","art-8","art-hero","art-archive"];
 
@@ -47,6 +136,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
   });
   const [artBusy, setArtBusy] = useState<string | null>(null);
   const [artMsg, setArtMsg] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [searchQ, setSearchQ] = useState("");
   const [searchResults, setSearchResults] = useState<Array<{
     albumId: string; albumName: string; artistId: string | null; artistName: string;
@@ -55,10 +145,20 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
 
   async function save(e: FormEvent) {
     e.preventDefault();
+    setSaveError(null);
+    if (r.youtubeUrl?.trim() && !youtubeVideoId(r.youtubeUrl)) {
+      setSaveError("Enter a valid YouTube video link, or leave it blank.");
+      return;
+    }
     const newId = r.id || slugify(`${r.artist}-${r.title}`);
     const newSlug = r.slug || slugify(`${r.artist}-${r.title}`);
-    await cdActions.upsertReview({ ...r, id: newId, slug: newSlug });
-    navigate({ to: "/admin/reviews" });
+    try {
+      const { error } = await cdActions.upsertReview({ ...r, id: newId, slug: newSlug, youtubeUrl: normalizeYoutubeUrl(r.youtubeUrl) });
+      if (error) { setSaveError(`Review wasn’t saved: ${error}`); return; }
+      navigate({ to: "/admin/reviews" });
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : "Review wasn’t saved. Please try again.");
+    }
   }
 
   async function copyPreview() {
@@ -130,6 +230,22 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
     } finally { setArtBusy(null); }
   }
 
+  async function handleDiscogsPull() {
+    if (!r.artist || !r.title) { setArtMsg("Add artist and title first"); return; }
+    setArtBusy("discogs"); setArtMsg(null);
+    try {
+      const dg = await lookupDiscogsAlbum({ data: { artist: r.artist, album: r.title } });
+      if (dg.ok) {
+        setR((p) => ({ ...p, artUrl: dg.imageUrl }));
+        setArtMsg(`✓ Cover from Discogs: ${dg.title}`);
+      } else {
+        setArtMsg(`Discogs: ${dg.error}`);
+      }
+    } catch (e) {
+      setArtMsg(e instanceof Error ? e.message : "Discogs lookup failed");
+    } finally { setArtBusy(null); }
+  }
+
   async function handleSpotifySearch() {
     const q = searchQ.trim() || `${r.artist} ${r.title}`.trim();
     if (!q) { setArtMsg("Enter a search term, or add artist/title"); return; }
@@ -162,7 +278,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
   return (
     <div>
       <AdminHeader title={isNew ? "New review" : `Edit · ${r.title}`} action={
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <AdminButton tone="ghost" onClick={() => navigate({ to: "/admin/reviews" })}>Cancel</AdminButton>
           {!isNew && r.status === "draft" && (
             <>
@@ -194,6 +310,9 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
             <AdminButton onClick={handleSpotifyPull}>
               {artBusy === "spotify" ? "Searching…" : "↻ Pull from Spotify"}
             </AdminButton>
+            <AdminButton onClick={handleDiscogsPull}>
+              {artBusy === "discogs" ? "Searching…" : "↻ Pull from Discogs"}
+            </AdminButton>
             {(r.artUrl || r.spotifyUrl || r.spotifyArtistId) && (
               <AdminButton tone="ghost" onClick={() => { patch("artUrl", undefined); patch("spotifyUrl", undefined); patch("spotifyAlbumId", undefined); patch("spotifyArtistId", undefined); setArtMsg("Cleared"); }}>
                 Clear
@@ -203,7 +322,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
           {artMsg && <div className="font-mono text-[11px] text-ink/70">{artMsg}</div>}
           <div className="border-t border-ink/10 pt-3 space-y-2">
             <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-vermil">Search Spotify</div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <input
                 className={inputCls + " flex-1"}
                 value={searchQ}
@@ -239,6 +358,18 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
               </div>
             )}
           </div>
+          <DiscogsSearch defaultQuery={`${r.artist} ${r.title}`.trim()} onApply={(it) => {
+            const parts = it.title.split(" - ");
+            setR((p) => ({
+              ...p,
+              artist: p.artist || parts[0]?.replace(/\s*\(\d+\)$/, "") || p.artist,
+              title: p.title || parts.slice(1).join(" - ") || p.title,
+              label: it.label || p.label,
+              genre: it.genre || p.genre,
+              artUrl: p.artUrl || it.imageUrl,
+            }));
+            setArtMsg(`✓ Applied Discogs info: ${it.title}${it.year ? ` (${it.year})` : ""}`);
+          }} />
           <Field label="Image URL">
             <input className={inputCls} value={r.artUrl ?? ""} onChange={(e) => patch("artUrl", e.target.value || undefined)} placeholder="https://…" />
           </Field>
@@ -261,6 +392,7 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
       </div>
 
       <form id="rf" onSubmit={save} className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-[1100px]">
+        {saveError && <p role="alert" className="lg:col-span-2 text-vermil">{saveError}</p>}
         <Field label="Title"><input className={inputCls} value={r.title} onChange={(e) => patch("title", e.target.value)} required maxLength={120} /></Field>
         <Field label="Artist"><input className={inputCls} value={r.artist} onChange={(e) => patch("artist", e.target.value)} required maxLength={120} /></Field>
         <Field label="Label"><input className={inputCls} value={r.label} onChange={(e) => patch("label", e.target.value)} maxLength={80} /></Field>
@@ -301,14 +433,27 @@ function ReviewEditor({ existing, isNew }: { existing?: Review; isNew: boolean }
           </Field>
         )}
         <div className="lg:col-span-2">
+          <Field label="YouTube video URL (optional)">
+            <input type="url" className={inputCls} value={r.youtubeUrl ?? ""} onChange={(e) => patch("youtubeUrl", e.target.value || undefined)} placeholder="https://www.youtube.com/watch?v=…" maxLength={2048} />
+          </Field>
+          {r.youtubeUrl?.trim() && !youtubeVideoId(r.youtubeUrl) && <p className="mt-2 text-sm text-vermil">Enter a valid YouTube video link.</p>}
+          {youtubeVideoId(r.youtubeUrl) && (
+            <div className="mt-4 max-w-[640px]">
+              <YouTubeVideo url={r.youtubeUrl} title={`${r.artist} — ${r.title}`} />
+              <div className="mt-3"><AdminButton tone="ghost" onClick={() => patch("youtubeUrl", undefined)}>Remove video</AdminButton></div>
+            </div>
+          )}
+        </div>
+        <div className="lg:col-span-2">
           <Field label="Pull quote (optional)">
             <input className={inputCls} value={r.pull ?? ""} onChange={(e) => patch("pull", e.target.value)} maxLength={240} />
           </Field>
         </div>
         <div className="lg:col-span-2">
           <Field label="Body (one paragraph per line, blank line between)">
-            <textarea className={inputCls + " min-h-[300px]"} value={r.body.join("\n\n")} onChange={(e) => patch("body", e.target.value.split(/\n\s*\n/))} maxLength={20000} />
+            <textarea spellCheck lang="en" className={inputCls + " min-h-[300px]"} value={r.body.join("\n\n")} onChange={(e) => patch("body", e.target.value.split(/\n\s*\n/))} maxLength={20000} />
           </Field>
+          <BodyCleanup body={r.body} onApply={(p) => patch("body", p)} />
         </div>
       </form>
     </div>

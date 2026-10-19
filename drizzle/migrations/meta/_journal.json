@@ -29,6 +29,97 @@
       "when": 1791712715966,
       "tag": "0003_review_scheduling",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791978380382,
+      "tag": "0004_site_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1791982914276,
+      "tag": "0005_super_admin_role",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791982926599,
+      "tag": "0006_site_settings_super_admin_only",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791983035190,
+      "tag": "0007_site_settings_read_singleton",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791983773230,
+      "tag": "0008_super_admin_in_permission_helpers",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791984491147,
+      "tag": "0009_ads",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791987414323,
+      "tag": "0010_radio_settings",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791989576888,
+      "tag": "0011_featured_slots",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791999046834,
+      "tag": "0012_page_views",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1792075615970,
+      "tag": "0013_add_review_youtube_url",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1792099783234,
+      "tag": "0014_add_code_snippet_to_ads",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1792100502484,
+      "tag": "0015_create_contributor_applications",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1792100656429,
+      "tag": "0016_allow_authenticated_application_inserts",
+      "breakpoints": true
     }
   ]
 }

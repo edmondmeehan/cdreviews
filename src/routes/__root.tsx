@@ -12,9 +12,14 @@ import type { ErrorComponentProps } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { AuthProvider } from "@/lib/auth";
+import { AuthProvider, useAuth } from "@/lib/auth";
 import { useCdInvalidator } from "@/lib/cd-store";
 import { ThemeProvider, themeBootstrap } from "@/lib/theme";
+import { useRouterState } from "@tanstack/react-router";
+import { usePageViewTracker } from "@/lib/page-views";
+import { useGoogleAnalytics } from "@/lib/google-analytics";
+import { useSiteSettings, isMaintenanceExempt } from "@/lib/site-settings";
+import { MaintenanceSplash } from "@/components/site/MaintenanceSplash";
 
 function NotFoundComponent() {
   return (
@@ -79,6 +84,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  staticData: { sitemap: false },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -133,7 +139,9 @@ function RootComponent() {
       <ThemeProvider>
       <AuthProvider>
         <InvalidatorMount />
-        <Outlet />
+        <MaintenanceGate>
+          <Outlet />
+        </MaintenanceGate>
       </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
@@ -142,5 +150,28 @@ function RootComponent() {
 
 function InvalidatorMount() {
   useCdInvalidator();
+  usePageViewTracker();
+  useGoogleAnalytics();
   return null;
+}
+
+/** Shows the maintenance splash to readers; staff and sign-in pages stay reachable. */
+function MaintenanceGate({ children }: { children: React.ReactNode }) {
+  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const { data } = useSiteSettings();
+  const { isWriter, loading } = useAuth();
+  if (data?.maintenanceMode && !isMaintenanceExempt(pathname) && !loading && !isWriter) {
+    return <MaintenanceSplash message={data.maintenanceMessage} />;
+  }
+  if (data?.maintenanceMode && isWriter) {
+    return (
+      <>
+        <div className="sticky top-0 z-50 bg-vermil text-background text-center font-mono text-[10px] tracking-[0.25em] uppercase py-2 px-3">
+          Maintenance mode is on — readers see the splash page. You're seeing the site because you're signed in as staff.
+        </div>
+        {children}
+      </>
+    );
+  }
+  return <>{children}</>;
 }

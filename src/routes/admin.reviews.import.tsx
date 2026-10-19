@@ -1,3 +1,5 @@
+import { formatScore } from "@/lib/cd-data";
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import * as XLSX from "xlsx";
@@ -5,7 +7,8 @@ import { AdminHeader, AdminButton, Field } from "@/components/admin/bits";
 import { cdActions } from "@/lib/cd-store";
 import { rowsToReviews, type ImportResult } from "@/lib/review-import";
 
-export const Route = createFileRoute("/admin/reviews/import")({ component: ImportPage });
+export const Route = createFileRoute("/admin/reviews/import")({
+  staticData: { sitemap: false }, head: () => pageMeta("Review import — Admin — cdreviews.", "Review import on the cdreviews editorial desk."), component: ImportPage });
 
 const EXPECTED = [
   "Artist", "Album", "Review Date", "Period", "Hot Pick", "Label",
@@ -69,6 +72,7 @@ function ImportPage() {
   const [result, setResult] = useState<ImportResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [committed, setCommitted] = useState(false);
+  const [saving, setSaving] = useState<{ saved: number; total: number } | null>(null);
 
   async function handleFile(file: File) {
     setError(null);
@@ -90,9 +94,20 @@ function ImportPage() {
     }
   }
 
-  function commit() {
+  async function commit() {
     if (!result) return;
-    cdActions.bulkUpsertReviews(result.reviews);
+    setError(null);
+    setSaving({ saved: 0, total: result.reviews.length });
+    const res = await cdActions.bulkUpsertReviews(result.reviews, (saved, total) => setSaving({ saved, total }));
+    setSaving(null);
+    if (res.error) {
+      setError(
+        res.saved > 0
+          ? `Saved ${res.saved} of ${result.reviews.length} reviews, then hit a problem: ${res.error}`
+          : `Nothing was saved: ${res.error}`,
+      );
+      return;
+    }
     setCommitted(true);
   }
 
@@ -126,8 +141,8 @@ function ImportPage() {
               </div>
 
               {result.reviews.length > 0 && (
-                <div className="border border-ink/10">
-                  <table className="w-full font-mono text-[11px]">
+                <div className="border border-ink/10 overflow-x-auto">
+                  <table className="w-full min-w-[540px] font-mono text-[11px]">
                     <thead>
                       <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
                         <th className="py-2 px-3">Artist</th><th>Album</th><th>Date</th><th>Rating</th><th>Type</th>
@@ -139,7 +154,7 @@ function ImportPage() {
                           <td className="py-2 px-3 text-ink/80">{r.artist}</td>
                           <td className="text-ink">{r.title}</td>
                           <td className="text-ink/60">{r.date}</td>
-                          <td className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{r.score.toFixed(1)}</td>
+                          <td className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{formatScore(r.score)}</td>
                           <td className="uppercase text-ink/60">{r.kind}</td>
                         </tr>
                       ))}
@@ -172,9 +187,13 @@ function ImportPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 pt-2">
-                  <AdminButton onClick={commit} tone="primary">Submit {result.reviews.length} reviews</AdminButton>
-                  <span className="font-mono text-[10px] text-ink/50 tracking-[0.2em] uppercase">Review the preview above before submitting</span>
+                <div className="flex flex-wrap items-center gap-3 pt-2">
+                  <AdminButton onClick={commit} tone="primary" disabled={!!saving}>
+                    {saving ? `Saving ${saving.saved} / ${saving.total}…` : `Submit ${result.reviews.length} reviews`}
+                  </AdminButton>
+                  <span className="font-mono text-[10px] text-ink/50 tracking-[0.2em] uppercase">
+                    {saving ? "Keep this page open until it finishes" : "Review the preview above before submitting"}
+                  </span>
                 </div>
               )}
             </div>
@@ -197,7 +216,7 @@ function ImportPage() {
             </ul>
             <div className="pt-2 border-t border-ink/10 text-ink/50 leading-relaxed">
               Header row required. Column order doesn't matter. Headers are matched case- and space-insensitively.
-              Rating accepts 0–10, 0.0–1.0, or percentages. Hot Pick of "Y/Yes/True/X" marks the row as Best New Music.
+              Rating accepts 0–10, 0.0–1.0, or percentages; missing ratings import as NA and missing reviewers as Staff. Hot Pick of "Y/Yes/True/X" marks the row as Best New Music.
               Paragraph breaks in Review Text use blank lines.
             </div>
           </div>

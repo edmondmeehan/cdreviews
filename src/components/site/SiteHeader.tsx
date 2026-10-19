@@ -26,7 +26,7 @@ function RadioBar() {
   );
   return (
     <div className="border-b border-rule bg-bone relative z-10">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-2.5 flex flex-wrap items-center gap-x-6 gap-y-2">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 py-2.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 sm:flex sm:flex-wrap sm:gap-x-6">
         <Link
           to="/radio"
           className="flex items-center gap-2.5 bg-ink text-bone rounded-full pl-1.5 pr-4 h-11 font-mono text-[11px] tracking-[0.12em] uppercase hover:bg-vermil hover:text-bone transition-colors"
@@ -35,8 +35,8 @@ function RadioBar() {
           CDR Radio
         </Link>
         <EqBars className="hidden sm:flex" />
-        <div className="flex items-center gap-2.5 font-mono text-[11px] tracking-[0.12em] uppercase text-mute flex-1 min-w-[200px]">
-          <span className="text-vermil">On air</span>
+        <div className="flex items-center gap-2.5 font-mono text-[11px] tracking-[0.12em] uppercase text-mute min-w-0 col-span-2 row-start-2 sm:flex-1">
+          <span className="text-vermil shrink-0">On air</span>
           {nowSpinning && (
             <Link
               to="/reviews/$slug"
@@ -69,13 +69,13 @@ function Masthead() {
           <span className="hidden sm:inline">Est. 1995</span>
           <span>Vol. 31</span>
         </div>
-        <div className="flex items-end gap-4 md:gap-6 mt-1">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 md:gap-6 mt-1">
           <Link to="/" aria-label="cdreviews — home" className="block min-w-0">
             <span
               className={`block fr-display-bold text-ink whitespace-nowrap ${
                 isHome
-                  ? "text-[clamp(64px,15.5vw,236px)]"
-                  : "text-[clamp(56px,9vw,128px)]"
+                  ? "text-[52px] sm:text-[96px] md:text-[140px] lg:text-[184px] xl:text-[208px]"
+                  : "text-[48px] sm:text-[80px] md:text-[112px] lg:text-[128px]"
               }`}
               aria-hidden="true"
             >
@@ -87,7 +87,7 @@ function Masthead() {
           </Link>
           <span
             className={`cd-disc spin flex-none mb-1 ${
-              isHome ? "w-[clamp(56px,11vw,168px)] h-[clamp(56px,11vw,168px)]" : "w-[clamp(44px,6vw,88px)] h-[clamp(44px,6vw,88px)]"
+              isHome ? "w-12 h-12 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-36 lg:h-36" : "w-10 h-10 sm:w-14 sm:h-14 md:w-20 md:h-20"
             }`}
             aria-hidden="true"
           />

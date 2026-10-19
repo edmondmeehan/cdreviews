@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -6,6 +7,7 @@ import { CrateGrid, PageHead, ReviewCard } from "@/components/site/bits";
 import { useCdStore } from "@/lib/cd-store";
 
 export const Route = createFileRoute("/best-new")({
+  staticData: { sitemap: true },
   component: BestNew,
   head: () => pageMeta("Best New \u2014 cdreviews.", "Best New Music and Best New Reissue, the records we believe in most this season."),
 });
@@ -48,6 +50,7 @@ function BestNew() {
           <p className="fr-pull text-[30px] text-ink-2 py-16 text-center">The shelf is being restocked.</p>
         )}
       </section>
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );

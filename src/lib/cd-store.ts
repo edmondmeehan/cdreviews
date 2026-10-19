@@ -9,6 +9,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { byNewest } from "@/lib/review-order";
 import {
   type Review, type Feature, type CdList, type Contributor, type Subscriber,
 } from "./cd-data";
@@ -58,6 +59,7 @@ export function rowToReview(row: Record<string, unknown>): Review {
     spotifyUrl: (row.spotify_url as string | undefined) ?? undefined,
     spotifyAlbumId: (row.spotify_album_id as string | undefined) ?? undefined,
     spotifyArtistId: (row.spotify_artist_id as string | undefined) ?? undefined,
+    youtubeUrl: (row.youtube_url as string | undefined) ?? undefined,
     createdBy: (row.created_by as string | undefined) ?? undefined,
     submittedAt: (row.submitted_at as string | undefined) ?? undefined,
     previewToken: (row.preview_token as string | undefined) ?? undefined,
@@ -91,6 +93,7 @@ function reviewToRow(r: Review): Record<string, unknown> {
     spotify_url: r.spotifyUrl ?? null,
     spotify_album_id: r.spotifyAlbumId ?? null,
     spotify_artist_id: r.spotifyArtistId ?? null,
+    youtube_url: r.youtubeUrl ?? null,
     submitted_at: r.status === "published" ? null : (r.submittedAt ?? null),
     preview_token: r.previewToken ?? null,
     publish_at: r.status === "published" ? null : (r.publishAt ?? null),
@@ -174,9 +177,27 @@ function isUuid(s: string) {
 
 const KEY = ["cdreviews", "snapshot"] as const;
 
+// The database returns at most 1000 rows per request, so page through all reviews.
+async function fetchAllReviews() {
+  const PAGE = 1000;
+  const data: unknown[] = [];
+  for (let from = 0; ; from += PAGE) {
+    const res = await supabase
+      .from("reviews")
+      .select("*")
+      .order("date", { ascending: false })
+      .order("id", { ascending: true })
+      .range(from, from + PAGE - 1);
+    if (res.error) return { data: null, error: res.error };
+    data.push(...(res.data ?? []));
+    if (!res.data || res.data.length < PAGE) break;
+  }
+  return { data: data as never[], error: null };
+}
+
 async function fetchSnapshot(): Promise<Snapshot> {
   const [reviews, features, lists, contributors, subscribers] = await Promise.all([
-    supabase.from("reviews").select("*").order("date", { ascending: false }),
+    fetchAllReviews(),
     supabase.from("features").select("*").order("created_at", { ascending: false }),
     supabase.from("lists").select("*").order("created_at", { ascending: false }),
     supabase.from("contributors").select("*").order("created_at", { ascending: true }),
@@ -184,7 +205,8 @@ async function fetchSnapshot(): Promise<Snapshot> {
     supabase.from("subscribers").select("*").order("signed_up", { ascending: false }),
   ]);
   return {
-    reviews: (reviews.data ?? []).map(rowToReview),
+    // Newest first: the database orders by the date text, which is month-major.
+    reviews: (reviews.data ?? []).map(rowToReview).sort(byNewest),
     features: (features.data ?? []).map(rowToFeature),
     lists: (lists.data ?? []).map(rowToList),
     contributors: (contributors.data ?? []).map(rowToContributor),
@@ -228,6 +250,7 @@ export const cdActions = {
     const { error } = await supabase.from("reviews").upsert(row as never, { onConflict });
     if (error) console.error("upsertReview", error);
     invalidate();
+    return { error: error?.message };
   },
   async deleteReview(id: string) {
     const col = isUuid(id) ? "id" : "slug";
@@ -262,17 +285,41 @@ export const cdActions = {
     if (error) throw new Error(error.message);
     return token;
   },
-  async bulkUpsertReviews(rows: Review[]) {
-    if (rows.length === 0) return;
-    const { error } = await supabase.from("reviews").upsert(rows.map(reviewToRow) as never, { onConflict: "slug" });
-    if (error) console.error("bulkUpsertReviews", error);
+  async bulkUpsertReviews(
+    rows: Review[],
+    onProgress?: (saved: number, total: number) => void,
+  ): Promise<{ error?: string; saved: number }> {
+    if (rows.length === 0) return { saved: 0 };
+    // The same album twice in one sheet would make the database reject the whole batch.
+    const bySlug = new Map<string, Record<string, unknown>>();
+    for (const r of rows) {
+      const row = reviewToRow(r);
+      delete row.id;
+      bySlug.set(r.slug, row);
+    }
+    const all = [...bySlug.values()];
+    // Save in chunks so a 500-row sheet doesn't fail as one giant request.
+    const CHUNK = 100;
+    let saved = 0;
+    for (let i = 0; i < all.length; i += CHUNK) {
+      const chunk = all.slice(i, i + CHUNK);
+      const { error } = await supabase.from("reviews").upsert(chunk as never, { onConflict: "slug" });
+      if (error) {
+        console.error("bulkUpsertReviews", error);
+        invalidate();
+        return { error: error.message, saved };
+      }
+      saved += chunk.length;
+      onProgress?.(saved, all.length);
+    }
     invalidate();
+    return { saved };
   },
 
   // Features
   async upsertFeature(feat: Feature) {
     const { error } = await supabase.from("features").upsert(featureToRow(feat) as never, { onConflict: "slug" });
-    if (error) console.error("upsertFeature", error);
+    if (error) { console.error("upsertFeature", error); alert("Could not save feature: " + error.message); }
     invalidate();
   },
   async deleteFeature(id: string) {
@@ -285,7 +332,7 @@ export const cdActions = {
   // Lists
   async upsertList(list: CdList) {
     const { error } = await supabase.from("lists").upsert(listToRow(list) as never, { onConflict: "slug" });
-    if (error) console.error("upsertList", error);
+    if (error) { console.error("upsertList", error); alert("Could not save list: " + error.message); }
     invalidate();
   },
   async deleteList(id: string) {

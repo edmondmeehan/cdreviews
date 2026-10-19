@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { Link } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { z } from "zod";
@@ -9,6 +10,7 @@ const FOOTER_COLS: Array<{ heading: string; links: Array<{ label: string; to: st
     heading: "Read",
     links: [
       { label: "Reviews", to: "/reviews" },
+      { label: "Newsletter", to: "/newsletter" },
       { label: "Best New", to: "/best-new" },
       { label: "Features", to: "/features" },
       { label: "Lists", to: "/lists" },
@@ -28,6 +30,7 @@ const FOOTER_COLS: Array<{ heading: string; links: Array<{ label: string; to: st
       { label: "Masthead", to: "/masthead" },
       { label: "About", to: "/about" },
       { label: "Contact", to: "/contact" },
+      { label: "Write for us", to: "/contribute" },
     ],
   },
 ];
@@ -52,6 +55,7 @@ export function SiteFooter() {
 
   return (
     <footer className="bg-bone text-ink">
+      <AdSlot placement="footer_strip" className="pt-10" />
       {/* The Mailer */}
       <section id="mailer" className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-16 pb-20">
         <div className="relative overflow-hidden bg-vermil text-night p-8 md:p-14 flex flex-wrap gap-10 items-center justify-between">
@@ -108,12 +112,20 @@ export function SiteFooter() {
             <span>Est. 1995 · Vol. 31</span>
             <span className="flex items-center gap-5">
               <a href="/api/public/rss.xml" className="hover:text-vermil">RSS</a>
+              <a
+                href="https://vinylvault.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-vermil"
+              >
+                Vinyl Vault ↗
+              </a>
               <Link to="/admin" className="hover:text-vermil">Admin</Link>
             </span>
           </div>
           <div
             aria-hidden="true"
-            className="fr-display-bold text-[clamp(90px,21vw,320px)] text-bone-2 whitespace-nowrap mt-8 -mb-[0.12em] select-none"
+            className="fr-display-bold text-[72px] sm:text-[120px] md:text-[160px] lg:text-[220px] xl:text-[280px] text-bone-2 whitespace-nowrap mt-8 -mb-[0.12em] select-none"
           >
             cdreviews<span className="text-vermil">.</span>
           </div>

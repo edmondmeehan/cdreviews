@@ -1,3 +1,7 @@
+import { amazonSearchUrl } from "@/lib/amazon";
+import { formatScore } from "@/lib/cd-data";
+import { Fragment } from "react";
+import { AdSlot } from "@/components/site/AdSlot";
 import { getReviewSharing } from "@/lib/review-sharing.functions";
 import { reviewSharingMeta } from "@/lib/review-sharing";
 import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
@@ -7,12 +11,14 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { CrateGrid, Kicker, ReviewCard } from "@/components/site/bits";
 import { Cover } from "@/components/site/Cover";
 import { CoverLightbox } from "@/components/site/CoverLightbox";
+import { YouTubeVideo } from "@/components/site/YouTubeVideo";
 import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 import { relatedReviews } from "@/lib/related-reviews";
 import { authorSlug } from "./authors.$name";
 
 export const Route = createFileRoute("/reviews/$slug")({
+  staticData: { sitemap: true },
   component: ReviewPage,
   notFoundComponent: NotFound,
   loader: ({ params }) => getReviewSharing({ data: { slug: params.slug } }),
@@ -74,7 +80,7 @@ function ReviewPage() {
             >
               <Cover r={review} pop />
               <span className={`absolute z-[3] -bottom-6 right-2 sm:-right-4 w-[112px] h-[112px] rounded-full flex items-center justify-center fr-display-bold text-[44px] -rotate-12 text-night shadow-[0_10px_24px_rgba(0,0,0,.4)] ${hot ? "bg-vermil" : "bg-paper"}`}>
-                {review.score.toFixed(1)}
+                {formatScore(review.score)}
               </span>
             </button>
             <dl className="mt-12 font-mono text-[11px] tracking-[0.1em] uppercase text-mute grid grid-cols-[90px_1fr] gap-y-2.5 border-t border-rule pt-5">
@@ -83,6 +89,7 @@ function ReviewPage() {
               {genre && (<><dt>Genre</dt><dd className="text-ink-2">{genre}</dd></>)}
               <dt>Decade</dt><dd className="text-ink-2">{review.decade}</dd>
             </dl>
+            <a href={amazonSearchUrl(review.artist, review.title)} target="_blank" rel="sponsored noopener noreferrer" className="mt-5 mr-5 inline-block font-mono text-[11px] tracking-[0.1em] uppercase text-vermil hover:text-ink">↗ Buy on Amazon</a>
             {review.spotifyUrl && (
               <a href={review.spotifyUrl} target="_blank" rel="noopener noreferrer" className="mt-5 inline-block font-mono text-[11px] tracking-[0.1em] uppercase text-vermil hover:text-ink">↗ Open on Spotify</a>
             )}
@@ -143,12 +150,17 @@ function ReviewPage() {
 
             <div className="mt-12 space-y-6 fr-excerpt text-[19px] md:text-[20px] text-ink-2 max-w-[66ch]">
               {review.body.map((p, i) => (
-                <p key={i} className={i === 0 ? "dropcap" : ""}>{p}</p>
+                <Fragment key={i}>
+                  <p className={i === 0 ? "dropcap" : ""}>{p}</p>
+                  {i === 2 && review.body.length > 4 && <AdSlot placement="review_inline" className="my-10" />}
+                </Fragment>
               ))}
             </div>
+            {review.youtubeUrl && <div className="mt-10"><YouTubeVideo url={review.youtubeUrl} title={`${review.artist} — ${review.title}`} /></div>}
+            <AdSlot placement="review_side" className="mt-12 max-w-[420px]" />
             <div className="mt-12 pt-6 border-t border-rule flex flex-wrap items-end gap-6">
               <div className={`fr-score text-[96px] ${hot ? "text-vermil" : "text-ink"}`}>
-                {review.score.toFixed(1)}<span className="text-ink text-[32px] align-top">/10</span>
+                {formatScore(review.score)}<span className="text-ink text-[32px] align-top">/10</span>
               </div>
               <Link to="/reviews" className="ml-auto font-mono text-[12px] tracking-[0.12em] uppercase text-vermil hover:underline">
                 ← All reviews

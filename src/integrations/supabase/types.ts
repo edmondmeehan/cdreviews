@@ -14,6 +14,119 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_events: {
+        Row: {
+          ad_id: string
+          created_at: string
+          id: number
+          kind: string
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+          id?: never
+          kind: string
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+          id?: never
+          kind?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_events_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "ads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ads: {
+        Row: {
+          active: boolean
+          advertiser: string
+          body: string
+          code_snippet: string | null
+          created_at: string
+          cta: string
+          ends_at: string | null
+          headline: string
+          id: string
+          image_url: string | null
+          link_url: string
+          name: string
+          placement: string
+          starts_at: string | null
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          active?: boolean
+          advertiser?: string
+          body?: string
+          code_snippet?: string | null
+          created_at?: string
+          cta?: string
+          ends_at?: string | null
+          headline?: string
+          id?: string
+          image_url?: string | null
+          link_url: string
+          name: string
+          placement: string
+          starts_at?: string | null
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          active?: boolean
+          advertiser?: string
+          body?: string
+          code_snippet?: string | null
+          created_at?: string
+          cta?: string
+          ends_at?: string | null
+          headline?: string
+          id?: string
+          image_url?: string | null
+          link_url?: string
+          name?: string
+          placement?: string
+          starts_at?: string | null
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: []
+      }
+      contributor_applications: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          note: string | null
+          samples: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          note?: string | null
+          samples: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          note?: string | null
+          samples?: string
+        }
+        Relationships: []
+      }
       contributors: {
         Row: {
           bio: string | null
@@ -41,6 +154,33 @@ export type Database = {
           name?: string
           role?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      featured_slots: {
+        Row: {
+          blurb: string | null
+          created_at: string
+          headline: string | null
+          id: string
+          review_slug: string
+          starts_at: string
+        }
+        Insert: {
+          blurb?: string | null
+          created_at?: string
+          headline?: string | null
+          id?: string
+          review_slug: string
+          starts_at?: string
+        }
+        Update: {
+          blurb?: string | null
+          created_at?: string
+          headline?: string | null
+          id?: string
+          review_slug?: string
+          starts_at?: string
         }
         Relationships: []
       }
@@ -125,6 +265,24 @@ export type Database = {
         }
         Relationships: []
       }
+      page_views: {
+        Row: {
+          created_at: string
+          id: number
+          path: string
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          path: string
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          path?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -151,6 +309,30 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      radio_settings: {
+        Row: {
+          description: string
+          id: number
+          playlist_url: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          description?: string
+          id?: number
+          playlist_url?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          description?: string
+          id?: number
+          playlist_url?: string
+          title?: string
           updated_at?: string
         }
         Relationships: []
@@ -187,6 +369,7 @@ export type Database = {
           submitted_at: string | null
           title: string
           updated_at: string
+          youtube_url: string | null
         }
         Insert: {
           archive_url?: string | null
@@ -219,6 +402,7 @@ export type Database = {
           submitted_at?: string | null
           title: string
           updated_at?: string
+          youtube_url?: string | null
         }
         Update: {
           archive_url?: string | null
@@ -250,6 +434,28 @@ export type Database = {
           status?: string
           submitted_at?: string | null
           title?: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          id: number
+          maintenance_message: string | null
+          maintenance_mode: boolean
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          maintenance_message?: string | null
+          maintenance_mode?: boolean
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          maintenance_message?: string | null
+          maintenance_mode?: boolean
           updated_at?: string
         }
         Relationships: []
@@ -298,6 +504,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ad_stats: {
+        Args: never
+        Returns: {
+          ad_id: string
+          clicks: number
+          views: number
+        }[]
+      }
       can_publish: { Args: { _user_id: string }; Returns: boolean }
       get_review_preview: {
         Args: { _token: string }
@@ -332,6 +546,7 @@ export type Database = {
           submitted_at: string | null
           title: string
           updated_at: string
+          youtube_url: string | null
         }[]
         SetofOptions: {
           from: "*"
@@ -349,9 +564,34 @@ export type Database = {
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       is_writer: { Args: { _user_id: string }; Returns: boolean }
+      most_read_reviews: {
+        Args: { _days?: number; _limit?: number }
+        Returns: {
+          slug: string
+          views: number
+        }[]
+      }
+      record_ad_event: {
+        Args: { _ad_id: string; _kind: string }
+        Returns: undefined
+      }
+      record_page_view: { Args: { _path: string }; Returns: undefined }
+      top_pages: {
+        Args: { _from: string; _limit?: number; _to: string }
+        Returns: {
+          path: string
+          views: number
+        }[]
+      }
     }
     Enums: {
-      app_role: "admin" | "editor" | "contributor" | "senior_writer" | "writer"
+      app_role:
+        | "admin"
+        | "editor"
+        | "contributor"
+        | "senior_writer"
+        | "writer"
+        | "super_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -479,7 +719,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "editor", "contributor", "senior_writer", "writer"],
+      app_role: [
+        "admin",
+        "editor",
+        "contributor",
+        "senior_writer",
+        "writer",
+        "super_admin",
+      ],
     },
   },
 } as const

@@ -1,10 +1,12 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { slug as slugify, type Contributor } from "@/lib/cd-data";
 
-export const Route = createFileRoute("/admin/contributors")({ component: ContribAdmin });
+export const Route = createFileRoute("/admin/contributors")({
+  staticData: { sitemap: false }, head: () => pageMeta("Contributors — Admin — cdreviews.", "Contributors on the cdreviews editorial desk."), component: ContribAdmin });
 
 function blank(): Contributor { return { id: "", name: "", role: "Contributor", bio: "", city: "" }; }
 
@@ -38,8 +40,8 @@ function ContribAdmin() {
       </div>
 
       {e && (
-        <div className="fixed inset-0 bg-bone/90 z-50 overflow-auto p-6 flex items-start justify-center">
-          <div className="bg-bone border border-ink/20 max-w-[600px] w-full p-8 space-y-5">
+        <div className="fixed inset-0 bg-bone/90 z-50 overflow-auto p-3 sm:p-6 flex items-start justify-center">
+          <div className="bg-bone border border-ink/20 max-w-[600px] w-full p-4 sm:p-8 space-y-5">
             <h2 className="fr-display text-[32px] text-ink">{e.id ? "Edit" : "New"} contributor</h2>
             <Field label="Name"><input className={inputCls} maxLength={120} value={e.name} onChange={(ev) => setE({ ...e, name: ev.target.value })} /></Field>
             <Field label="Role">

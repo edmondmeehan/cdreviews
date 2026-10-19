@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -5,7 +6,8 @@ import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bi
 import { listRoleAssignments, grantRole, revokeRole } from "@/lib/roles.functions";
 import { useAuth } from "@/lib/auth";
 
-export const Route = createFileRoute("/admin/roles")({ component: RolesAdmin });
+export const Route = createFileRoute("/admin/roles")({
+  staticData: { sitemap: false }, head: () => pageMeta("Roles and access — Admin — cdreviews.", "Roles and access on the cdreviews editorial desk."), component: RolesAdmin });
 
 type RoleOpt = "admin" | "editor" | "senior_writer" | "writer" | "contributor";
 
@@ -85,7 +87,7 @@ function RolesAdmin() {
         ) : !rolesQ.data?.length ? (
           <p className="font-mono text-[11px] text-ink/50">No role assignments yet.</p>
         ) : (
-          <table className="w-full font-mono text-[11px]">
+          <div className="overflow-x-auto"><table className="w-full min-w-[540px] font-mono text-[11px]">
             <thead>
               <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
                 <th className="py-3">Email</th><th>Role</th><th>Granted</th><th></th>
@@ -103,7 +105,7 @@ function RolesAdmin() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
       </div>
     </div>

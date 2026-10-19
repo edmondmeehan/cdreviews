@@ -1,3 +1,4 @@
+import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -5,6 +6,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { PageHead } from "@/components/site/bits";
 
 export const Route = createFileRoute("/about")({
+  staticData: { sitemap: true },
   component: About,
   head: () => pageMeta("About \u2014 cdreviews.", "What cdreviews is, what it isn't, and what the score system means."),
 });
@@ -23,6 +25,7 @@ function About() {
         <p><span className="text-vermil font-mono">7.0–7.9</span> Good, with caveats.</p>
         <p><span className="text-vermil font-mono">Below 7</span> Read the review.</p>
       </section>
+      <AdSlot placement="home_break" className="pb-16" />
       <SiteFooter />
     </div>
   );

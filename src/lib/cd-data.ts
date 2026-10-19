@@ -34,6 +34,7 @@ export type Review = {
   spotifyUrl?: string;
   spotifyAlbumId?: string;
   spotifyArtistId?: string;
+  youtubeUrl?: string;
   // Workflow
   createdBy?: string;
   submittedAt?: string;
@@ -84,6 +85,9 @@ const slugify = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
 export const slug = slugify;
+
+// Scores of 0 mean "no rating" (e.g. imported without one) — display as NA.
+export const formatScore = (s: number) => (s > 0 ? s.toFixed(1) : "NA");
 
 const r = (
   o: Omit<Review, "id" | "slug" | "status"> & Partial<Pick<Review, "status">>,

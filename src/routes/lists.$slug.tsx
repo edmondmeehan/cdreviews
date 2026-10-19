@@ -7,6 +7,7 @@ import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_LIST_SLUGS } from "@/lib/legacy-redirects";
 
 export const Route = createFileRoute("/lists/$slug")({
+  staticData: { sitemap: true },
   component: ListPage,
   notFoundComponent: NotFound,
   head: ({ params }) => pageMeta(`${params.slug.replace(/-/g, " ")} — List — cdreviews.`, "Records selected and ranked by cdreviews.", "article"),

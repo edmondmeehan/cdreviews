@@ -1,3 +1,4 @@
+import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { AdminHeader, AdminButton } from "@/components/admin/bits";
@@ -7,7 +8,8 @@ import {
   uniqueSubscriberCount,
 } from "@/lib/subscriber-export";
 
-export const Route = createFileRoute("/admin/subscribers")({ component: SubsAdmin });
+export const Route = createFileRoute("/admin/subscribers")({
+  staticData: { sitemap: false }, head: () => pageMeta("Subscribers — Admin — cdreviews.", "Subscribers on the cdreviews editorial desk."), component: SubsAdmin });
 
 function SubsAdmin() {
   const subs = useCdStore((s) => s.subscribers);
@@ -32,7 +34,7 @@ function SubsAdmin() {
       {subs.length === 0 ? (
         <p className="font-mono text-[11px] text-ink/50">No subscribers yet. Try the footer signup form on the public site.</p>
       ) : (
-        <table className="w-full font-mono text-[11px]">
+        <div className="overflow-x-auto"><table className="w-full min-w-[540px] font-mono text-[11px]">
           <thead>
             <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
               <th className="py-3">Email</th><th>Signed up</th><th></th>
@@ -49,7 +51,7 @@ function SubsAdmin() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       )}
     </div>
   );
