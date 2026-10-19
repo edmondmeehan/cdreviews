@@ -16,6 +16,7 @@ import { AdminHeader, AdminButton, AdminLinkButton } from "@/components/admin/bi
 const schema = z.object({
   q: fallback(z.string(), "").default(""),
   page: fallback(z.number().int(), 1).default(1),
+  covers: fallback(z.enum(["all", "missing"]), "all").default("all"),
 });
 
 export const Route = createFileRoute("/admin/reviews/")({
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/admin/reviews/")({
 function ReviewsAdmin() {
   const reviews = useCdStore((s) => s.reviews);
   const { canPublish } = useAuth();
-  const { q, page } = Route.useSearch();
+  const { q, page, covers } = Route.useSearch();
   const navigate = useNavigate({ from: "/admin/reviews/" });
   const [term, setTerm] = useState(q);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -43,7 +44,8 @@ function ReviewsAdmin() {
     return () => clearTimeout(t);
   }, [term, q, navigate]);
 
-  const filtered = filterReviews(reviews, q);
+  const missingCount = reviews.filter((r) => !r.artUrl).length;
+  const filtered = filterReviews(reviews, q).filter((r) => covers === "all" || !r.artUrl);
   const paged = paginate(filtered, page, REVIEWS_PAGE_SIZE);
   // A stale ?page= from a bookmark or a shrinking result set: make the URL honest.
   useEffect(() => {
@@ -139,6 +141,28 @@ function ReviewsAdmin() {
         </div>
       </div>
 
+      <div role="group" aria-label="Filter by cover" className="flex flex-wrap gap-2 mb-4">
+        {([
+          { key: "all", label: `All reviews (${reviews.length})` },
+          { key: "missing", label: `Missing cover (${missingCount})` },
+        ] as const).map((opt) => {
+          const active = covers === opt.key;
+          return (
+            <button
+              key={opt.key}
+              type="button"
+              aria-pressed={active}
+              onClick={() => navigate({ search: (prev) => ({ ...prev, covers: opt.key, page: 1 }) })}
+              className={`font-mono text-[10px] tracking-[0.2em] uppercase px-3 py-2 border ${
+                active ? "bg-ink text-bone border-ink" : "border-ink/20 text-ink/70 hover:text-ink"
+              }`}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
+
       {canPublish && selected.size > 0 && (
         <div className="sticky top-0 z-10 bg-bone border border-ink/10 p-3 mb-4 flex flex-wrap items-center gap-3">
           <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-ink/70">{selected.size} selected</span>
@@ -153,13 +177,22 @@ function ReviewsAdmin() {
         <thead>
           <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
             {canPublish && <th className="py-3 w-8"><label className="inline-flex items-center gap-3"><input type="checkbox" aria-label="Select all on this page" checked={allSelected} onChange={toggleAll} /><span className="sm:hidden">Select all on this page</span></label></th>}
-            <th className="py-3">Title</th><th>Artist</th><th>Score</th><th>Type</th><th>Status</th><th></th>
+            <th className="py-3 w-14">Cover</th><th className="py-3">Title</th><th>Artist</th><th>Score</th><th>Type</th><th>Status</th><th></th>
           </tr>
         </thead>
         <tbody>
           {paged.items.map((r) => (
             <tr key={r.id} className="border-b border-ink/5 hover:bg-ink/5">
               {canPublish && <td className="py-3"><input type="checkbox" aria-label={`Select ${r.title}`} checked={selected.has(r.id)} onChange={() => toggle(r.id)} /></td>}
+              <td data-label="Cover" className="py-2 pr-3">
+                <Link to="/admin/reviews/$id" params={{ id: r.id }} aria-label={r.artUrl ? `Edit ${r.title}` : `Add a cover for ${r.title}`} className="block">
+                  {r.artUrl ? (
+                    <img src={r.artUrl} alt="" loading="lazy" className="w-10 h-10 object-cover" />
+                  ) : (
+                    <span className="w-10 h-10 border border-dashed border-vermil/60 text-vermil text-[8px] leading-tight tracking-[0.1em] uppercase flex items-center justify-center text-center">No<br />cover</span>
+                  )}
+                </Link>
+              </td>
               <td className="py-3"><Link to="/admin/reviews/$id" params={{ id: r.id }} className="text-ink hover:text-vermil">{r.title}</Link></td>
               <td data-label="Artist" className="text-ink/70">{r.artist}</td>
               <td data-label="Score" className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{formatScore(r.score)}</td>
@@ -172,8 +205,10 @@ function ReviewsAdmin() {
           ))}
           {paged.items.length === 0 && (
             <tr>
-              <td colSpan={canPublish ? 7 : 6} className="py-10 text-center text-ink/50">
-                Nothing matches “{q.trim()}”. <button onClick={() => setTerm("")} className="text-vermil hover:underline">Clear search</button>
+              <td colSpan={canPublish ? 8 : 7} className="py-10 text-center text-ink/50">
+                {covers === "missing" && !q.trim()
+                  ? "Every review has a cover."
+                  : <>Nothing matches “{q.trim()}”. <button onClick={() => setTerm("")} className="text-vermil hover:underline">Clear search</button></>}
               </td>
             </tr>
           )}
