@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { matchesDiscogsTitle } from "./discogs-match";
+import { discogsTitleScore } from "./discogs-match";
+import { albumCore } from "./album-match";
 
 async function discogsFetch(url: string, auth: string): Promise<Response> {
   for (let attempt = 0; ; attempt++) {
@@ -41,23 +42,34 @@ export const lookupDiscogsAlbum = createServerFn({ method: "POST" })
     const auth = discogsAuth();
     if (!auth) return { ok: false as const, error: "Discogs is not configured" };
     try {
-      const params = new URLSearchParams({
-        artist: data.artist,
-        release_title: data.album,
-        per_page: "25",
-      });
-      const res = await discogsFetch(`https://api.discogs.com/database/search?${params}`, auth);
-      if (!res.ok) return { ok: false as const, error: discogsError(res.status) };
-      const json = (await res.json()) as {
-        results?: Array<{ title: string; type: string; cover_image?: string; uri?: string }>;
+      type Hit = { title: string; type: string; cover_image?: string; uri?: string };
+      const search = async (params: URLSearchParams): Promise<{ hits: Hit[]; status?: number }> => {
+        const res = await discogsFetch(`https://api.discogs.com/database/search?${params}`, auth);
+        if (!res.ok) return { hits: [], status: res.status };
+        const json = (await res.json()) as { results?: Hit[] };
+        return { hits: json.results ?? [] };
       };
-      const candidates = (json.results ?? []).filter(
-        (r) => (r.type === "master" || r.type === "release") && r.cover_image && !r.cover_image.includes("spacer.gif")
-          && matchesDiscogsTitle(r.title, data.artist, data.album),
-      );
-      // Prefer master releases (canonical artwork)
-      const item = candidates.find((c) => c.type === "master") ?? candidates[0];
-      if (!item) return { ok: false as const, error: "No exact artist and album match found on Discogs" };
+      const pick = (hits: Hit[]) => {
+        let best: Hit | undefined;
+        let bestScore = 0;
+        for (const r of hits) {
+          if (!(r.type === "master" || r.type === "release") || !r.cover_image || r.cover_image.includes("spacer.gif")) continue;
+          // Prefer master releases (canonical artwork) when the title fits equally well.
+          const s = discogsTitleScore(r.title, data.artist, data.album) * 2 + (r.type === "master" ? 1 : 0);
+          if (discogsTitleScore(r.title, data.artist, data.album) > 0 && s > bestScore) { best = r; bestScore = s; }
+        }
+        return best;
+      };
+      // 1) exact artist + title fields; 2) looser keyword search on the cleaned-up title.
+      const first = await search(new URLSearchParams({ artist: data.artist, release_title: data.album, per_page: "25" }));
+      if (first.status) return { ok: false as const, error: discogsError(first.status) };
+      let item = pick(first.hits);
+      if (!item) {
+        const second = await search(new URLSearchParams({ q: `${data.artist} ${albumCore(data.album)}`, per_page: "25" }));
+        if (second.status === 429) return { ok: false as const, error: discogsError(429) };
+        item = pick(second.hits);
+      }
+      if (!item) return { ok: false as const, error: "No matching artist and album found on Discogs" };
       const result = {
         ok: true as const,
         imageUrl: item.cover_image!,
