@@ -120,6 +120,13 @@
       "when": 1792100656429,
       "tag": "0016_allow_authenticated_application_inserts",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1792513379186,
+      "tag": "0017_harden_contributor_applications",
+      "breakpoints": true
     }
   ]
 }
