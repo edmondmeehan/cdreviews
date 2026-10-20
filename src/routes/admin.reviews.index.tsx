@@ -7,6 +7,7 @@ import { z } from "zod";
 import { useCdStore, cdActions } from "@/lib/cd-store";
 import { useServerFn } from "@tanstack/react-start";
 import { lookupSpotifyAlbum } from "@/lib/spotify.functions";
+import { lookupDiscogsAlbum } from "@/lib/discogs.functions";
 import { useAuth } from "@/lib/auth";
 import {
   REVIEWS_PAGE_SIZE, filterReviews, paginate, pageWindow,
@@ -82,28 +83,59 @@ function ReviewsAdmin() {
   const go = (p: number) => navigate({ search: (prev) => ({ ...prev, page: p }) });
 
   const lookup = useServerFn(lookupSpotifyAlbum);
+  const lookupDiscogs = useServerFn(lookupDiscogsAlbum);
   const [artStatus, setArtStatus] = useState<string | null>(null);
+  // Spotify first; if it has no exact artist + album match, fall back to Discogs.
   async function fillArt() {
     const missing = reviews.filter((r) => !r.artUrl);
     if (missing.length === 0) { setArtStatus("Every review already has a cover."); return; }
-    if (!confirm(`Check ${missing.length} review(s) without a cover on Spotify?`)) return;
-    let found = 0;
+    if (!confirm(`Look up covers for ${missing.length} review(s) — Spotify first, then Discogs?`)) return;
+    let fromSpotify = 0;
+    let fromDiscogs = 0;
+    let discogsDown: string | null = null;
     for (let i = 0; i < missing.length; i++) {
       const r = missing[i];
-      setArtStatus(`Checking ${i + 1} of ${missing.length}… (${found} found)`);
+      setArtStatus(`Checking ${i + 1} of ${missing.length}… (${fromSpotify} from Spotify, ${fromDiscogs} from Discogs)`);
+      let sp: Awaited<ReturnType<typeof lookup>> | null = null;
       try {
-        const res = await lookup({ data: { artist: r.artist, album: r.title } });
-        if (res.ok && res.imageUrl) {
+        sp = await lookup({ data: { artist: r.artist, album: r.title } });
+        if (sp.ok && sp.imageUrl) {
           await cdActions.upsertReview({
-            ...r, artUrl: res.imageUrl, spotifyUrl: r.spotifyUrl ?? res.spotifyUrl,
-            spotifyAlbumId: r.spotifyAlbumId ?? res.albumId,
-            spotifyArtistId: r.spotifyArtistId ?? res.artistId ?? undefined,
+            ...r, artUrl: sp.imageUrl, spotifyUrl: r.spotifyUrl ?? sp.spotifyUrl,
+            spotifyAlbumId: r.spotifyAlbumId ?? sp.albumId,
+            spotifyArtistId: r.spotifyArtistId ?? sp.artistId ?? undefined,
           });
-          found++;
+          fromSpotify++;
+          continue;
+        }
+      } catch { /* fall through to Discogs */ }
+
+      if (discogsDown) continue;
+      try {
+        const dg = await lookupDiscogs({ data: { artist: r.artist, album: r.title } });
+        if (dg.ok) {
+          await cdActions.upsertReview({
+            ...r, artUrl: dg.imageUrl,
+            // Keep the Spotify player link if Spotify matched the album without artwork.
+            ...(sp?.ok ? {
+              spotifyUrl: r.spotifyUrl ?? sp.spotifyUrl,
+              spotifyAlbumId: r.spotifyAlbumId ?? sp.albumId,
+              spotifyArtistId: r.spotifyArtistId ?? sp.artistId ?? undefined,
+            } : {}),
+          });
+          fromDiscogs++;
+        } else if (dg.error === "Discogs is not configured") {
+          discogsDown = dg.error;
         }
       } catch { /* skip this one */ }
+      // Discogs allows about 60 lookups a minute.
+      await new Promise((res) => setTimeout(res, 1100));
     }
-    setArtStatus(`Done — added ${found} cover(s). ${missing.length - found} had no exact Spotify match.`);
+    const notFound = missing.length - fromSpotify - fromDiscogs;
+    setArtStatus(
+      `Done — added ${fromSpotify + fromDiscogs} cover(s): ${fromSpotify} from Spotify, ${fromDiscogs} from Discogs. ` +
+      `${notFound} had no exact match${discogsDown ? ` (Discogs skipped: ${discogsDown})` : ""}.`,
+    );
   }
 
   return (
