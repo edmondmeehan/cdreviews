@@ -15,16 +15,23 @@ export const listRoleAssignments = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     const ids = Array.from(new Set(roles.map((r) => r.user_id)));
     const emails: Record<string, string> = {};
+    const lastSignIn: Record<string, string | null> = {};
     // Invited people who haven't accepted yet have never signed in.
     const pending = new Set<string>();
     for (const id of ids) {
       const { data } = await supabaseAdmin.auth.admin.getUserById(id);
       if (data?.user) {
         emails[id] = data.user.email ?? "(no email)";
+        lastSignIn[id] = data.user.last_sign_in_at ?? null;
         if (!data.user.last_sign_in_at) pending.add(id);
       }
     }
-    return roles.map((r) => ({ ...r, email: emails[r.user_id] ?? "(unknown)", pending: pending.has(r.user_id) }));
+    return roles.map((r) => ({
+      ...r,
+      email: emails[r.user_id] ?? "(unknown)",
+      pending: pending.has(r.user_id),
+      lastSignInAt: lastSignIn[r.user_id] ?? null,
+    }));
   });
 
 export const grantRole = createServerFn({ method: "POST" })

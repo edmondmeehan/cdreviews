@@ -93,10 +93,10 @@ function RolesAdmin() {
         ) : !rolesQ.data?.length ? (
           <p className="font-mono text-[11px] text-ink/50">No role assignments yet.</p>
         ) : (
-          <div className="overflow-x-auto"><table className="w-full min-w-[540px] font-mono text-[11px]">
+          <div className="overflow-x-auto"><table className="w-full min-w-[680px] font-mono text-[11px]">
             <thead>
               <tr className="text-left text-ink/50 tracking-[0.2em] uppercase text-[10px] border-b border-ink/10">
-                <th className="py-3">Email</th><th>Role</th><th>Granted</th><th></th>
+                <th className="py-3">Email</th><th>Role</th><th>Last signed in</th><th>Granted</th><th></th>
               </tr>
             </thead>
             <tbody>
@@ -107,6 +107,9 @@ function RolesAdmin() {
                     {r.pending && <span className="ml-2 text-[9px] tracking-[0.2em] uppercase text-ink/40">Invited</span>}
                   </td>
                   <td className="text-vermil uppercase tracking-[0.2em]">{r.role}</td>
+                  <td className="text-ink/80" title={r.lastSignInAt ? new Date(r.lastSignInAt).toLocaleString() : undefined}>
+                    {r.lastSignInAt ? timeAgo(r.lastSignInAt) : <span className="text-ink/40">Never</span>}
+                  </td>
                   <td className="text-ink/60">{new Date(r.created_at).toLocaleDateString()}</td>
                   <td className="text-right">
                     <AdminButton tone="danger" onClick={() => { if (confirm(`Revoke ${r.role} from ${r.email}?`)) revoke.mutate(r.id); }}>Revoke</AdminButton>
@@ -119,4 +122,17 @@ function RolesAdmin() {
       </div>
     </div>
   );
+}
+
+/** "3 hours ago", "2 days ago", or a date for anything older than a month. */
+function timeAgo(iso: string): string {
+  const then = new Date(iso).getTime();
+  const mins = Math.round((Date.now() - then) / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.round(mins / 60);
+  if (hrs < 24) return `${hrs} hr${hrs === 1 ? "" : "s"} ago`;
+  const days = Math.round(hrs / 24);
+  if (days < 30) return `${days} day${days === 1 ? "" : "s"} ago`;
+  return new Date(iso).toLocaleDateString([], { dateStyle: "medium" });
 }

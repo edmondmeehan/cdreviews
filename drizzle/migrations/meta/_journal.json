@@ -127,6 +127,20 @@
       "when": 1792513200000,
       "tag": "0017_harden_contributor_applications",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1792523453265,
+      "tag": "0018_hide_review_contact_columns",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1792523518801,
+      "tag": "0019_activity_log",
+      "breakpoints": true
     }
   ]
 }

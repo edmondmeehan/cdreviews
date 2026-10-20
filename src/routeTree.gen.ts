@@ -23,6 +23,7 @@ import { Route as RadioRouteImport } from './routes/radio'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminAdsRouteImport } from './routes/admin.ads'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
@@ -117,6 +118,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminAdsRoute = AdminAdsRouteImport.update({
   id: '/ads',
@@ -254,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
@@ -294,6 +301,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
@@ -335,6 +343,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
@@ -377,6 +386,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search'
     | '/sitemap.xml'
+    | '/admin/activity'
     | '/admin/ads'
     | '/admin/applications'
     | '/admin/contributors'
@@ -417,6 +427,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search'
     | '/sitemap.xml'
+    | '/admin/activity'
     | '/admin/ads'
     | '/admin/applications'
     | '/admin/contributors'
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search'
     | '/sitemap.xml'
+    | '/admin/activity'
     | '/admin/ads'
     | '/admin/applications'
     | '/admin/contributors'
@@ -610,6 +622,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/ads': {
       id: '/admin/ads'
@@ -783,6 +802,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminActivityRoute: typeof AdminActivityRoute
   AdminAdsRoute: typeof AdminAdsRoute
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminContributorsRoute: typeof AdminContributorsRoute
@@ -799,6 +819,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminActivityRoute: AdminActivityRoute,
   AdminAdsRoute: AdminAdsRoute,
   AdminApplicationsRoute: AdminApplicationsRoute,
   AdminContributorsRoute: AdminContributorsRoute,

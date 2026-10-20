@@ -1,4 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertStaffOrWriter } from "./staff-guard";
 import { z } from "zod";
 import { bestSpotifyAlbum } from "./spotify-match";
 import { albumCore } from "./album-match";
@@ -110,8 +112,10 @@ function coalesce<T>(key: string, fn: () => Promise<T>): Promise<T> {
 }
 
 export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d) => Input.parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertStaffOrWriter(context.supabase, context.userId);
     const cacheKey = normKey("album-loose-v3", data.artist, data.album);
     const cached = cacheGet<{
       ok: true; albumId: string; albumName: string; artistId: string | null;
@@ -174,8 +178,10 @@ export const lookupSpotifyAlbum = createServerFn({ method: "POST" })
 const SearchInput = z.object({ query: z.string().min(1).max(200) });
 
 export const searchSpotifyAlbums = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d) => SearchInput.parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertStaffOrWriter(context.supabase, context.userId);
     const cacheKey = normKey("search", data.query);
     type SearchOk = {
       ok: true; results: Array<{
