@@ -10,3 +10,4 @@
 - Desk traffic calculations live in a browser-safe tested helper; each query renders its own loading/error state so failed requests cannot masquerade as zero traffic.
 - Cover chooses a deterministic print treatment from artist and title only when artwork is absent; shared CSS sleeve tokens keep placeholders consistent without altering genuine cover images.
 - Writer applications validate through the shared browser-safe `src/lib/contributor-application.ts` helper, and the database repeats its limits plus a per-email daily guard, because the public form can be bypassed by direct API calls.
+- Account emails are React ports of the HTML designs in `email-templates/`, sharing `src/lib/email-templates/cdr-layout.tsx`; edit the HTML source first and mirror it in the port so the sent emails never drift from the approved design.
