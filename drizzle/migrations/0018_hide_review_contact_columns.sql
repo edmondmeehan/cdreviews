@@ -3,7 +3,7 @@
 -- Postgres column privileges only apply once the table-wide grant is removed,
 -- so anon gets SELECT on an explicit column list. Add new public review
 -- columns here too when they're created.
-REVOKE SELECT ON public.reviews FROM anon;
+REVOKE SELECT ON public.reviews FROM anon;--> statement-breakpoint
 GRANT SELECT (
   id, slug, title, artist, label, format, genre, date, decade, kind,
   score, art, byline, read_mins, body, status, archive_url, period,
