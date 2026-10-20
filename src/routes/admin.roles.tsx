@@ -25,9 +25,15 @@ function RolesAdmin() {
   });
 
   const grant = useMutation({
-    mutationFn: (vars: { email: string; role: RoleOpt }) => grantRole({ data: vars }),
-    onSuccess: (res) => {
-      setMsg({ kind: "ok", text: `Granted ${role} to ${res.email}` });
+    mutationFn: (vars: { email: string; role: RoleOpt }) =>
+      grantRole({ data: { ...vars, redirectTo: `${window.location.origin}/reset-password` } }),
+    onSuccess: (res, vars) => {
+      setMsg({
+        kind: "ok",
+        text: res.invited
+          ? `Invite sent to ${res.email}. They'll have ${vars.role} access once they set a password.`
+          : `Granted ${vars.role} to ${res.email}`,
+      });
       setEmail("");
       qc.invalidateQueries({ queryKey: ["admin", "roles"] });
     },
@@ -69,12 +75,12 @@ function RolesAdmin() {
             <option value="contributor">Contributor — no admin access</option>
           </select>
         </Field>
-        <AdminButton type="submit">{grant.isPending ? "Granting…" : "Grant role"}</AdminButton>
+        <AdminButton type="submit">{grant.isPending ? "Saving…" : "Grant / invite"}</AdminButton>
         {msg && (
           <p className={`md:col-span-3 font-mono text-[11px] ${msg.kind === "ok" ? "text-ink/80" : "text-vermil"}`}>{msg.text}</p>
         )}
         <p className="md:col-span-3 font-mono text-[10px] text-ink/40 leading-relaxed">
-          The user must already have signed up at <span className="text-ink/70">/auth</span>. Granting an existing role is a no-op.
+          If the email has no account yet, they're sent an invite to set a password and get this role when they accept. Granting an existing role is a no-op.
         </p>
       </form>
 
@@ -96,7 +102,10 @@ function RolesAdmin() {
             <tbody>
               {rolesQ.data.map((r) => (
                 <tr key={r.id} className="border-b border-ink/5">
-                  <td className="py-3 text-ink">{r.email}</td>
+                  <td className="py-3 text-ink">
+                    {r.email}
+                    {r.pending && <span className="ml-2 text-[9px] tracking-[0.2em] uppercase text-ink/40">Invited</span>}
+                  </td>
                   <td className="text-vermil uppercase tracking-[0.2em]">{r.role}</td>
                   <td className="text-ink/60">{new Date(r.created_at).toLocaleDateString()}</td>
                   <td className="text-right">
