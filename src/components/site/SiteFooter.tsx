@@ -93,7 +93,7 @@ export function SiteFooter() {
       <div className="border-t border-rule overflow-hidden">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-16">
           <div className="flex flex-wrap gap-12 justify-between">
-            <p className="flex-[1_1_300px] max-w-[360px] text-mute text-[15px] leading-relaxed">
+            <p className="basis-full lg:basis-auto lg:whitespace-nowrap text-mute text-[15px] leading-relaxed">
               A music review publication of record. Independent since 1995.
             </p>
             {FOOTER_COLS.map((col) => (
