@@ -5,10 +5,7 @@ export type SiteSettings = { maintenanceMode: boolean; maintenanceMessage: strin
 
 const KEY = ["site-settings"];
 
-/** Paths that stay reachable while the site is in maintenance. */
-export function isMaintenanceExempt(pathname: string) {
-  return ["/admin", "/auth", "/reset-password", "/preview"].some((p) => pathname === p || pathname.startsWith(p + "/"));
-}
+export { isMaintenanceExempt } from "@/lib/maintenance";
 
 export function useSiteSettings(initial?: SiteSettings | null) {
   return useQuery({
