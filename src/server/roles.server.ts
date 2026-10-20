@@ -8,10 +8,10 @@ export async function assertAdmin(userId: string) {
     .from("user_roles")
     .select("role")
     .eq("user_id", userId)
-    .eq("role", "admin")
-    .maybeSingle();
+    .in("role", ["admin", "super_admin"])
+    .limit(1);
   if (error) throw new Error(error.message);
-  if (!data) throw new Error("Forbidden: admin role required");
+  if (!data?.length) throw new Error("Forbidden: admin role required");
 }
 
 export async function findUserByEmail(email: string) {

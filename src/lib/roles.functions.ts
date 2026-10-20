@@ -15,11 +15,16 @@ export const listRoleAssignments = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     const ids = Array.from(new Set(roles.map((r) => r.user_id)));
     const emails: Record<string, string> = {};
+    // Invited people who haven't accepted yet have never signed in.
+    const pending = new Set<string>();
     for (const id of ids) {
       const { data } = await supabaseAdmin.auth.admin.getUserById(id);
-      if (data?.user) emails[id] = data.user.email ?? "(no email)";
+      if (data?.user) {
+        emails[id] = data.user.email ?? "(no email)";
+        if (!data.user.last_sign_in_at) pending.add(id);
+      }
     }
-    return roles.map((r) => ({ ...r, email: emails[r.user_id] ?? "(unknown)" }));
+    return roles.map((r) => ({ ...r, email: emails[r.user_id] ?? "(unknown)", pending: pending.has(r.user_id) }));
   });
 
 export const grantRole = createServerFn({ method: "POST" })
@@ -28,17 +33,29 @@ export const grantRole = createServerFn({ method: "POST" })
     z.object({
       email: z.string().trim().email().max(320),
       role: z.enum(ROLES),
+      // Where the invite link lands; must also be listed in the auth redirect URLs.
+      redirectTo: z.string().url().max(2048).optional(),
     }).parse(input),
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
-    const user = await findUserByEmail(data.email);
-    if (!user) throw new Error(`No user found with email ${data.email}. Ask them to sign up first.`);
+    let user = await findUserByEmail(data.email);
+    let invited = false;
+    if (!user) {
+      // No account yet: create one and email them a link to set a password.
+      const { data: inv, error: invErr } = await supabaseAdmin.auth.admin.inviteUserByEmail(
+        data.email,
+        data.redirectTo ? { redirectTo: data.redirectTo } : undefined,
+      );
+      if (invErr || !inv?.user) throw new Error(`Could not send an invite to ${data.email}: ${invErr?.message ?? "unknown error"}`);
+      user = inv.user;
+      invited = true;
+    }
     const { error } = await supabaseAdmin
       .from("user_roles")
       .upsert({ user_id: user.id, role: data.role as Role }, { onConflict: "user_id,role" });
     if (error) throw new Error(error.message);
-    return { ok: true, userId: user.id, email: user.email };
+    return { ok: true, userId: user.id, email: user.email ?? data.email, invited };
   });
 
 export const revokeRole = createServerFn({ method: "POST" })

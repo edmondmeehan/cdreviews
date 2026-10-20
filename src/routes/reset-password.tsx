@@ -47,10 +47,10 @@ function ResetPasswordPage() {
       <form onSubmit={submit} className="w-full max-w-[420px] border border-ink/10 p-8 space-y-6">
         <div>
           <div className="font-mono text-[10px] tracking-[0.3em] uppercase text-vermil">§ Editorial</div>
-          <h1 className="fr-display text-[40px] mt-2">Set new password.</h1>
+          <h1 className="fr-display text-[40px] mt-2">Set your password.</h1>
         </div>
         {!ready ? (
-          <p className="font-mono text-[11px] text-ink/60">Waiting for recovery link…</p>
+          <p className="font-mono text-[11px] text-ink/60">Waiting for your link…</p>
         ) : done ? (
           <p className="font-mono text-[11px] text-vermil">Password updated. Redirecting…</p>
         ) : (

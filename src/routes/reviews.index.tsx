@@ -1,7 +1,7 @@
 import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
-import { fallback, zodValidator } from "@tanstack/zod-adapter";
+import { fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -22,7 +22,7 @@ const PER_PAGE = 25;
 
 export const Route = createFileRoute("/reviews/")({
   staticData: { sitemap: true },
-  validateSearch: zodValidator(schema),
+  validateSearch: schema,
   search: { middlewares: [stripSearchParams({ decade: "all", kind: "all", sort: "newest", page: 1 })] },
   component: ReviewsIndex,
   head: () => pageMeta("Reviews \u2014 cdreviews.", "Every published review, filterable by decade, type, and score."),

@@ -69,7 +69,10 @@ export function MaintenanceSplash({ message }: { message: string | null }) {
       </section>
       <div className="max-w-[1100px] w-full mx-auto px-6 pb-8 flex justify-between font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
         <span>© 1995 — 2026 cdreviews</span>
-        <Link to="/auth" className="hover:text-vermil">Staff sign in</Link>
+        <span className="flex gap-6">
+          <Link to="/contribute" className="hover:text-vermil">Write for us</Link>
+          <Link to="/auth" className="hover:text-vermil">Staff sign in</Link>
+        </span>
       </div>
     </main>
   );
