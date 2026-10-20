@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { cdActions } from "@/lib/cd-store";
 import { subscribeToBeehiiv } from "@/lib/beehiiv.functions";
+import { AdSlot } from "@/components/site/AdSlot";
 
 const emailSchema = z.string().trim().email().max(255);
 
@@ -66,10 +67,11 @@ export function MaintenanceSplash({ message }: { message: string | null }) {
             </p>
           </form>
         </div>
+        <AdSlot placement="splash" className="mt-14" />
       </section>
-      <div className="max-w-[1100px] w-full mx-auto px-6 pb-8 flex justify-between font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
+      <div className="max-w-[1100px] w-full mx-auto px-6 pb-8 flex flex-wrap justify-between gap-x-6 gap-y-3 font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
         <span>© 1995 — 2026 cdreviews</span>
-        <span className="flex gap-6">
+        <span className="flex gap-6 whitespace-nowrap">
           <Link to="/contribute" className="hover:text-vermil">Write for us</Link>
           <Link to="/auth" className="hover:text-vermil">Staff sign in</Link>
         </span>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminHeader, AdminButton, Field, inputCls } from "@/components/admin/bits";
 import { AD_PLACEMENTS, clickRate, isRunning, type AdPlacement } from "@/lib/ad-pick";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin/ads")({
   staticData: { sitemap: false }, head: () => pageMeta("Ads — Admin — cdreviews.", "Ads on the cdreviews editorial desk."), component: AdsAdmin });
@@ -21,6 +22,20 @@ const toLocal = (s: string | null) => (s ? new Date(s).toISOString().slice(0, 16
 const fromLocal = (s: string) => (s ? new Date(s).toISOString() : null);
 
 function AdsAdmin() {
+  const { isSuperAdmin, loading } = useAuth();
+  if (loading) return <p className="font-mono text-[11px] text-ink/50">Loading…</p>;
+  if (!isSuperAdmin) {
+    return (
+      <div>
+        <AdminHeader title="Ads" />
+        <p className="font-mono text-[11px] text-ink/60">Ads are managed by the super admin only.</p>
+      </div>
+    );
+  }
+  return <AdsManager />;
+}
+
+function AdsManager() {
   const [ads, setAds] = useState<Ad[]>([]);
   const [stats, setStats] = useState<Record<string, { views: number; clicks: number }>>({});
   const [edit, setEdit] = useState<(Omit<Ad, "id"> & { id?: string }) | null>(null);

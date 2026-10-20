@@ -148,6 +148,20 @@
       "when": 1792524036875,
       "tag": "0020_hide_review_contact_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1792700000000,
+      "tag": "0021_add_splash_ad_placement",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1792700100000,
+      "tag": "0022_ads_super_admin_only",
+      "breakpoints": true
     }
   ]
 }
