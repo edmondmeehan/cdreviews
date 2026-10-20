@@ -22,7 +22,8 @@ const PER_PAGE = 25;
 
 export const Route = createFileRoute("/reviews/")({
   staticData: { sitemap: true },
-  validateSearch: zodValidator(schema),
+  validateSearch: schema,
+  search: { middlewares: [stripSearchParams({ decade: "all", kind: "all", sort: "newest", page: 1 })] },
   component: ReviewsIndex,
   head: () => pageMeta("Reviews \u2014 cdreviews.", "Every published review, filterable by decade, type, and score."),
 });
