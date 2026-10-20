@@ -10,7 +10,7 @@ export function isMaintenanceExempt(pathname: string) {
   return ["/admin", "/auth", "/reset-password", "/preview"].some((p) => pathname === p || pathname.startsWith(p + "/"));
 }
 
-export function useSiteSettings() {
+export function useSiteSettings(initial?: SiteSettings | null) {
   return useQuery({
     queryKey: KEY,
     queryFn: async (): Promise<SiteSettings> => {
@@ -18,6 +18,8 @@ export function useSiteSettings() {
       return { maintenanceMode: !!data?.maintenance_mode, maintenanceMessage: data?.maintenance_message ?? null };
     },
     staleTime: 30_000,
+    // Seeded from the server-rendered root loader so the first paint already knows.
+    initialData: initial ?? undefined,
   });
 }
 
