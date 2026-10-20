@@ -18,6 +18,7 @@ type AdminNavItem = { to: string; label: string; exact?: boolean; staffOnly?: bo
 const NAV_GROUPS: { label: string; items: AdminNavItem[] }[] = [
   { label: "Desk", items: [
     { to: "/admin", label: "Overview", exact: true },
+    { to: "/admin/guide", label: "Admin guide" },
   ] },
   { label: "Content", items: [
     { to: "/admin/reviews", label: "Reviews" },
