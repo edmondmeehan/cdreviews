@@ -20,6 +20,7 @@ import { usePageViewTracker } from "@/lib/page-views";
 import { useGoogleAnalytics } from "@/lib/google-analytics";
 import { useSiteSettings, isMaintenanceExempt } from "@/lib/site-settings";
 import { MaintenanceSplash } from "@/components/site/MaintenanceSplash";
+import { getPublicSiteSettings } from "@/lib/site-settings.functions";
 
 function NotFoundComponent() {
   return (
@@ -110,6 +111,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
   }),
+  // Read the maintenance switch on the server so readers get the splash in the
+  // first HTML instead of a flash of the site. Failure falls back to the client check.
+  loader: () => getPublicSiteSettings().catch(() => null),
+  staleTime: 30_000,
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -157,10 +162,16 @@ function InvalidatorMount() {
 
 /** Shows the maintenance splash to readers; staff and sign-in pages stay reachable. */
 function MaintenanceGate({ children }: { children: React.ReactNode }) {
-  const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const { data } = useSiteSettings();
+  // Gate on the page that is actually on screen. During a click from the splash
+  // to /auth, `location` already says /auth while the old page is still rendered,
+  // which briefly exposed the site behind the splash.
+  const pathname = useRouterState({ select: (r) => (r.resolvedLocation ?? r.location).pathname });
+  const initial = Route.useLoaderData();
+  const { data } = useSiteSettings(initial);
   const { isWriter, loading } = useAuth();
-  if (data?.maintenanceMode && !isMaintenanceExempt(pathname) && !loading && !isWriter) {
+  // Keep the splash up while we're still checking whether this is a staff member,
+  // so readers never glimpse the site; staff see the site once sign-in is confirmed.
+  if (data?.maintenanceMode && !isMaintenanceExempt(pathname) && (loading || !isWriter)) {
     return <MaintenanceSplash message={data.maintenanceMessage} />;
   }
   if (data?.maintenanceMode && isWriter) {

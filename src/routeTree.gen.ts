@@ -23,6 +23,7 @@ import { Route as RadioRouteImport } from './routes/radio'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminAdsRouteImport } from './routes/admin.ads'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
@@ -45,6 +46,8 @@ import { Route as AdminReviewsIndexRouteImport } from './routes/admin.reviews.in
 import { Route as AdminReviewsIdRouteImport } from './routes/admin.reviews.$id'
 import { Route as AdminReviewsImportRouteImport } from './routes/admin.reviews.import'
 import { Route as ApiPublicRssDotxmlRouteImport } from './routes/api/public/rss[.]xml'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -115,6 +118,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminAdsRoute = AdminAdsRouteImport.update({
   id: '/ads',
@@ -226,6 +234,16 @@ const ApiPublicRssDotxmlRoute = ApiPublicRssDotxmlRouteImport.update({
   path: '/api/public/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -242,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
@@ -264,6 +283,8 @@ export interface FileRoutesByFullPath {
   '/admin/reviews/import': typeof AdminReviewsImportRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
   '/admin/reviews/': typeof AdminReviewsIndexRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -280,6 +301,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
@@ -302,6 +324,8 @@ export interface FileRoutesByTo {
   '/admin/reviews/import': typeof AdminReviewsImportRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
   '/admin/reviews': typeof AdminReviewsIndexRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -319,6 +343,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/activity': typeof AdminActivityRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
   '/admin/contributors': typeof AdminContributorsRoute
@@ -341,6 +366,8 @@ export interface FileRoutesById {
   '/admin/reviews/import': typeof AdminReviewsImportRoute
   '/api/public/rss.xml': typeof ApiPublicRssDotxmlRoute
   '/admin/reviews/': typeof AdminReviewsIndexRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -359,6 +386,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search'
     | '/sitemap.xml'
+    | '/admin/activity'
     | '/admin/ads'
     | '/admin/applications'
     | '/admin/contributors'
@@ -381,6 +409,8 @@ export interface FileRouteTypes {
     | '/admin/reviews/import'
     | '/api/public/rss.xml'
     | '/admin/reviews/'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -397,6 +427,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search'
     | '/sitemap.xml'
+    | '/admin/activity'
     | '/admin/ads'
     | '/admin/applications'
     | '/admin/contributors'
@@ -419,6 +450,8 @@ export interface FileRouteTypes {
     | '/admin/reviews/import'
     | '/api/public/rss.xml'
     | '/admin/reviews'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
   id:
     | '__root__'
     | '/'
@@ -435,6 +468,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/search'
     | '/sitemap.xml'
+    | '/admin/activity'
     | '/admin/ads'
     | '/admin/applications'
     | '/admin/contributors'
@@ -457,6 +491,8 @@ export interface FileRouteTypes {
     | '/admin/reviews/import'
     | '/api/public/rss.xml'
     | '/admin/reviews/'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -483,6 +519,8 @@ export interface RootRouteChildren {
   ListsIndexRoute: typeof ListsIndexRoute
   ReviewsIndexRoute: typeof ReviewsIndexRoute
   ApiPublicRssDotxmlRoute: typeof ApiPublicRssDotxmlRoute
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -584,6 +622,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/ads': {
       id: '/admin/ads'
@@ -739,10 +784,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicRssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminActivityRoute: typeof AdminActivityRoute
   AdminAdsRoute: typeof AdminAdsRoute
   AdminApplicationsRoute: typeof AdminApplicationsRoute
   AdminContributorsRoute: typeof AdminContributorsRoute
@@ -759,6 +819,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminActivityRoute: AdminActivityRoute,
   AdminAdsRoute: AdminAdsRoute,
   AdminApplicationsRoute: AdminApplicationsRoute,
   AdminContributorsRoute: AdminContributorsRoute,
@@ -800,6 +861,8 @@ const rootRouteChildren: RootRouteChildren = {
   ListsIndexRoute: ListsIndexRoute,
   ReviewsIndexRoute: ReviewsIndexRoute,
   ApiPublicRssDotxmlRoute: ApiPublicRssDotxmlRoute,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

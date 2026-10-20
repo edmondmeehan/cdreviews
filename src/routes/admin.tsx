@@ -6,6 +6,7 @@ import type { Review } from "@/lib/cd-data";
 import { useState } from "react";
 import { useSiteSettings, useUpdateSiteSettings } from "@/lib/site-settings";
 import { DeskMetrics } from "@/components/admin/DeskMetrics";
+import { RecentChanges } from "@/components/admin/RecentChanges";
 
 export const Route = createFileRoute("/admin")({
   staticData: { sitemap: "exclude-subtree" },
@@ -34,6 +35,7 @@ const NAV_GROUPS: { label: string; items: AdminNavItem[] }[] = [
     { to: "/admin/contributors", label: "Contributors", staffOnly: true },
     { to: "/admin/applications", label: "Writer applications", staffOnly: true },
     { to: "/admin/roles", label: "Roles & access", adminOnly: true },
+    { to: "/admin/activity", label: "Change log", staffOnly: true },
   ] },
 ];
 
@@ -142,6 +144,7 @@ function AdminLayout() {
             </div>
             {roles.includes("super_admin") && <MaintenancePanel />}
             {isStaff && <DeskMetrics />}
+            {isStaff && <RecentChanges />}
             <Dashboard reviews={allReviews} userId={user.id} canPublish={canPublish} />
             <p className="fr-blurb text-[16px] text-ink/60 max-w-[60ch]">
               Edits save straight to the live site. Drafts stay hidden until you publish them.
