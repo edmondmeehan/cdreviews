@@ -9,3 +9,4 @@
 - Optional review videos persist separately from article text; a shared browser-safe YouTube URL validator and privacy-enhanced player serve the editor, article and preview so arbitrary links never become iframe sources.
 - Desk traffic calculations live in a browser-safe tested helper; each query renders its own loading/error state so failed requests cannot masquerade as zero traffic.
 - Cover chooses a deterministic print treatment from artist and title only when artwork is absent; shared CSS sleeve tokens keep placeholders consistent without altering genuine cover images.
+- Writer applications validate through the shared browser-safe `src/lib/contributor-application.ts` helper, and the database repeats its limits plus a per-email daily guard, because the public form can be bypassed by direct API calls.
