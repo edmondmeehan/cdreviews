@@ -9,7 +9,7 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
-const SITE_NAME = "Cdreviews Revival"
+const SITE_NAME = "cdreviews"
 const SENDER_DOMAIN = "notify.cdreviews.com"
 const ROOT_DOMAIN = "cdreviews.com"
 const FROM_DOMAIN = "cdreviews.com"
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           sendUrl: process.env['LOVABLE_SEND_URL'],
           emails: {
             signup: {
-              subject: 'Confirm your email',
+              subject: 'Confirm your cdreviews account',
               render: (data) =>
                 React.createElement(SignupEmail, {
                   siteName: SITE_NAME,
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             invite: {
-              subject: "You've been invited",
+              subject: "You're invited to the cdreviews desk",
               render: (data) =>
                 React.createElement(InviteEmail, {
                   siteName: SITE_NAME,
@@ -48,26 +48,30 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             magiclink: {
-              subject: 'Your login link',
+              subject: 'Your cdreviews sign-in link',
               render: (data) =>
                 React.createElement(MagicLinkEmail, {
                   siteName: SITE_NAME,
+                  siteUrl: SITE_URL,
                   confirmationUrl: data.url,
                 }),
             },
             recovery: {
-              subject: 'Reset your password',
+              subject: 'Reset your cdreviews password',
               render: (data) =>
                 React.createElement(RecoveryEmail, {
                   siteName: SITE_NAME,
+                  siteUrl: SITE_URL,
+                  recipient: data.email,
                   confirmationUrl: data.url,
                 }),
             },
             email_change: {
-              subject: 'Confirm your new email',
+              subject: 'Confirm your new cdreviews email',
               render: (data) =>
                 React.createElement(EmailChangeEmail, {
                   siteName: SITE_NAME,
+                  siteUrl: SITE_URL,
                   oldEmail: data.old_email ?? '',
                   email: data.email,
                   newEmail: data.new_email ?? '',
@@ -75,9 +79,9 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 }),
             },
             reauthentication: {
-              subject: 'Your verification code',
+              subject: 'Your cdreviews verification code',
               render: (data) =>
-                React.createElement(ReauthenticationEmail, { token: data.token ?? '' }),
+                React.createElement(ReauthenticationEmail, { token: data.token ?? '', siteUrl: SITE_URL }),
             },
           },
         })

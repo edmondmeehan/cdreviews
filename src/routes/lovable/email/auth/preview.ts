@@ -18,7 +18,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "Cdreviews Revival"
+const SITE_NAME = "cdreviews"
 const ROOT_DOMAIN = "cdreviews.com"
 
 // Sample data for preview mode ONLY (not used in actual email sending).
@@ -41,6 +41,8 @@ const SAMPLE_DATA: Record<string, object> = {
   },
   recovery: {
     siteName: SITE_NAME,
+    siteUrl: SAMPLE_PROJECT_URL,
+    recipient: SAMPLE_EMAIL,
     confirmationUrl: SAMPLE_PROJECT_URL,
   },
   invite: {
@@ -52,7 +54,7 @@ const SAMPLE_DATA: Record<string, object> = {
     siteName: SITE_NAME,
     oldEmail: SAMPLE_EMAIL,
     email: SAMPLE_EMAIL,
-    newEmail: SAMPLE_EMAIL,
+    newEmail: "new@example.test",
     confirmationUrl: SAMPLE_PROJECT_URL,
   },
   reauthentication: {
