@@ -46,6 +46,16 @@ function ReviewsAdmin() {
   }, [term, q, navigate]);
 
   const missingCount = reviews.filter((r) => !r.artUrl).length;
+  const publishedMissing = reviews.filter((r) => !r.artUrl && r.status === "published");
+  const [hideStatus, setHideStatus] = useState<string | null>(null);
+  async function unpublishMissing() {
+    const ids = publishedMissing.map((r) => r.id);
+    if (ids.length === 0) return;
+    if (!confirm(`Unpublish ${ids.length} published review(s) that have no cover? They'll move to drafts and can be republished any time.`)) return;
+    setHideStatus("Unpublishing…");
+    const res = await cdActions.setReviewsStatus(ids, "draft");
+    setHideStatus(res.error ? `Couldn't unpublish: ${res.error}` : `Unpublished ${ids.length} review(s) without a cover. Find them under "Missing cover".`);
+  }
   const filtered = filterReviews(reviews, q).filter((r) => covers === "all" || !r.artUrl);
   const paged = paginate(filtered, page, REVIEWS_PAGE_SIZE);
   // A stale ?page= from a bookmark or a shrinking result set: make the URL honest.
@@ -193,7 +203,18 @@ function ReviewsAdmin() {
             </button>
           );
         })}
+        {canPublish && publishedMissing.length > 0 && (
+          <button
+            type="button"
+            onClick={unpublishMissing}
+            disabled={hideStatus === "Unpublishing…"}
+            className="font-mono text-[10px] tracking-[0.2em] uppercase px-3 py-2 border border-vermil/60 text-vermil hover:bg-vermil hover:text-night disabled:opacity-50 sm:ml-auto"
+          >
+            Unpublish all without a cover ({publishedMissing.length})
+          </button>
+        )}
       </div>
+      {hideStatus && <p className="font-mono text-[11px] text-ink/70 mb-3" role="status">{hideStatus}</p>}
 
       {canPublish && selected.size > 0 && (
         <div className="sticky top-0 z-10 bg-bone border border-ink/10 p-3 mb-4 flex flex-wrap items-center gap-3">

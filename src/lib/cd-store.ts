@@ -85,8 +85,10 @@ function reviewToRow(r: Review): Record<string, unknown> {
     read_mins: r.readMins,
     body: r.body,
     status: r.status,
-    label_address: r.labelAddress ?? null,
-    contact: r.contact ?? null,
+    // Only write contact fields when we actually have them (e.g. bulk import);
+    // they're never loaded into the app, so omitting them leaves stored values alone.
+    ...(r.labelAddress !== undefined ? { label_address: r.labelAddress } : {}),
+    ...(r.contact !== undefined ? { contact: r.contact } : {}),
     archive_url: r.archiveUrl ?? null,
     period: r.period ?? null,
     art_url: r.artUrl ?? null,
@@ -177,6 +179,15 @@ function isUuid(s: string) {
 
 const KEY = ["cdreviews", "snapshot"] as const;
 
+// Every review column except the legacy publicist contact fields (label_address,
+// contact), which the public can't read. Keep in sync with the reviews table.
+const REVIEW_COLUMNS = [
+  "id", "slug", "title", "artist", "label", "format", "genre", "date", "decade", "kind",
+  "score", "art", "byline", "read_mins", "body", "status", "archive_url", "period",
+  "created_at", "updated_at", "created_by", "art_url", "spotify_url", "spotify_album_id",
+  "spotify_artist_id", "youtube_url", "submitted_at", "preview_token", "publish_at",
+].join(", ");
+
 // The database returns at most 1000 rows per request, so page through all reviews.
 async function fetchAllReviews() {
   const PAGE = 1000;
@@ -184,7 +195,7 @@ async function fetchAllReviews() {
   for (let from = 0; ; from += PAGE) {
     const res = await supabase
       .from("reviews")
-      .select("*")
+      .select(REVIEW_COLUMNS)
       .order("date", { ascending: false })
       .order("id", { ascending: true })
       .range(from, from + PAGE - 1);

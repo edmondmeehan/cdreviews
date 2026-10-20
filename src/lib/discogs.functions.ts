@@ -1,4 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { assertStaffOrWriter } from "./staff-guard";
 import { z } from "zod";
 import { matchesDiscogsTitle } from "./discogs-match";
 
@@ -32,8 +34,10 @@ const cache = new Map<string, { value: unknown; expiresAt: number }>();
 const TTL = 24 * 60 * 60 * 1000;
 
 export const lookupDiscogsAlbum = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d) => Input.parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertStaffOrWriter(context.supabase, context.userId);
     const key = `${data.artist}|${data.album}`.toLowerCase().trim();
     const hit = cache.get(key);
     if (hit && hit.expiresAt > Date.now()) return hit.value as { ok: true; imageUrl: string; discogsUrl: string; title: string };
@@ -79,8 +83,10 @@ export type DiscogsSearchItem = {
 };
 
 export const searchDiscogsReleases = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d) => SearchInput.parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await assertStaffOrWriter(context.supabase, context.userId);
     const auth = discogsAuth();
     if (!auth) return { ok: false as const, error: "Discogs is not configured" };
     try {
