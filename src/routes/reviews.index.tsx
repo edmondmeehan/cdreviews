@@ -1,7 +1,7 @@
 import { AdSlot } from "@/components/site/AdSlot";
 import { pageMeta } from "@/lib/page-meta";
 import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
-import { fallback, zodValidator } from "@tanstack/zod-adapter";
+import { fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
