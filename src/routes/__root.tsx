@@ -157,10 +157,15 @@ function InvalidatorMount() {
 
 /** Shows the maintenance splash to readers; staff and sign-in pages stay reachable. */
 function MaintenanceGate({ children }: { children: React.ReactNode }) {
-  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  // Gate on the page that is actually on screen. During a click from the splash
+  // to /auth, `location` already says /auth while the old page is still rendered,
+  // which briefly exposed the site behind the splash.
+  const pathname = useRouterState({ select: (r) => (r.resolvedLocation ?? r.location).pathname });
   const { data } = useSiteSettings();
   const { isWriter, loading } = useAuth();
-  if (data?.maintenanceMode && !isMaintenanceExempt(pathname) && !loading && !isWriter) {
+  // Keep the splash up while we're still checking whether this is a staff member,
+  // so readers never glimpse the site; staff see the site once sign-in is confirmed.
+  if (data?.maintenanceMode && !isMaintenanceExempt(pathname) && (loading || !isWriter)) {
     return <MaintenanceSplash message={data.maintenanceMessage} />;
   }
   if (data?.maintenanceMode && isWriter) {
