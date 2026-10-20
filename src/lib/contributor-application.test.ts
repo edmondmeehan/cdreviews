@@ -1,4 +1,5 @@
-import { describe, expect, test } from "bun:test";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
 import {
   applicationErrors,
   applicationSchema,
@@ -7,40 +8,42 @@ import {
 } from "./contributor-application";
 
 describe("extractSampleLinks", () => {
-  test("adds https to bare domains", () => {
-    expect(extractSampleLinks("medium.com/@me/review")).toEqual(["https://medium.com/@me/review"]);
+  it("adds https to bare domains", () => {
+    assert.deepEqual(extractSampleLinks("medium.com/@me/review"), ["https://medium.com/@me/review"]);
   });
-  test("ignores plain words", () => {
-    expect(extractSampleLinks("just some words")).toEqual([]);
+  it("ignores plain words", () => {
+    assert.deepEqual(extractSampleLinks("just some words"), []);
   });
-  test("never returns non-http links", () => {
-    expect(extractSampleLinks("javascript:alert(1) ftp://x.com/a")).toEqual([]);
+  it("never returns non-http links", () => {
+    assert.deepEqual(extractSampleLinks("javascript:alert(1) ftp://x.com/a"), []);
   });
-  test("strips surrounding punctuation and dedupes", () => {
-    expect(extractSampleLinks("(https://a.com/x), https://a.com/x.")).toEqual(["https://a.com/x"]);
+  it("strips surrounding punctuation and dedupes", () => {
+    assert.deepEqual(extractSampleLinks("(https://a.com/x), https://a.com/x."), ["https://a.com/x"]);
   });
 });
 
 describe("applicationSchema", () => {
   const base = { name: "Jo", email: "Jo@Example.com ", samples: "https://a.com/x", note: "" };
-  test("accepts a valid application and lowercases email", () => {
+  it("accepts a valid application and lowercases email", () => {
     const r = applicationSchema.parse(base);
-    expect(r.email).toBe("jo@example.com");
-    expect(r.note).toBeNull();
+    assert.equal(r.email, "jo@example.com");
+    assert.equal(r.note, null);
   });
-  test("requires at least one link in samples", () => {
-    expect(applicationErrors({ ...base, samples: "I write a lot" })?.samples).toBeDefined();
+  it("requires at least one link in samples", () => {
+    assert.ok(applicationErrors({ ...base, samples: "I write a lot" })?.samples);
   });
-  test("caps samples at 2000 characters", () => {
-    expect(applicationErrors({ ...base, samples: "https://a.com/" + "x".repeat(2000) })?.samples).toBeDefined();
+  it("caps samples at 2000 characters", () => {
+    assert.ok(applicationErrors({ ...base, samples: "https://a.com/" + "x".repeat(2000) })?.samples);
   });
-  test("flags each bad field separately", () => {
+  it("flags each bad field separately", () => {
     const e = applicationErrors({ name: " ", email: "nope", samples: "" });
-    expect(Object.keys(e ?? {}).sort()).toEqual(["email", "name", "samples"]);
+    assert.deepEqual(Object.keys(e ?? {}).sort(), ["email", "name", "samples"]);
   });
 });
 
-test("recognises the duplicate-application guard", () => {
-  expect(isDuplicateApplicationError("duplicate_application")).toBe(true);
-  expect(isDuplicateApplicationError("network down")).toBe(false);
+describe("duplicate guard", () => {
+  it("recognises the database's duplicate-application error", () => {
+    assert.equal(isDuplicateApplicationError("duplicate_application"), true);
+    assert.equal(isDuplicateApplicationError("network down"), false);
+  });
 });
