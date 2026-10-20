@@ -61,7 +61,7 @@ function RadioBar() {
 }
 
 /** Small seasonal touch: on during Halloween week, or preview any time with ?halloween=1. */
-function useHalloween() {
+export function useHalloween() {
   const [on, setOn] = useState(false);
   useEffect(() => {
     const forced = new URLSearchParams(window.location.search).get("halloween");
@@ -70,7 +70,7 @@ function useHalloween() {
   return on;
 }
 
-function Bat() {
+export function Bat() {
   return (
     <svg className="bat-fly" viewBox="0 0 100 40" aria-hidden="true">
       <path fill="currentColor" d="M50 13c-2.2 0-3.4 1.4-3.8 3.4C42 11.6 34 8.2 24 9c4 4 4 9 2 13-5-3-13-3-20 1 8 2 13 7 14 13 5-4 12-5 18-3 2-5 6-8 10-8l2 5 2-5c4 0 8 3 10 8 6-2 13-1 18 3 1-6 6-11 14-13-7-4-15-4-20-1-2-4-2-9 2-13-10-.8-18 2.6-22.2 7.4-.4-2-1.6-3.4-3.8-3.4zm-3.2 1.2-1.3-5.4 3.3 3.6h2.4l3.3-3.6-1.3 5.4z" />

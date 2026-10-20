@@ -4,6 +4,7 @@ import { z } from "zod";
 import { cdActions } from "@/lib/cd-store";
 import { subscribeToBeehiiv } from "@/lib/beehiiv.functions";
 import { AdSlot } from "@/components/site/AdSlot";
+import { Bat, useHalloween } from "@/components/site/SiteHeader";
 
 const emailSchema = z.string().trim().email().max(255);
 
@@ -23,18 +24,21 @@ export function MaintenanceSplash({ message }: { message: string | null }) {
     setStatus("ok");
   }
 
+  const spooky = useHalloween();
+
   return (
-    <main className="bg-bone text-ink min-h-screen flex flex-col">
+    <main className="bg-bone text-ink min-h-screen flex flex-col relative overflow-hidden">
+      {spooky && <Bat />}
       <div className="max-w-[1100px] w-full mx-auto px-6 pt-10 flex justify-between font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
         <span>Independent music criticism</span>
-        <span>Est. 1995</span>
+        <span>Est. 1995{spooky && <span className="text-vermil"> · Open late for Halloween</span>}</span>
       </div>
       <section className="flex-1 max-w-[1100px] w-full mx-auto px-6 py-16 flex flex-col justify-center">
         <div className="flex items-end gap-4">
           <h1 className="fr-display-bold text-[clamp(56px,13vw,200px)] leading-none whitespace-nowrap">
             cdreviews<span className="text-vermil">.</span>
           </h1>
-          <span className="cd-disc spin flex-none mb-2 w-[clamp(44px,9vw,140px)] h-[clamp(44px,9vw,140px)]" aria-hidden="true" />
+          <span className={`cd-disc ${spooky ? "cd-disc--halloween" : ""} spin flex-none mb-2 w-[clamp(44px,9vw,140px)] h-[clamp(44px,9vw,140px)]`} aria-hidden="true" />
         </div>
         <div className="mt-10 border-t-2 border-ink pt-8 grid md:grid-cols-2 gap-10">
           <div>
