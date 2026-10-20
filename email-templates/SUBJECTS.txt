@@ -1,0 +1,7 @@
+Template	Subject line
+invite.html	You're invited to the cdreviews desk
+confirm-signup.html	Confirm your cdreviews account
+magic-link.html	Your cdreviews sign-in link
+reset-password.html	Reset your cdreviews password
+change-email.html	Confirm your new cdreviews email
+reauthentication.html	Your cdreviews verification code
