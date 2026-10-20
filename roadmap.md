@@ -16,8 +16,8 @@
 - [x] Add /sitemap.xml (all 1,712 published reviews, authors, features, lists) and /robots.txt.
 - [x] Add a newsletter archive page at /newsletter listing past beehiiv issues with signup; footer link.
 - [ ] Fix RSS "Not scored by…" wording and point the feed at the canonical domain (cdreviews.com) — launch basic.
-- [ ] Connect a sending domain for site emails — blocked on user DNS setup.
+- [x] Connect a sending domain for site emails (notify.cdreviews.com; DNS verifying).
 - [ ] Turn maintenance off once launch basics are done and the marketing plan is approved.
 - [ ] Execute the launch marketing plan in Files (marketing/plan.md).
 - [x] Deep review of the Write for us flow (phone usability, submission handling, admin list) and fix issues found.
-- [ ] Custom auth emails using email-templates/*.html exactly (subjects from SUBJECTS.txt) — blocked until the sender domain (cdreviews.com) is set up via the email setup dialog.
+- [x] Custom auth emails using email-templates/*.html exactly (subjects from SUBJECTS.txt) — live once notify.cdreviews.com DNS verifies.

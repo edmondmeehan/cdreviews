@@ -3,7 +3,11 @@ import { createStart, createMiddleware } from "@tanstack/react-start";
 import { renderErrorPage } from "./lib/error-page";
 import { supabase } from "./integrations/supabase/client";
 
-const errorMiddleware = createMiddleware().server(async ({ next }) => {
+const errorMiddleware = createMiddleware().server(async ({ next, request }) => {
+  // Email webhooks/previews authenticate themselves; never wrap or redirect them.
+  if (new URL(request.url).pathname.startsWith("/lovable/")) {
+    return next();
+  }
   try {
     return await next();
   } catch (error) {
