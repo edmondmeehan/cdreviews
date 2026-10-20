@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      activity_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          at: string
+          changed: string[] | null
+          entity: string
+          id: number
+          label: string | null
+          record_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          at?: string
+          changed?: string[] | null
+          entity: string
+          id?: never
+          label?: string | null
+          record_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          at?: string
+          changed?: string[] | null
+          entity?: string
+          id?: never
+          label?: string | null
+          record_id?: string | null
+        }
+        Relationships: []
+      }
       ad_events: {
         Row: {
           ad_id: string
