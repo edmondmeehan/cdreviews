@@ -19,3 +19,5 @@
 - [ ] Connect a sending domain for site emails — blocked on user DNS setup.
 - [ ] Turn maintenance off once launch basics are done and the marketing plan is approved.
 - [ ] Execute the launch marketing plan in Files (marketing/plan.md).
+- [ ] Deep review of the Write for us flow (phone usability, submission handling, admin list) and fix issues found.
+- [ ] Custom auth emails using email-templates/*.html exactly (subjects from SUBJECTS.txt) — blocked until the sender domain (cdreviews.com) is set up via the email setup dialog.
