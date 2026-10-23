@@ -14,7 +14,7 @@ export const Route = createFileRoute("/admin")({
   head: () => pageMeta("Editorial desk — Admin — cdreviews.", "Editorial desk on the cdreviews editorial desk."),
 });
 
-type AdminNavItem = { to: string; label: string; exact?: boolean; staffOnly?: boolean; adminOnly?: boolean };
+type AdminNavItem = { to: string; label: string; exact?: boolean; staffOnly?: boolean; adminOnly?: boolean; superAdminOnly?: boolean };
 const NAV_GROUPS: { label: string; items: AdminNavItem[] }[] = [
   { label: "Desk", items: [
     { to: "/admin", label: "Overview", exact: true },
@@ -29,7 +29,7 @@ const NAV_GROUPS: { label: string; items: AdminNavItem[] }[] = [
   { label: "Audience & business", items: [
     { to: "/admin/traffic", label: "Top pages", staffOnly: true },
     { to: "/admin/subscribers", label: "Subscribers", staffOnly: true },
-    { to: "/admin/ads", label: "Ads", staffOnly: true },
+    { to: "/admin/ads", label: "Ads", superAdminOnly: true },
   ] },
   { label: "Team", items: [
     { to: "/admin/contributors", label: "Contributors", staffOnly: true },
@@ -41,7 +41,7 @@ const NAV_GROUPS: { label: string; items: AdminNavItem[] }[] = [
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const { user, isStaff, isAdmin, isWriter, canPublish, loading, signOut, roles } = useAuth();
+  const { user, isStaff, isAdmin, isSuperAdmin, isWriter, canPublish, loading, signOut, roles } = useAuth();
   const allReviews = useCdStore((s) => s.reviews);
   const counts = useCdStore((s) => ({
     r: s.reviews.length, f: s.features.length, l: s.lists.length, c: s.contributors.length, s: s.subscribers.length,
@@ -50,7 +50,7 @@ function AdminLayout() {
   const navigate = useNavigate();
   const visibleGroups = NAV_GROUPS.map((group) => ({
     ...group,
-    items: group.items.filter((n) => (!n.adminOnly || isAdmin) && (!n.staffOnly || isStaff)),
+    items: group.items.filter((n) => (!n.adminOnly || isAdmin) && (!n.staffOnly || isStaff) && (!n.superAdminOnly || isSuperAdmin)),
   })).filter((group) => group.items.length > 0);
   const visibleNav = visibleGroups.flatMap((group) => group.items);
 

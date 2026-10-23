@@ -12,6 +12,7 @@ export function roleFlags(roles: Role[]) {
   return {
     isStaff: has(STAFF),
     isAdmin: roles.includes("super_admin") || roles.includes("admin"),
+    isSuperAdmin: roles.includes("super_admin"),
     isWriter: has(WRITE),
     canPublish: has(PUBLISH),
   };

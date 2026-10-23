@@ -69,6 +69,28 @@ export function AdSlot({ placement, className = "" }: { placement: AdPlacement; 
 
   if (!ad) return null;
 
+  // Maintenance splash: one quiet sponsor line, never third-party ad code.
+  if (placement === "splash") {
+    const click = () => track(ad.id, "click");
+    return (
+      <aside ref={ref} className={className} aria-label="Sponsored">
+        <a href={ad.link_url} target="_blank" rel="sponsored noopener" onClick={click}
+          className="group flex flex-wrap md:flex-nowrap items-center gap-x-5 gap-y-3 border-t border-rule pt-6">
+          {ad.image_url && <img src={ad.image_url} alt="" loading="lazy" className="w-12 h-12 object-contain shrink-0 grayscale group-hover:grayscale-0 transition" />}
+          <div className="min-w-0 flex-1">
+            <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute">
+              This intermission is presented by{ad.advertiser ? ` ${ad.advertiser}` : ""}
+            </div>
+            <div className="serif-it text-[22px] md:text-[26px] text-ink leading-tight mt-1">{ad.headline}</div>
+          </div>
+          {ad.cta && (
+            <span className="basis-full md:basis-auto font-mono text-[11px] tracking-[0.12em] uppercase text-mute group-hover:text-vermil shrink-0">{ad.cta} ↗</span>
+          )}
+        </a>
+      </aside>
+    );
+  }
+
   // Third-party code (AdSense etc.) replaces the house-styled card entirely.
   if (ad.code_snippet?.trim()) {
     return (

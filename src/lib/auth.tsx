@@ -14,6 +14,7 @@ type AuthState = {
   loading: boolean;
   isStaff: boolean;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
   isWriter: boolean;
   canPublish: boolean;
   signIn: (email: string, password: string) => Promise<{ error?: string }>;

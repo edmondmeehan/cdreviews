@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { NAV_LINKS } from "@/lib/cd-data";
 import { useCdStore } from "@/lib/cd-store";
 import { ThemeSwitch } from "./ThemeSwitch";
+import { isHalloweenSeason } from "@/lib/season";
 
 const WORDMARK = "cdreviews".split("");
 
@@ -58,15 +60,37 @@ function RadioBar() {
   );
 }
 
+/** Small seasonal touch: on during Halloween week, or preview any time with ?halloween=1. */
+export function useHalloween() {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const forced = new URLSearchParams(window.location.search).get("halloween");
+    setOn(forced === "1" ? true : forced === "0" ? false : isHalloweenSeason());
+  }, []);
+  return on;
+}
+
+export function Bat() {
+  return (
+    <svg className="bat-fly" viewBox="0 0 100 40" aria-hidden="true">
+      <path fill="currentColor" d="M50 13c-2.2 0-3.4 1.4-3.8 3.4C42 11.6 34 8.2 24 9c4 4 4 9 2 13-5-3-13-3-20 1 8 2 13 7 14 13 5-4 12-5 18-3 2-5 6-8 10-8l2 5 2-5c4 0 8 3 10 8 6-2 13-1 18 3 1-6 6-11 14-13-7-4-15-4-20-1-2-4-2-9 2-13-10-.8-18 2.6-22.2 7.4-.4-2-1.6-3.4-3.8-3.4zm-3.2 1.2-1.3-5.4 3.3 3.6h2.4l3.3-3.6-1.3 5.4z" />
+    </svg>
+  );
+}
+
 function Masthead() {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
   const isHome = pathname === "/";
+  const spooky = useHalloween();
   return (
-    <header className="bg-bone">
+    <header className="bg-bone relative overflow-hidden">
+      {spooky && <Bat />}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 pt-8 md:pt-10">
         <div className="flex flex-wrap justify-between gap-3 font-mono text-[11px] tracking-[0.12em] uppercase text-mute">
           <span>Independent music criticism</span>
-          <span className="hidden sm:inline">Est. 1995</span>
+          <span className="hidden sm:inline">
+            Est. 1995{spooky && <span className="text-vermil"> · Open late for Halloween</span>}
+          </span>
           <span>Vol. 31</span>
         </div>
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 md:gap-6 mt-1">
@@ -86,7 +110,7 @@ function Masthead() {
             </span>
           </Link>
           <span
-            className={`cd-disc spin flex-none mb-1 ${
+            className={`cd-disc ${spooky ? "cd-disc--halloween" : ""} spin flex-none mb-1 ${
               isHome ? "w-12 h-12 sm:w-20 sm:h-20 md:w-28 md:h-28 lg:w-36 lg:h-36" : "w-10 h-10 sm:w-14 sm:h-14 md:w-20 md:h-20"
             }`}
             aria-hidden="true"

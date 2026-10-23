@@ -116,6 +116,28 @@
       radial-gradient(circle at 50% 50%, #0f0e0c 0 7%, #d9d6cf 7.5% 9%, transparent 9.5% 30%, rgba(255,255,255,.1) 30.5% 31%, transparent 31.5% 62%, rgba(255,255,255,.06) 62.5% 63%, transparent 63.5%),
       conic-gradient(from 20deg, #cfd3d6, #f3d7c9, #c9e6d8, #d4d0f2, #f2e7c4, #cfd3d6, #e9cfe0, #c8dcef, #cfd3d6);
   }
+  /* Halloween pressing: orange / purple / slime-green sheen on the spinning disc. */
+  .cd-disc--halloween {
+    background:
+      radial-gradient(circle at 50% 50%, #0f0e0c 0 7%, #d9d6cf 7.5% 9%, transparent 9.5% 30%, rgba(255,255,255,.12) 30.5% 31%, transparent 31.5% 62%, rgba(255,255,255,.08) 62.5% 63%, transparent 63.5%),
+      conic-gradient(from 20deg, #f08a3c, #2b1f3a, #f5b25b, #6b4a8f, #b5d66a, #f08a3c, #3a2a4f, #f2c27a, #f08a3c);
+  }
+  /* One bat drifts across the masthead once per page load. */
+  .bat-fly {
+    position: absolute; top: 4px; left: -70px; width: 52px; height: auto;
+    color: var(--color-ink); pointer-events: none; z-index: 2;
+    animation: bat-fly 9s ease-in-out 1.2s 1 forwards;
+  }
+  @keyframes bat-fly {
+    0%   { transform: translate(0, 0) scaleY(1); }
+    15%  { transform: translate(18vw, -14px) scaleY(.7); }
+    30%  { transform: translate(36vw, 10px) scaleY(1); }
+    45%  { transform: translate(54vw, -10px) scaleY(.7); }
+    60%  { transform: translate(72vw, 12px) scaleY(1); }
+    80%  { transform: translate(92vw, -6px) scaleY(.7); }
+    100% { transform: translate(112vw, -30px) scaleY(1); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bat-fly { display: none; } }
   .spin      { animation: cd-spin 6s linear infinite; }
   .spin-slow { animation: cd-spin 24s linear infinite; }
 

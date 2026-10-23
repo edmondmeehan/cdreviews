@@ -1,5 +1,5 @@
 // Pure, browser-safe ad selection helpers (shared with tests).
-export type AdPlacement = "home_break" | "review_inline" | "review_side" | "list_card" | "footer_strip";
+export type AdPlacement = "home_break" | "review_inline" | "review_side" | "list_card" | "footer_strip" | "splash";
 
 export const AD_PLACEMENTS: Array<{ key: AdPlacement; label: string; hint: string }> = [
   { key: "home_break", label: "Homepage break", hint: "Wide band between homepage sections. Image ~1600×800 (2:1)." },
@@ -7,6 +7,7 @@ export const AD_PLACEMENTS: Array<{ key: AdPlacement; label: string; hint: strin
   { key: "review_side", label: "Review sidebar (desktop)", hint: "Beside the review on wide screens. Image ~600×600." },
   { key: "list_card", label: "Archive / search lists", hint: "A sponsored row within the list. Small square image." },
   { key: "footer_strip", label: "Footer strip", hint: "One-line sponsor above the footer, every page." },
+  { key: "splash", label: "Maintenance splash", hint: "A quiet \"presented by\" line on the maintenance page. Optional small square logo ~240×240; ad code is ignored here." },
 ];
 
 export type AdLike = {
