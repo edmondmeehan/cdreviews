@@ -86,8 +86,9 @@ const slugify = (s: string) =>
 
 export const slug = slugify;
 
-// Scores of 0 mean "no rating" (e.g. imported without one) — display as NA.
-export const formatScore = (s: number) => (s > 0 ? s.toFixed(1) : "NA");
+// Scores of 0 mean "no rating" (e.g. imported without one) — show no number at all.
+export const hasScore = (s: number) => Number(s) > 0;
+export const formatScore = (s: number) => (hasScore(s) ? Number(s).toFixed(1) : "");
 
 const r = (
   o: Omit<Review, "id" | "slug" | "status"> & Partial<Pick<Review, "status">>,

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { formatScore, type Review } from "@/lib/cd-data";
+import { formatScore, hasScore, type Review } from "@/lib/cd-data";
 import { Cover } from "./Cover";
 
 export function Kicker({ children, color = "vermil" }: { children: React.ReactNode; color?: "vermil" | "acid" }) {
@@ -54,6 +54,7 @@ function tiltFor(id: string) {
 }
 
 export function ScoreSticker({ score }: { score: number }) {
+  if (!hasScore(score)) return null;
   return (
     <span className={`score-sticker ${score >= 9 ? "score-sticker--hot" : ""}`}>
       {formatScore(score)}
