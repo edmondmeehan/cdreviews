@@ -5,7 +5,8 @@ declare global {
   interface Window { dataLayer: unknown[]; gtag?: (...args: unknown[]) => void }
 }
 
-const MEASUREMENT_ID = import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY as string | undefined;
+// Google Analytics 4 measurement ID (G-XXXXXXX). The old Lovable connector name still works.
+const MEASUREMENT_ID = (import.meta.env.VITE_GA_MEASUREMENT_ID ?? import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_ANALYTICS_API_KEY) as string | undefined;
 const isPrivatePath = (p: string) => p.startsWith("/admin") || p.startsWith("/auth");
 
 function init() {
