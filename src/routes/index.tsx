@@ -11,7 +11,7 @@ import { Cover } from "@/components/site/Cover";
 import { useCdStore } from "@/lib/cd-store";
 import { currentSlot, useFeaturedSlots } from "@/lib/featured";
 import { useMostReadReviews } from "@/lib/page-views";
-import { DECADE_LABELS, KIND_LABELS, formatScore } from "@/lib/cd-data";
+import { DECADE_LABELS, KIND_LABELS, formatScore, hasScore } from "@/lib/cd-data";
 import { mostRecent } from "@/lib/review-order";
 
 const DECADE_KEYS = ["all", "1990s", "2000s", "2010s", "2020s"] as const;
@@ -121,7 +121,7 @@ function Hero() {
         <Link
           to="/reviews/$slug"
           params={{ slug: featured.slug }}
-          aria-label={`${featured.title} by ${featured.artist}, ${score} out of 10`}
+          aria-label={score ? `${featured.title} by ${featured.artist}, ${score} out of 10` : `${featured.title} by ${featured.artist}`}
           className="group relative z-[1] w-full max-w-[460px] block"
           style={{ perspective: "1200px" }}
           onMouseMove={(e) => {
@@ -138,9 +138,11 @@ function Hero() {
             style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`, transformStyle: "preserve-3d" }}
           >
             <Cover r={featured} className="hero-cover" />
-            <span className="absolute z-[3] -bottom-5 right-2 sm:-right-5 w-[104px] h-[104px] rounded-full bg-vermil text-night flex items-center justify-center fr-display-bold text-[42px] -rotate-12 shadow-[0_10px_24px_rgba(0,0,0,.4)]">
-              {score}
-            </span>
+            {score && (
+              <span className="absolute z-[3] -bottom-5 right-2 sm:-right-5 w-[104px] h-[104px] rounded-full bg-vermil text-night flex items-center justify-center fr-display-bold text-[42px] -rotate-12 shadow-[0_10px_24px_rgba(0,0,0,.4)]">
+                {score}
+              </span>
+            )}
             <span className="absolute z-[3] left-2 sm:-left-6 top-9 bg-acid text-night font-mono text-[11px] tracking-[0.12em] uppercase px-3.5 py-2 -rotate-[8deg] shadow-[0_6px_14px_rgba(0,0,0,.35)]">
               Album of the week
             </span>
@@ -168,7 +170,7 @@ function CrossingTickers() {
             >
               <span>{it.artist}</span>
               <span className="serif-it text-[22px]">{it.title}</span>
-              <span className="font-mono text-[13px] bg-night text-vermil px-2 py-0.5">{formatScore(it.score)}</span>
+              {hasScore(it.score) && <span className="font-mono text-[13px] bg-night text-vermil px-2 py-0.5">{formatScore(it.score)}</span>}
               <span aria-hidden="true" className="ml-4">✺</span>
             </Link>
           ))}
@@ -355,12 +357,16 @@ function FromTheArchive() {
               {archived.body[1] && <p>{archived.body[1]}</p>}
             </div>
             <div className="flex flex-wrap items-end gap-8 pt-6 border-t border-rule">
-              <div className="fr-score text-[88px] text-vermil leading-none">{formatScore(archived.score)}<span className="text-ink text-[28px] align-top">/10</span></div>
-              <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute leading-relaxed">
-                <div>Originally rated</div>
-                <div>Score system unchanged</div>
-                <div>since November 1995</div>
-              </div>
+              {hasScore(archived.score) && (
+                <>
+                  <div className="fr-score text-[88px] text-vermil leading-none">{formatScore(archived.score)}<span className="text-ink text-[28px] align-top">/10</span></div>
+                  <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-mute leading-relaxed">
+                    <div>Originally rated</div>
+                    <div>Score system unchanged</div>
+                    <div>since November 1995</div>
+                  </div>
+                </>
+              )}
               <Link to="/reviews/$slug" params={{ slug: archived.slug }} className="ml-auto font-mono text-[11px] tracking-[0.25em] uppercase text-vermil hover:underline">
                 → Read in full · {archived.readMins} min
               </Link>

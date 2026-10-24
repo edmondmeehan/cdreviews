@@ -29,8 +29,11 @@ export function reviewSharingMeta(review: ShareReview | null, origin: string) {
     { name: "twitter:card", content: "summary" },
     { name: "robots", content: "noindex" },
   ] };
-  const title = `${review.artist} — ${review.title} · ${Number(review.score).toFixed(1)}/10 — cdreviews.`;
-  const description = `${review.artist}'s ${review.title}, rated ${Number(review.score).toFixed(1)}/10 by ${review.byline}. Read the review on cdreviews.`;
+  const scored = Number(review.score) > 0;
+  const title = `${review.artist} — ${review.title}${scored ? ` · ${Number(review.score).toFixed(1)}/10` : ""} — cdreviews.`;
+  const description = scored
+    ? `${review.artist}'s ${review.title}, rated ${Number(review.score).toFixed(1)}/10 by ${review.byline}. Read the review on cdreviews.`
+    : `${review.artist}'s ${review.title}, reviewed by ${review.byline}. Read the review on cdreviews.`;
   const image = shareArtworkUrl(review.art_url);
   const url = `${origin}/reviews/${encodeURIComponent(review.slug)}`;
   return {

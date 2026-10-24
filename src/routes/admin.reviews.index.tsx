@@ -248,7 +248,7 @@ function ReviewsAdmin() {
               </td>
               <td className="py-3"><Link to="/admin/reviews/$id" params={{ id: r.id }} className="text-ink hover:text-vermil">{r.title}</Link></td>
               <td data-label="Artist" className="text-ink/70">{r.artist}</td>
-              <td data-label="Score" className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{formatScore(r.score)}</td>
+              <td data-label="Score" className={r.score >= 8.5 ? "text-vermil" : "text-ink/70"}>{formatScore(r.score) || "—"}</td>
               <td data-label="Type" className="uppercase text-ink/70">{r.kind}</td>
               <td data-label="Status" className={r.status === "published" ? "text-acid" : "text-ink/40"}>{r.status === "draft" && r.publishAt ? `scheduled ${new Date(r.publishAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}` : r.status === "draft" && r.submittedAt ? "awaiting approval" : r.status}</td>
               <td className="text-right">

@@ -1,5 +1,5 @@
 import { amazonSearchUrl } from "@/lib/amazon";
-import { formatScore } from "@/lib/cd-data";
+import { formatScore, hasScore } from "@/lib/cd-data";
 import { Fragment } from "react";
 import { AdSlot } from "@/components/site/AdSlot";
 import { getReviewSharing } from "@/lib/review-sharing.functions";
@@ -79,9 +79,9 @@ function ReviewPage() {
               className="group relative block w-full cursor-zoom-in"
             >
               <Cover r={review} pop />
-              <span className={`absolute z-[3] -bottom-6 right-2 sm:-right-4 w-[112px] h-[112px] rounded-full flex items-center justify-center fr-display-bold text-[44px] -rotate-12 text-night shadow-[0_10px_24px_rgba(0,0,0,.4)] ${hot ? "bg-vermil" : "bg-paper"}`}>
+              {hasScore(review.score) && <span className={`absolute z-[3] -bottom-6 right-2 sm:-right-4 w-[112px] h-[112px] rounded-full flex items-center justify-center fr-display-bold text-[44px] -rotate-12 text-night shadow-[0_10px_24px_rgba(0,0,0,.4)] ${hot ? "bg-vermil" : "bg-paper"}`}>
                 {formatScore(review.score)}
-              </span>
+              </span>}
             </button>
             <dl className="mt-12 font-mono text-[11px] tracking-[0.1em] uppercase text-mute grid grid-cols-[90px_1fr] gap-y-2.5 border-t border-rule pt-5">
               <dt>Label</dt><dd className="text-ink">{review.label}</dd>
@@ -159,9 +159,11 @@ function ReviewPage() {
             {review.youtubeUrl && <div className="mt-10"><YouTubeVideo url={review.youtubeUrl} title={`${review.artist} — ${review.title}`} /></div>}
             <AdSlot placement="review_side" className="mt-12 max-w-[420px]" />
             <div className="mt-12 pt-6 border-t border-rule flex flex-wrap items-end gap-6">
-              <div className={`fr-score text-[96px] ${hot ? "text-vermil" : "text-ink"}`}>
-                {formatScore(review.score)}<span className="text-ink text-[32px] align-top">/10</span>
-              </div>
+              {hasScore(review.score) && (
+                <div className={`fr-score text-[96px] ${hot ? "text-vermil" : "text-ink"}`}>
+                  {formatScore(review.score)}<span className="text-ink text-[32px] align-top">/10</span>
+                </div>
+              )}
               <Link to="/reviews" className="ml-auto font-mono text-[12px] tracking-[0.12em] uppercase text-vermil hover:underline">
                 ← All reviews
               </Link>
