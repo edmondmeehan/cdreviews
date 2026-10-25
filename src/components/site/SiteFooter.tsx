@@ -39,7 +39,7 @@ const emailSchema = z.string().trim().email().max(255);
 
 export function SiteFooter() {
   const [value, setValue] = useState("");
-  const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
+  const [status, setStatus] = useState<"idle" | "ok" | "err" | "fail">("idle");
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -47,7 +47,7 @@ export function SiteFooter() {
     if (!parsed.success) { setStatus("err"); return; }
     cdActions.addSubscriber(parsed.data);
     const result = await subscribeToBeehiiv({ data: { email: parsed.data } });
-    if (!result.ok) { setStatus("err"); return; }
+    if (!result.ok) { setStatus("fail"); return; }
     setValue("");
     setStatus("ok");
     setTimeout(() => setStatus("idle"), 2400);
@@ -85,6 +85,7 @@ export function SiteFooter() {
             <p className="basis-full font-mono text-[11px] tracking-[0.12em] uppercase min-h-[1em]" aria-live="polite">
               {status === "ok" && "→ You're on the list."}
               {status === "err" && "That email doesn't look right."}
+              {status === "fail" && "Couldn't sign you up just now. Please try again in a minute."}
             </p>
           </form>
         </div>
