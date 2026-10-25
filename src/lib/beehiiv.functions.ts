@@ -6,6 +6,20 @@ const BEEHIIV_API = "https://api.beehiiv.com/v2";
 // Eddie's Newsletter — the site's single beehiiv publication.
 const PUBLICATION_ID = "pub_93412481-4ea2-4ea8-b75a-95e787c5b7a1";
 
+/** The API key with stray whitespace, quotes or a pasted "Bearer " prefix removed. */
+function beehiivKey(): string | undefined {
+  const raw = process.env.BEEHIIV_API_KEY;
+  if (!raw) return undefined;
+  return raw.trim().replace(/^["']|["']$/g, "").replace(/^Bearer\s+/i, "").trim() || undefined;
+}
+
+/** Safe-to-log facts about the key (never the key itself) to diagnose 401s. */
+function keyShape(): string {
+  const raw = process.env.BEEHIIV_API_KEY ?? "";
+  const k = beehiivKey() ?? "";
+  return `key length ${k.length}${raw.length !== k.length ? ` (cleaned from ${raw.length})` : ""}`;
+}
+
 const subscribeInput = z.object({
   email: z.string().trim().email().max(255),
 });
@@ -13,7 +27,7 @@ const subscribeInput = z.object({
 export const subscribeToBeehiiv = createServerFn({ method: "POST" })
   .inputValidator(subscribeInput)
   .handler(async ({ data }) => {
-    const apiKey = process.env.BEEHIIV_API_KEY;
+    const apiKey = beehiivKey();
     if (!apiKey) {
       console.error("beehiiv subscribe: missing BEEHIIV_API_KEY");
       return { ok: false as const, error: "Newsletter service is not configured" };
@@ -37,7 +51,7 @@ export const subscribeToBeehiiv = createServerFn({ method: "POST" })
 
     if (!res.ok) {
       const body = await res.text();
-      console.error(`beehiiv subscribe failed [${res.status}]: ${body}`);
+      console.error(`beehiiv subscribe failed [${res.status}] (${keyShape()}): ${body}`);
       return { ok: false as const, error: `Newsletter signup failed (${res.status})` };
     }
     return { ok: true as const };
@@ -61,7 +75,7 @@ const NEWSLETTER_ARCHIVE_URL = "https://cdreviews.beehiiv.com";
 /** Past published issues of the site newsletter, newest first. Read on demand. */
 export const listNewsletterIssues = createServerFn({ method: "GET" }).handler(
   async (): Promise<NewsletterIssuesResult> => {
-    const apiKey = process.env.BEEHIIV_API_KEY;
+    const apiKey = beehiivKey();
     if (!apiKey) {
       console.error("beehiiv posts: missing BEEHIIV_API_KEY");
       return { ok: false, error: "Newsletter service is not configured", issues: [] };
@@ -78,7 +92,7 @@ export const listNewsletterIssues = createServerFn({ method: "GET" }).handler(
       });
       if (!res.ok) {
         const body = await res.text();
-        console.error(`beehiiv posts failed [${res.status}]: ${body}`);
+        console.error(`beehiiv posts failed [${res.status}] (${keyShape()}): ${body}`);
         return { ok: false, error: `Newsletter archive unavailable (${res.status})`, issues: [] };
       }
       const json = (await res.json()) as {
