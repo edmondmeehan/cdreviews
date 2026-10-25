@@ -105,6 +105,16 @@ function RolesAdmin() {
                   <td className="py-3 text-ink">
                     {r.email}
                     {r.pending && <span className="ml-2 text-[9px] tracking-[0.2em] uppercase text-ink/40">Invited</span>}
+                    {r.pending && (
+                      <button
+                        type="button"
+                        className="ml-2 text-[9px] tracking-[0.2em] uppercase text-vermil hover:underline disabled:opacity-40"
+                        disabled={grant.isPending}
+                        onClick={() => grant.mutate({ email: r.email, role: r.role as RoleOpt })}
+                      >
+                        Resend invite
+                      </button>
+                    )}
                   </td>
                   <td className="text-vermil uppercase tracking-[0.2em]">{r.role}</td>
                   <td className="text-ink/80" title={r.lastSignInAt ? new Date(r.lastSignInAt).toLocaleString() : undefined}>
