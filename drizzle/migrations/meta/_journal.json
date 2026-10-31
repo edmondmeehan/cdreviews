@@ -162,6 +162,13 @@
       "when": 1792700100000,
       "tag": "0022_ads_super_admin_only",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793400000000,
+      "tag": "0023_musicbrainz_links",
+      "breakpoints": true
     }
   ]
 }

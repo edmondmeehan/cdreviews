@@ -12,6 +12,7 @@ import { CrateGrid, Kicker, ReviewCard } from "@/components/site/bits";
 import { Cover } from "@/components/site/Cover";
 import { CoverLightbox } from "@/components/site/CoverLightbox";
 import { YouTubeVideo } from "@/components/site/YouTubeVideo";
+import { CommunityReviews } from "@/components/site/CommunityReviews";
 import { useCdStore } from "@/lib/cd-store";
 import { LEGACY_REVIEW_SLUGS } from "@/lib/legacy-redirects";
 import { relatedReviews } from "@/lib/related-reviews";
@@ -171,6 +172,8 @@ function ReviewPage() {
           </div>
         </div>
       </article>
+
+      <CommunityReviews slug={review.slug} />
 
       {related.length > 0 && (
         <section className="border-t border-rule">

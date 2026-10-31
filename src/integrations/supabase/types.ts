@@ -301,6 +301,33 @@ export type Database = {
         }
         Relationships: []
       }
+      musicbrainz_links: {
+        Row: {
+          checked_at: string
+          community: Json | null
+          fetched_at: string | null
+          matched_title: string | null
+          release_group_id: string | null
+          review_id: string
+        }
+        Insert: {
+          checked_at?: string
+          community?: Json | null
+          fetched_at?: string | null
+          matched_title?: string | null
+          release_group_id?: string | null
+          review_id: string
+        }
+        Update: {
+          checked_at?: string
+          community?: Json | null
+          fetched_at?: string | null
+          matched_title?: string | null
+          release_group_id?: string | null
+          review_id?: string
+        }
+        Relationships: []
+      }
       page_views: {
         Row: {
           created_at: string
