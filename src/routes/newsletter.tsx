@@ -61,7 +61,7 @@ function NewsletterPage() {
   const failed = !result.ok ? result.error : null;
 
   const [value, setValue] = useState("");
-  const [status, setStatus] = useState<"idle" | "ok" | "err">("idle");
+  const [status, setStatus] = useState<"idle" | "ok" | "err" | "fail">("idle");
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -73,7 +73,7 @@ function NewsletterPage() {
     cdActions.addSubscriber(parsed.data);
     const sub = await subscribeToBeehiiv({ data: { email: parsed.data } });
     if (!sub.ok) {
-      setStatus("err");
+      setStatus("fail");
       return;
     }
     setValue("");
@@ -131,6 +131,7 @@ function NewsletterPage() {
               <p className="basis-full font-mono text-[11px] tracking-[0.12em] uppercase min-h-[1em]" aria-live="polite">
                 {status === "ok" && "→ You're on the list."}
                 {status === "err" && "That email doesn't look right."}
+                {status === "fail" && "Couldn't sign you up just now. Please try again in a minute."}
               </p>
             </form>
           </div>

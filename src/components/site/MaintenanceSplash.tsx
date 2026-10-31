@@ -10,7 +10,7 @@ const emailSchema = z.string().trim().email().max(255);
 
 export function MaintenanceSplash({ message }: { message: string | null }) {
   const [value, setValue] = useState("");
-  const [status, setStatus] = useState<"idle" | "busy" | "ok" | "err">("idle");
+  const [status, setStatus] = useState<"idle" | "busy" | "ok" | "err" | "fail">("idle");
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -19,7 +19,7 @@ export function MaintenanceSplash({ message }: { message: string | null }) {
     setStatus("busy");
     await cdActions.addSubscriber(parsed.data);
     const result = await subscribeToBeehiiv({ data: { email: parsed.data } });
-    if (!result.ok) { setStatus("err"); return; }
+    if (!result.ok) { setStatus("fail"); return; }
     setValue("");
     setStatus("ok");
   }
@@ -68,6 +68,7 @@ export function MaintenanceSplash({ message }: { message: string | null }) {
             <p className="basis-full font-mono text-[11px] tracking-[0.12em] uppercase min-h-[1em]" aria-live="polite">
               {status === "ok" && "→ You're on the list. See you soon."}
               {status === "err" && "That email doesn't look right — try again."}
+              {status === "fail" && "Couldn't sign you up just now. Please try again in a minute."}
             </p>
           </form>
         </div>

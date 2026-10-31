@@ -24,81 +24,51 @@ export const cleanupReviewBody = createServerFn({ method: "POST" })
     ]);
     if (!staff.data && !writer.data) throw new Error("You don't have permission to use AI cleanup.");
 
-    const apiKey = process.env.LOVABLE_API_KEY;
-    if (!apiKey) throw new Error("AI is not configured.");
+    // Uses Anthropic's API directly (previously Lovable's AI gateway).
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) throw new Error("AI cleanup isn't set up yet (missing ANTHROPIC_API_KEY).");
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Lovable-API-Key": apiKey, "X-Lovable-AIG-SDK": "fetch" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
       body: JSON.stringify({
-        model: "openai/gpt-6-astra",
-        instructions: INSTRUCTIONS,
-        input: data.paragraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n"),
-        stream: true,
-        store: false,
-        reasoning: { effort: "low" },
-        text: {
-          format: {
-            type: "json_schema",
-            name: "cleaned_body",
-            strict: true,
-            schema: {
-              type: "object",
-              additionalProperties: false,
-              required: ["paragraphs", "changes"],
-              properties: {
-                paragraphs: { type: "array", items: { type: "string" } },
-                changes: { type: "array", items: { type: "string" } },
-              },
+        model: process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5",
+        max_tokens: 16000,
+        system: INSTRUCTIONS,
+        messages: [{ role: "user", content: data.paragraphs.map((p, i) => `[${i + 1}] ${p}`).join("\n\n") }],
+        tools: [{
+          name: "cleaned_body",
+          description: "Return the cleaned review paragraphs and a short list of changes.",
+          input_schema: {
+            type: "object",
+            additionalProperties: false,
+            required: ["paragraphs", "changes"],
+            properties: {
+              paragraphs: { type: "array", items: { type: "string" } },
+              changes: { type: "array", items: { type: "string" } },
             },
           },
-        },
+        }],
+        tool_choice: { type: "tool", name: "cleaned_body" },
       }),
     });
 
-    if (!res.ok || !res.body) {
+    if (!res.ok) {
       const msg = await res.text().catch(() => "");
-      if (res.status === 402) throw new Error("Out of AI credits — add more in Settings → Plans & credits.");
-      if (res.status === 429) throw new Error("AI is busy right now — try again in a minute.");
+      if (res.status === 429 || res.status === 529) throw new Error("AI is busy right now — try again in a minute.");
       throw new Error(`AI cleanup failed (${res.status}). ${msg.slice(0, 200)}`);
     }
 
-    // Consume the SSE stream server-side and collect the output text.
-    const reader = res.body.getReader();
-    const dec = new TextDecoder();
-    let buf = "";
-    let text = "";
-    for (;;) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buf += dec.decode(value, { stream: true });
-      let idx;
-      while ((idx = buf.indexOf("\n")) >= 0) {
-        const line = buf.slice(0, idx).trim();
-        buf = buf.slice(idx + 1);
-        if (!line.startsWith("data:")) continue;
-        const payload = line.slice(5).trim();
-        if (!payload || payload === "[DONE]") continue;
-        try {
-          const ev = JSON.parse(payload);
-          if (ev.type === "response.output_text.delta") text += ev.delta ?? "";
-          if (ev.type === "response.failed" || ev.type === "error") {
-            throw new Error(ev.error?.message ?? ev.response?.error?.message ?? "AI cleanup failed.");
-          }
-        } catch (e) {
-          if (e instanceof SyntaxError) continue;
-          throw e;
-        }
-      }
-    }
-
-    let parsed: { paragraphs: string[]; changes: string[] };
-    try {
-      parsed = JSON.parse(text);
-    } catch {
-      throw new Error("AI returned no usable result. Please try again.");
-    }
-    const paragraphs = parsed.paragraphs.map((p) => p.replace(/^\[\d+\]\s*/, "").trim()).filter(Boolean);
+    const json = (await res.json()) as {
+      content?: Array<{ type: string; name?: string; input?: { paragraphs?: string[]; changes?: string[] } }>;
+    };
+    const out = json.content?.find((c) => c.type === "tool_use" && c.name === "cleaned_body")?.input;
+    if (!out?.paragraphs) throw new Error("AI returned no usable result. Please try again.");
+    const paragraphs = out.paragraphs.map((p) => p.replace(/^\[\d+\]\s*/, "").trim()).filter(Boolean);
     if (!paragraphs.length) throw new Error("AI returned an empty body.");
-    return { paragraphs, changes: parsed.changes.slice(0, 50) };
+    return { paragraphs, changes: (out.changes ?? []).slice(0, 50) };
   });
