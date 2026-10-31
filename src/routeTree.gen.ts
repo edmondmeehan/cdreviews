@@ -15,6 +15,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BestNewRouteImport } from './routes/best-new'
+import { Route as ConfirmRouteImport } from './routes/confirm'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ContributeRouteImport } from './routes/contribute'
 import { Route as MastheadRouteImport } from './routes/masthead'
@@ -76,6 +77,11 @@ const AuthRoute = AuthRouteImport.update({
 const BestNewRoute = BestNewRouteImport.update({
   id: '/best-new',
   path: '/best-new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfirmRoute = ConfirmRouteImport.update({
+  id: '/confirm',
+  path: '/confirm',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -246,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
+  '/confirm': typeof ConfirmRoute
   '/contact': typeof ContactRoute
   '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
@@ -286,6 +293,7 @@ export interface FileRoutesByTo {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
+  '/confirm': typeof ConfirmRoute
   '/contact': typeof ContactRoute
   '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
@@ -327,6 +335,7 @@ export interface FileRoutesById {
   '/archive': typeof ArchiveRoute
   '/auth': typeof AuthRoute
   '/best-new': typeof BestNewRoute
+  '/confirm': typeof ConfirmRoute
   '/contact': typeof ContactRoute
   '/contribute': typeof ContributeRoute
   '/masthead': typeof MastheadRoute
@@ -369,6 +378,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/best-new'
+    | '/confirm'
     | '/contact'
     | '/contribute'
     | '/masthead'
@@ -409,6 +419,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/best-new'
+    | '/confirm'
     | '/contact'
     | '/contribute'
     | '/masthead'
@@ -449,6 +460,7 @@ export interface FileRouteTypes {
     | '/archive'
     | '/auth'
     | '/best-new'
+    | '/confirm'
     | '/contact'
     | '/contribute'
     | '/masthead'
@@ -490,6 +502,7 @@ export interface RootRouteChildren {
   ArchiveRoute: typeof ArchiveRoute
   AuthRoute: typeof AuthRoute
   BestNewRoute: typeof BestNewRoute
+  ConfirmRoute: typeof ConfirmRoute
   ContactRoute: typeof ContactRoute
   ContributeRoute: typeof ContributeRoute
   MastheadRoute: typeof MastheadRoute
@@ -551,6 +564,13 @@ declare module '@tanstack/react-router' {
       path: '/best-new'
       fullPath: '/best-new'
       preLoaderRoute: typeof BestNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confirm': {
+      id: '/confirm'
+      path: '/confirm'
+      fullPath: '/confirm'
+      preLoaderRoute: typeof ConfirmRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -825,6 +845,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArchiveRoute: ArchiveRoute,
   AuthRoute: AuthRoute,
   BestNewRoute: BestNewRoute,
+  ConfirmRoute: ConfirmRoute,
   ContactRoute: ContactRoute,
   ContributeRoute: ContributeRoute,
   MastheadRoute: MastheadRoute,

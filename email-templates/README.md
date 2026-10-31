@@ -5,11 +5,11 @@ Supabase auth placeholders:
 
 | File | Auth email | Placeholders |
 | --- | --- | --- |
-| invite.html | Invite user | `{{ .ConfirmationURL }}`, `{{ .SiteURL }}` |
-| confirm-signup.html | Confirm signup | `{{ .ConfirmationURL }}`, `{{ .Email }}`, `{{ .SiteURL }}` |
-| magic-link.html | Magic link | `{{ .ConfirmationURL }}`, `{{ .SiteURL }}` |
-| reset-password.html | Reset password (recovery) | `{{ .ConfirmationURL }}`, `{{ .Email }}`, `{{ .SiteURL }}` |
-| change-email.html | Change email address | `{{ .ConfirmationURL }}`, `{{ .Email }}`, `{{ .NewEmail }}`, `{{ .SiteURL }}` |
+| invite.html | Invite user | `{{ .TokenHash }}` (links go to {{ .SiteURL }}/confirm), `{{ .SiteURL }}` |
+| confirm-signup.html | Confirm signup | `{{ .TokenHash }}` (links go to {{ .SiteURL }}/confirm), `{{ .Email }}`, `{{ .SiteURL }}` |
+| magic-link.html | Magic link | `{{ .TokenHash }}` (links go to {{ .SiteURL }}/confirm), `{{ .SiteURL }}` |
+| reset-password.html | Reset password (recovery) | `{{ .TokenHash }}` (links go to {{ .SiteURL }}/confirm), `{{ .Email }}`, `{{ .SiteURL }}` |
+| change-email.html | Change email address | `{{ .TokenHash }}` (links go to {{ .SiteURL }}/confirm), `{{ .Email }}`, `{{ .NewEmail }}`, `{{ .SiteURL }}` |
 | reauthentication.html | Reauthentication | `{{ .Token }}`, `{{ .SiteURL }}` |
 
 Subject lines are in SUBJECTS.txt. Colors: #faf9f6 card, #eeede8 page,

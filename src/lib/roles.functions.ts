@@ -48,8 +48,11 @@ export const grantRole = createServerFn({ method: "POST" })
     await assertAdmin(context.userId);
     let user = await findUserByEmail(data.email);
     let invited = false;
-    if (!user) {
-      // No account yet: create one and email them a link to set a password.
+    // Invite when there is no account yet, or when an earlier invite was never accepted
+    // (Supabase re-sends the invite to an unconfirmed account that has never signed in).
+    const neverJoined = !!user && !user.email_confirmed_at && !user.last_sign_in_at;
+    if (!user || neverJoined) {
+      // Email them a link to set a password (creates the account if needed).
       const { data: inv, error: invErr } = await supabaseAdmin.auth.admin.inviteUserByEmail(
         data.email,
         data.redirectTo ? { redirectTo: data.redirectTo } : undefined,
