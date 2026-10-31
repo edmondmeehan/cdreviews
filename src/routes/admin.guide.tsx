@@ -14,6 +14,7 @@ const SECTIONS = [
   { id: "overview", title: "Overview" },
   { id: "reviews", title: "Reviews" },
   { id: "content", title: "Features, Lists, Homepage & Radio" },
+  { id: "community", title: "Community reviews" },
   { id: "business", title: "Audience & business" },
   { id: "team", title: "Team" },
   { id: "maintenance", title: "Maintenance mode" },
@@ -150,6 +151,16 @@ function AdminGuide() {
           ["Lists:", <>ranked lists like year-end picks. <B>+ New list</B> with a title, dek, byline and date, then <B>+ Add entry</B> for each record in rank order. <B>Remove</B> drops an entry.</>],
           ["Homepage feature:", <>chooses the review in the big spot at the top of the homepage. <B>Search reviews</B>, pick one, optionally add a headline and short intro, set a start date and time (empty = now), then <B>Schedule</B>. With nothing scheduled, the homepage shows its default pick. Draft reviews won't show until published.</>],
           ["Radio:", "sets the CDR Radio page: playlist name, description and the Spotify playlist link (in Spotify: Share → Copy link to playlist)."],
+        ]} />
+      </Section>
+
+      <Section id="community" title="Community reviews" lead="Reader reviews and star ratings from CritiqueBrainz (part of MusicBrainz) appear under “From the community” on each review page. They are not written by cdreviews, and each one is credited to its author.">
+        <Items items={[
+          ["How it works:", "the first time someone opens a review, the site finds that album on MusicBrainz and pulls its reader reviews and rating. They refresh once a day. Only reviews licensed for commercial use (CC BY-SA) are shown, because the site carries ads."],
+          ["Where to manage it:", <><Link to="/admin/community" className="text-vermil hover:underline">Community reviews</Link> (staff) lists every published review with its match, review count and rating. Filter by what's showing, unmatched or not checked yet.</>],
+          ["Wrong album?", <>click <B>Set match</B>, use <B>Search MusicBrainz ↗</B> to find the right album, and paste its release-group link (musicbrainz.org/release-group/…). <B>Hide</B> removes the section from that review; <B>Re-check</B> runs the automatic match again.</>],
+          ["Match next 10 unchecked", "matches albums nobody has opened yet, about 20 seconds per batch."],
+          ["Changes take up to an hour", "to show for every visitor."],
         ]} />
       </Section>
 

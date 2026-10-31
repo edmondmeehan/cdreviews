@@ -27,6 +27,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminAdsRouteImport } from './routes/admin.ads'
 import { Route as AdminApplicationsRouteImport } from './routes/admin.applications'
+import { Route as AdminCommunityRouteImport } from './routes/admin.community'
 import { Route as AdminContributorsRouteImport } from './routes/admin.contributors'
 import { Route as AdminFeaturedRouteImport } from './routes/admin.featured'
 import { Route as AdminFeaturesRouteImport } from './routes/admin.features'
@@ -137,6 +138,11 @@ const AdminAdsRoute = AdminAdsRouteImport.update({
 const AdminApplicationsRoute = AdminApplicationsRouteImport.update({
   id: '/applications',
   path: '/applications',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCommunityRoute = AdminCommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminContributorsRoute = AdminContributorsRouteImport.update({
@@ -264,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/admin/activity': typeof AdminActivityRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
+  '/admin/community': typeof AdminCommunityRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
@@ -305,6 +312,7 @@ export interface FileRoutesByTo {
   '/admin/activity': typeof AdminActivityRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
+  '/admin/community': typeof AdminCommunityRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
@@ -347,6 +355,7 @@ export interface FileRoutesById {
   '/admin/activity': typeof AdminActivityRoute
   '/admin/ads': typeof AdminAdsRoute
   '/admin/applications': typeof AdminApplicationsRoute
+  '/admin/community': typeof AdminCommunityRoute
   '/admin/contributors': typeof AdminContributorsRoute
   '/admin/featured': typeof AdminFeaturedRoute
   '/admin/features': typeof AdminFeaturesRoute
@@ -390,6 +399,7 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/ads'
     | '/admin/applications'
+    | '/admin/community'
     | '/admin/contributors'
     | '/admin/featured'
     | '/admin/features'
@@ -431,6 +441,7 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/ads'
     | '/admin/applications'
+    | '/admin/community'
     | '/admin/contributors'
     | '/admin/featured'
     | '/admin/features'
@@ -472,6 +483,7 @@ export interface FileRouteTypes {
     | '/admin/activity'
     | '/admin/ads'
     | '/admin/applications'
+    | '/admin/community'
     | '/admin/contributors'
     | '/admin/featured'
     | '/admin/features'
@@ -650,6 +662,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminApplicationsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/community': {
+      id: '/admin/community'
+      path: '/community'
+      fullPath: '/admin/community'
+      preLoaderRoute: typeof AdminCommunityRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/contributors': {
       id: '/admin/contributors'
       path: '/contributors'
@@ -804,6 +823,7 @@ interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
   AdminAdsRoute: typeof AdminAdsRoute
   AdminApplicationsRoute: typeof AdminApplicationsRoute
+  AdminCommunityRoute: typeof AdminCommunityRoute
   AdminContributorsRoute: typeof AdminContributorsRoute
   AdminFeaturedRoute: typeof AdminFeaturedRoute
   AdminFeaturesRoute: typeof AdminFeaturesRoute
@@ -822,6 +842,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminActivityRoute: AdminActivityRoute,
   AdminAdsRoute: AdminAdsRoute,
   AdminApplicationsRoute: AdminApplicationsRoute,
+  AdminCommunityRoute: AdminCommunityRoute,
   AdminContributorsRoute: AdminContributorsRoute,
   AdminFeaturedRoute: AdminFeaturedRoute,
   AdminFeaturesRoute: AdminFeaturesRoute,

@@ -114,3 +114,13 @@ export function usableReviews(reviews: CbReview[], max = 4): CommunityReview[] {
       };
     });
 }
+
+/** Release-group ID from a pasted MusicBrainz/CritiqueBrainz link or a bare ID. Rejects release/recording links. */
+export function parseReleaseGroupId(value: string): string | null {
+  const v = value.trim();
+  const uuid = "([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})";
+  const fromUrl = v.match(new RegExp(`release[-_]group/${uuid}`, "i"));
+  if (fromUrl) return fromUrl[1].toLowerCase();
+  const bare = v.match(new RegExp(`^${uuid}$`, "i"));
+  return bare ? bare[1].toLowerCase() : null;
+}

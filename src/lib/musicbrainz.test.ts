@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { excerpt, isCommercialLicense, pickReleaseGroup, plainParagraphs, usableReviews } from "./musicbrainz";
+import { excerpt, isCommercialLicense, parseReleaseGroupId, pickReleaseGroup, plainParagraphs, usableReviews } from "./musicbrainz";
 
 const rg = (id: string, title: string, artist: string, type = "Album") =>
   ({ id, title, "primary-type": type, "artist-credit": [{ name: artist, artist: { name: artist } }] });
@@ -55,5 +55,18 @@ describe("plainParagraphs / excerpt", () => {
     assert.equal(r.truncated, true);
     assert.ok(r.paragraphs[0].endsWith("…"));
     assert.ok(r.paragraphs[0].length <= 102);
+  });
+});
+
+describe("parseReleaseGroupId", () => {
+  const id = "b1392450-e666-3926-a536-22c65f834433";
+  it("reads MusicBrainz and CritiqueBrainz links and bare IDs", () => {
+    assert.equal(parseReleaseGroupId(`https://musicbrainz.org/release-group/${id}`), id);
+    assert.equal(parseReleaseGroupId(`https://critiquebrainz.org/release-group/${id}?x=1`), id);
+    assert.equal(parseReleaseGroupId(` ${id.toUpperCase()} `), id);
+  });
+  it("rejects release links and junk", () => {
+    assert.equal(parseReleaseGroupId(`https://musicbrainz.org/release/${id}`), null);
+    assert.equal(parseReleaseGroupId("ok computer"), null);
   });
 });

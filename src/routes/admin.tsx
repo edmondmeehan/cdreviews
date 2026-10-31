@@ -26,6 +26,7 @@ const NAV_GROUPS: { label: string; items: AdminNavItem[] }[] = [
     { to: "/admin/lists", label: "Lists", staffOnly: true },
     { to: "/admin/featured", label: "Homepage feature", staffOnly: true },
     { to: "/admin/radio", label: "Radio", staffOnly: true },
+    { to: "/admin/community", label: "Community reviews", staffOnly: true },
   ] },
   { label: "Audience & business", items: [
     { to: "/admin/traffic", label: "Top pages", staffOnly: true },
